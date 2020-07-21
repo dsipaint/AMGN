@@ -1,0 +1,21 @@
+PURPOSE:
+	Currently sootbot projects all run as independent programs. No shared resources. I want a way to share resources
+	across projects. I cannot toggle these projects as needed. There is also little in the way of formal command
+	support, and I'd like to add this.
+	The idea is a central repository which hosts a single main method. The main methods from other sootbot projects
+	will be removed, and moved into a method which can be triggered from the central repository. This repository will
+	include support for formal commands, and host shared resources such as settings for all servers (e.g. modlogs and mod roles),
+	and shared methods such as isStaff.
+	A command should have a label (i.e. name), a description, usage help, permission nodes, and some sort of scope (global, server-specific etc)
+	Once the repository is ready, all projects should be made using the repository as a dependency. Each module should have things
+	such as name, author, version and dependencies (other modules).
+	See spigot for inspiration.
+	
+	in the final development stages, resources such as server-settings and bot token should be moved to an external file from
+	the project, so that another dev may use the jar as a standalone and put their details into a file that I cannot see, and
+	they cannot see my details. At the very end, I may even use my finished project to make an interactive site similar to
+	dyno, to allow a dev to customise settings on my own multiguildnetwork.
+	
+REQUIRED TO RUN:
+
+server settings should be placed in a JSON file, for now called guilds.json
