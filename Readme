@@ -18,4 +18,9 @@ PURPOSE:
 	
 REQUIRED TO RUN:
 
-server settings should be placed in a JSON file, for now called guilds.json
+server settings should be placed in a JSON file, for now called guilds.json. Default values are provided if they are not
+specified for a given guild:
+	prefix: "^"
+	modlogs: -1
+	modrole: -1
+	guild_id: -1
