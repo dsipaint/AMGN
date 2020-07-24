@@ -21,7 +21,7 @@ public class Main
 		logger.info("Commencing setup...");
 		try
 		{
-			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.Xxoubw.jBwpkEl41CzDkO2kVen1Q_NqH9Q").build();
+			jda = new JDABuilder(AccountType.BOT).setToken("").build();
 		}
 		catch (LoginException e1)
 		{
