@@ -10,11 +10,11 @@ import org.json.simple.DeserializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import entities.Listener;
-import entities.Plugin;
+import entities.plugins.Plugin;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Main
 {
@@ -22,7 +22,7 @@ public class Main
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
-	public static HashMap<Plugin, ArrayList<Listener>> plugin_listeners = new HashMap<Plugin, ArrayList<Listener>>();
+	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners = new HashMap<Plugin, ArrayList<ListenerAdapter>>();
 	
 	public static void main(String[] args)
 	{
@@ -50,7 +50,7 @@ public class Main
 		try
 		{
 			logger.info("Reading guild data...");
-			GuildNetwork.guild_data = Data.readGuildData("guilds.json"); //read guild data from guilds.json
+			GuildNetwork.guild_data = IOHandler.readGuildData("guilds.json"); //read guild data from guilds.json
 		}
 		catch (IOException | DeserializationException e)
 		{
@@ -71,11 +71,15 @@ public class Main
 		//loop through these jars
 		for(File file : plugins_directory)
 		{
-			//look for the actual plugin class here (if it exists) and then assign it to a plugin object in this program
+			//look for the actual plugin class here (if it exists)
+			Plugin p = IOHandler.getPluginObjectFromPath(file.getPath());
+			
 			//enable these classes/plugins with GuildNetwork.enablePlugin
+			if(GuildNetwork.enablePlugin(p))
+				logger.info("Enabled " + p.getName() + " " + p.getVersion());
 		}
 		
-		logger.info("Adding prebuilt commands..."); //prebuilt commands/plugins of the library go here
+		logger.info("Implementing intrinsic plugins..."); //prebuilt commands/plugins of the library go here
 		
 		logger.info("Finished setup.");
 		jda.shutdown(); //DEBUG

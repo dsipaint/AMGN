@@ -1,0 +1,12 @@
+{
+	"name": "Help",
+	"version": "0.0.1",
+	"author": "al~",
+	"commands": [
+		{
+			"label": "help",
+			"usageinfo": "Used to give info on all or one command!",
+			"permissions": "dud value"
+		}
+	]
+}

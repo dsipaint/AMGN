@@ -3,22 +3,24 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import entities.Guild;
-import entities.Listener;
-import entities.Plugin;
+import entities.listeners.Command;
+import entities.listeners.Listener;
+import entities.plugins.Plugin;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildNetwork
 {
 	//general utility class, like the Bukkit class in spigot- represents actions available across the whole network
 	
-	static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
+	public static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
 	
-	static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
-	static final String DEFAULT_PREFIX = "^"; //default prefix
-	static final long DEFAULT_ID = -1; //default long id value
-	static final String PLUGIN_PATH = "./plugins"; //plugin path
+	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
+	public static final String DEFAULT_PREFIX = "^"; //default prefix
+	public static final long DEFAULT_ID = -1; //default long id value
+	public static final String PLUGIN_PATH = "./plugins"; //plugin path
 	
 	//return true if a member has discord mod, admin or is owner
 	public static boolean isStaff(Member m)
@@ -43,10 +45,33 @@ public class GuildNetwork
 		return false;
 	}
 	
+	//ease-of-access methods for retrieving guild data
+	public static String getPrefix(long guild_id)
+	{
+		return guild_data.get(guild_id) == null ? DEFAULT_PREFIX : guild_data.get(guild_id).getPrefix();
+	}
+	
+	public static long getModrole(long guild_id)
+	{
+		return guild_data.get(guild_id) == null ? DEFAULT_ID : guild_data.get(guild_id).getModrole();
+	}
+	
+	public static long getModlogs(long guild_id)
+	{
+		return guild_data.get(guild_id) == null ? DEFAULT_ID : guild_data.get(guild_id).getModlogs();
+	}
+	
 	public static void registerListener(Listener listener, Plugin plugin)
 	{
 		Main.jda.addEventListener(listener);
 		Main.plugin_listeners.get(plugin).add(listener); //add the listener listed under this name
+	}
+	
+	//works just as registerListener does, just more syntax-sense for a user to register commands separately to listeners
+	public static void registerCommand(Command cmd, Plugin plugin)
+	{
+		Main.jda.addEventListener(cmd);
+		Main.plugin_listeners.get(plugin).add(cmd);
 	}
 	
 	//returns TRUE if this plugin was enabled
@@ -56,7 +81,7 @@ public class GuildNetwork
 		if(Main.plugin_listeners.get(plugin) == null)
 		{
 			plugin.onEnable(); //run plugin's enable method
-			Main.plugin_listeners.put(plugin, new ArrayList<Listener>()); //add this plugin with an empty list of listeners
+			Main.plugin_listeners.put(plugin, new ArrayList<ListenerAdapter>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
 			return true;
 		}
