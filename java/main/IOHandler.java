@@ -82,7 +82,7 @@ public class IOHandler
 	{
 		try
 		{
-			return (Plugin) Class.forName(path + ".{plugin class goes here}").newInstance();
+			return (Plugin) Class.forName(path).newInstance();
 		}
 		catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
 		{

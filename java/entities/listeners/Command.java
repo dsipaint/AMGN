@@ -1,10 +1,10 @@
 package entities.listeners;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.json.simple.DeserializationException;
+import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
@@ -20,11 +20,22 @@ public abstract class Command extends ListenerAdapter
 	{
 		try
 		{
-			JsonObject plugin_metadata = (JsonObject) Jsoner.deserialize(new FileReader(new File("./plugin.json")));
-			JsonObject command_metadata = (JsonObject) plugin_metadata.get("commands");
+			JsonObject plugin_metadata = (JsonObject) Jsoner.deserialize(
+					new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
 			
-			this.label = label;
-			this.usageinfo = command_metadata.getString("usageinfo");
+			JsonArray command_metadata = (JsonArray) plugin_metadata.get("commands");
+			
+			command_metadata.forEach(command ->
+			{
+				JsonObject command_obj = (JsonObject) command;
+				
+				//if this is the desired command within the metadata
+				if(command_obj.containsValue(label))
+				{
+					this.label = label; //take the command data we need
+					this.usageinfo = command_obj.getString("usageinfo");
+				}
+			});
 		}
 		catch (DeserializationException | IOException e)
 		{

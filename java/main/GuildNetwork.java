@@ -20,7 +20,7 @@ public class GuildNetwork
 	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
 	public static final String DEFAULT_PREFIX = "^"; //default prefix
 	public static final long DEFAULT_ID = -1; //default long id value
-	public static final String PLUGIN_PATH = "./plugins"; //plugin path
+	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	
 	//return true if a member has discord mod, admin or is owner
 	public static boolean isStaff(Member m)
@@ -80,9 +80,9 @@ public class GuildNetwork
 		//if plugin is not already enabled
 		if(Main.plugin_listeners.get(plugin) == null)
 		{
-			plugin.onEnable(); //run plugin's enable method
 			Main.plugin_listeners.put(plugin, new ArrayList<ListenerAdapter>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
+			plugin.onEnable(); //run plugin's enable method
 			return true;
 		}
 		else
