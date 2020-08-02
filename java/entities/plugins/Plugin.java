@@ -1,15 +1,14 @@
 package entities.plugins;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
 public abstract class Plugin
-{
+{	
 	public abstract void onEnable();
 	
 	public abstract void onDisable();
@@ -20,7 +19,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new FileReader(new File("plugin.json"))); //TODO: check path name
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
 			return metadata.getString("name");
 		}
 		catch (DeserializationException | IOException e)
@@ -35,7 +34,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new FileReader(new File("plugin.json"))); //TODO: check path name
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
 			return metadata.getString("version");
 		}
 		catch (DeserializationException | IOException e)
@@ -50,7 +49,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new FileReader(new File("plugin.json"))); //TODO: check path name
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
 			return metadata.getString("author");
 		}
 		catch (DeserializationException | IOException e)

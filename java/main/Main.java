@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import entities.plugins.Plugin;
+import io.IOHandler;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -31,7 +32,7 @@ public class Main
 		logger.info("Initialising bot account...");
 		try
 		{
-			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.Lt75s7Xr38pK-L10pOmfemG1SQE").build();
+			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.vOsqo30_-f_c6BQZSGCVc5LHJGM").build();
 		}
 		catch (LoginException e1)
 		{
@@ -108,8 +109,15 @@ public class Main
 		Plugin enabledisableinstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.controlEnableDisable.ControlEnableDisable");
 		GuildNetwork.enablePlugin(enabledisableinstance);
 		
+		//closenetwork plugin
+		Plugin closenetworkinstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.closenetwork.CloseNetwork");
+		GuildNetwork.enablePlugin(closenetworkinstance);
+		
+		//metadata plugin
+		Plugin metadatainstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.metadata.Metadata");
+		GuildNetwork.enablePlugin(metadatainstance);
+		
 		logger.info("Finished setup.");
-		jda.shutdown(); //DEBUG
 		//END SETUP
 	}
 }

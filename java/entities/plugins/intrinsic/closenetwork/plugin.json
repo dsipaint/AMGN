@@ -1,0 +1,13 @@
+{
+	"name":"closenetwork",
+	"author": "al~",
+	"description": "Can safely shutdown the network.",
+	"version": "0.0.1",
+	"commands": [
+		{
+			"label": "closenetwork",
+			"usageinfo": "disables every plugin and shuts down the program",
+			"permissions": "dud value"
+		}
+	]
+}

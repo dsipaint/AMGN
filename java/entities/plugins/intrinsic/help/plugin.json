@@ -2,6 +2,7 @@
 	"name": "Help",
 	"version": "0.0.1",
 	"author": "al~",
+	"description": "Pulls command metadata to provide information about a command",
 	"commands": [
 		{
 			"label": "help",

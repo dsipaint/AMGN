@@ -1,0 +1,13 @@
+{
+	"name":"isrunning",
+	"author": "al~",
+	"description": "Shows plugins currently running on the network.",
+	"version": "0.0.1",
+	"commands": [
+		{
+			"label": "showplugins",
+			"usageinfo": "show all active plugins on the network",
+			"permissions": "dud value"
+		}
+	]
+}

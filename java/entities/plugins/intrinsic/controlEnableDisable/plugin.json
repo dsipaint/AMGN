@@ -2,6 +2,7 @@
 	"name": "ControlEnableDisable",
 	"version": "0.0.1",
 	"author": "al~",
+	"description": "allows for safe enabling/disabling of plugin jars in the plugins folder.",
 	"commands": [
 		{
 			"label": "enable",

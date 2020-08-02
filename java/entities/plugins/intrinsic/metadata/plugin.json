@@ -1,0 +1,13 @@
+{
+	"name": "updatemeta",
+	"author": "al~",
+	"description": "allows the updating of a guild's metadata e.g. their prefix via command",
+	"version": "0.0.1",
+	"commands":[
+		{
+			"label": "updatemetainfo",
+			"usageinfo": "Use to update meta info TODO: flesh this desc out more",
+			"permissions": "dud value"
+		}
+	]
+}

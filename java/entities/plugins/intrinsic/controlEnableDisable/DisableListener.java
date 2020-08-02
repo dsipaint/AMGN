@@ -4,8 +4,8 @@ import java.io.File;
 
 import entities.listeners.Command;
 import entities.plugins.Plugin;
+import io.IOHandler;
 import main.GuildNetwork;
-import main.IOHandler;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class DisableListener extends Command
