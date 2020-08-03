@@ -2,8 +2,10 @@ package io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
@@ -45,6 +47,20 @@ public class IOHandler
 		});
 		
 		return guilds_out;
+	}
+	
+	//writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
+	public static void writeGuildData(Map<Long, Guild> guilds, String path)
+	{
+		JsonArray guilds_out = new JsonArray(guilds.values()); //guild data as json array
+		try
+		{
+			guilds_out.toJson(new FileWriter(new File(path))); //write data to file
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	//returns true if a valid plugin jar has this plugin name

@@ -2,6 +2,8 @@
 	"name": "updatemeta",
 	"author": "al~",
 	"description": "allows the updating of a guild's metadata e.g. their prefix via command",
+	"url": "https://github.com/dsipaint",
+	"image": "https://cdn.discordapp.com/avatars/475859944101380106/7996d6a5b0db135563981a4000c38e98.png",
 	"version": "0.0.1",
 	"commands":[
 		{

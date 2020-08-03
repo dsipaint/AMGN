@@ -55,9 +55,13 @@ public class HelpListener extends Command
 			//^help {command}
 			//search for command with the name of args[1], and return its help syntax
 			
-			//loop through all listeners
+			//loop through all plugins and listeners
 			Main.plugin_listeners.forEach((plugin, listeners) ->
 			{
+				//display all plugins AND commands with the specified name
+				if(plugin.getName().equalsIgnoreCase(args[1]))
+					e.getChannel().sendMessage(plugin.getDisplayEmbed()).queue();
+				
 				listeners.forEach(listener ->
 				{
 					//check registered commands, find one with the same name
@@ -81,7 +85,7 @@ public class HelpListener extends Command
 	
 	
 	//not allowed to do this in a lambda expression, so I do it here
-	public void appendBuilder(EmbedBuilder eb, String msg)
+	private void appendBuilder(EmbedBuilder eb, String msg)
 	{
 		eb = eb.appendDescription(msg);
 	}

@@ -32,7 +32,7 @@ public class Main
 		logger.info("Initialising bot account...");
 		try
 		{
-			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.vOsqo30_-f_c6BQZSGCVc5LHJGM").build();
+			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA._-HtYtBlmS7GYUChGIiO1TnNtEI").build();
 		}
 		catch (LoginException e1)
 		{
@@ -51,7 +51,7 @@ public class Main
 		try
 		{
 			logger.info("Reading guild data...");
-			GuildNetwork.guild_data = IOHandler.readGuildData("guilds.json"); //read guild data from guilds.json
+			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.GUILDINFO_PATH); //read guild data from guilds.json
 		}
 		catch (IOException | DeserializationException e)
 		{
@@ -116,6 +116,10 @@ public class Main
 		//metadata plugin
 		Plugin metadatainstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.metadata.Metadata");
 		GuildNetwork.enablePlugin(metadatainstance);
+		
+		//isrunning plugin
+		Plugin isrunninginstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.running.Running");
+		GuildNetwork.enablePlugin(isrunninginstance);
 		
 		logger.info("Finished setup.");
 		//END SETUP

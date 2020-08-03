@@ -2,6 +2,8 @@
 	"name": "Help",
 	"version": "0.0.1",
 	"author": "al~",
+	"url": "https://github.com/dsipaint",
+	"image": "https://cdn.discordapp.com/avatars/475859944101380106/7996d6a5b0db135563981a4000c38e98.png",
 	"description": "Pulls command metadata to provide information about a command",
 	"commands": [
 		{

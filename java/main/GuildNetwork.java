@@ -21,6 +21,7 @@ public class GuildNetwork
 	public static final String DEFAULT_PREFIX = "^"; //default prefix
 	public static final long DEFAULT_ID = -1; //default long id value
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
+	public static final String GUILDINFO_PATH = "./guilds.json"; //guild info path
 	
 	//return true if a member has discord mod, admin or is owner
 	public static boolean isStaff(Member m)
