@@ -18,8 +18,6 @@ public class GuildNetwork
 	public static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
 	
 	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
-	public static final String DEFAULT_PREFIX = "^"; //default prefix
-	public static final long DEFAULT_ID = -1; //default long id value
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String GUILDINFO_PATH = "./guilds.json"; //guild info path
 	
@@ -49,17 +47,17 @@ public class GuildNetwork
 	//ease-of-access methods for retrieving guild data
 	public static String getPrefix(long guild_id)
 	{
-		return guild_data.get(guild_id) == null ? DEFAULT_PREFIX : guild_data.get(guild_id).getPrefix();
+		return guild_data.get(guild_id) == null ? Guild.DEFAULT_PREFIX : guild_data.get(guild_id).getPrefix();
 	}
 	
 	public static long getModrole(long guild_id)
 	{
-		return guild_data.get(guild_id) == null ? DEFAULT_ID : guild_data.get(guild_id).getModrole();
+		return guild_data.get(guild_id) == null ? Guild.DEFAULT_ID : guild_data.get(guild_id).getModrole();
 	}
 	
 	public static long getModlogs(long guild_id)
 	{
-		return guild_data.get(guild_id) == null ? DEFAULT_ID : guild_data.get(guild_id).getModlogs();
+		return guild_data.get(guild_id) == null ? Guild.DEFAULT_ID : guild_data.get(guild_id).getModlogs();
 	}
 	
 	public static void registerListener(Listener listener, Plugin plugin)

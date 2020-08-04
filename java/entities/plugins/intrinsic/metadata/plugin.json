@@ -10,6 +10,12 @@
 			"label": "updatemetainfo",
 			"usageinfo": "Use to update meta info TODO: flesh this desc out more",
 			"permissions": "dud value"
+		},
+		
+		{
+			"label": "viewmetainfo",
+			"usageinfo": "Use to view a guild's metadata",
+			"permissions": "dud value"
 		}
 	]
 }

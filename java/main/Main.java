@@ -32,7 +32,7 @@ public class Main
 		logger.info("Initialising bot account...");
 		try
 		{
-			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA._-HtYtBlmS7GYUChGIiO1TnNtEI").build();
+			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.GtSBqZCY0UeOE66yf4h4wbAtJyk").build();
 		}
 		catch (LoginException e1)
 		{

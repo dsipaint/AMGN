@@ -1,9 +1,11 @@
 package io;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,10 +39,10 @@ public class IOHandler
 			 * to account for the fact that the values may not be there:
 			 */
 			Guild g = new Guild(
-					guild.getLongOrDefault("guild_id", GuildNetwork.DEFAULT_ID),
-					guild.getLongOrDefault("modlogs", GuildNetwork.DEFAULT_ID),
-					guild.getLongOrDefault("modrole", GuildNetwork.DEFAULT_ID),
-					guild.getStringOrDefault("prefix", GuildNetwork.DEFAULT_PREFIX)
+					guild.getLongOrDefault("guild_id", Guild.DEFAULT_ID),
+					guild.getLongOrDefault("modlogs", Guild.DEFAULT_ID),
+					guild.getLongOrDefault("modrole", Guild.DEFAULT_ID),
+					guild.getStringOrDefault("prefix", Guild.DEFAULT_PREFIX)
 					);
 			
 			guilds_out.put(guild.getLong("guild_id"), g);
@@ -49,13 +51,30 @@ public class IOHandler
 		return guilds_out;
 	}
 	
-	//writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
+	/*
+	 * writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
+	 * 
+	 * This method no longer depends on Json.simple as it was acting weird-
+	 * Json.simple may not also pretty-print, and this allows me to do that at
+	 * least, even if it might not be super efficient
+	 */
 	public static void writeGuildData(Map<Long, Guild> guilds, String path)
 	{
-		JsonArray guilds_out = new JsonArray(guilds.values()); //guild data as json array
 		try
 		{
-			guilds_out.toJson(new FileWriter(new File(path))); //write data to file
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(path))));
+			Object[] guild_arr = guilds.values().toArray();
+			
+			pw.println("[");
+			
+			//we do last entry manually so we don't add the comma
+			for(int i = 0; i < guild_arr.length - 1; i++)
+				pw.println(((Guild) guild_arr[i]).asJson("\t") + ",");
+			
+			pw.println(((Guild) guild_arr[guild_arr.length - 1]).asJson("\t")); //(no comma, as this is the last in the list)
+			
+			pw.println("]");
+			pw.close();
 		}
 		catch (IOException e)
 		{
