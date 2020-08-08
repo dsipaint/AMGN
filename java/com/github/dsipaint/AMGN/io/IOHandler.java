@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +27,10 @@ public class IOHandler
 	//reads data in from guilds.json, using default values if not found (see default values in GuildNetwork.java
 	public static HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException, IOException, DeserializationException
 	{
-		JsonArray guilds_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("guild_data");
+		JsonArray json_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("guild_data");
 		HashMap<Long, Guild> guilds_out = new HashMap<Long, Guild>();
 		
-		guilds_in.forEach(obj ->
+		json_in.forEach(obj ->
 		{
 			JsonObject guild = (JsonObject) obj;
 			
@@ -55,9 +55,14 @@ public class IOHandler
 	
 	public static List<Long> readOperators(String path) throws FileNotFoundException, DeserializationException, IOException
 	{
-		JsonArray ops = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("operators");
-		Long[] ops_out = new Long[ops.size()];
-		return Arrays.asList(ops.toArray(ops_out));
+		JsonArray ops_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("operators");
+		List<Long> ops_out = new ArrayList<Long>();
+		ops_in.forEach(object ->
+		{
+			ops_out.add(Long.parseLong(object.toString()));
+		});
+		
+		return ops_out;
 	}
 	
 	/*
@@ -74,22 +79,25 @@ public class IOHandler
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(path))));
 			Object[] guild_arr = guilds.values().toArray();
 			
-			pw.print("\"operators\": [");
+			pw.println("{");
+			
+			pw.print("\t\"operators\": [");
 			for(int i = 0; i < operators.size() - 1; i++)
 				pw.print(operators.get(i) + ", ");
 			
-			pw.print(operators.get(operators.size() - 1) + "],");
+			pw.print(operators.get(operators.size() - 1) + "],\n");
 			
 			
-			pw.println("\"guild_data\": [");
+			pw.println("\t\"guild_data\": [");
 			
 			//we do last entry manually so we don't add the comma
 			for(int i = 0; i < guild_arr.length - 1; i++)
-				pw.println(((Guild) guild_arr[i]).asJson("\t") + ",");
+				pw.println(((Guild) guild_arr[i]).asJson("\t\t") + ",");
 			
-			pw.println(((Guild) guild_arr[guild_arr.length - 1]).asJson("\t")); //(no comma, as this is the last in the list)
+			pw.println(((Guild) guild_arr[guild_arr.length - 1]).asJson("\t\t")); //(no comma, as this is the last in the list)
 			
-			pw.println("]");
+			pw.println("\t]\n");
+			pw.println("}");
 			
 			
 			pw.close();

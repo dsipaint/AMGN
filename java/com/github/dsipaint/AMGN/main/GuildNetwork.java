@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
-import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -65,13 +64,13 @@ public class GuildNetwork
 		return guild_data.get(guild_id) == null ? Guild.DEFAULT_ID : guild_data.get(guild_id).getModlogs();
 	}
 	
-	public static void registerListener(Listener listener, Plugin plugin)
+	public static void registerListener(ListenerAdapter listener, Plugin plugin)
 	{
 		Main.jda.addEventListener(listener);
 		Main.plugin_listeners.get(plugin).add(listener); //add the listener listed under this name
 	}
 	
-	public static void unregisterListener(Listener listener, Plugin plugin)
+	public static void unregisterListener(ListenerAdapter listener, Plugin plugin)
 	{
 		Main.jda.removeEventListener(listener);
 		Main.plugin_listeners.get(plugin).remove(listener); //remove listener from hashmap and from jda
@@ -124,7 +123,12 @@ public class GuildNetwork
 		if(guild_id == Guild.DEFAULT_ID) //for now, don't do anything with default values
 			return;
 		
-		Main.jda.getTextChannelById(getModlogs(guild_id)).sendMessage(new EmbedBuilder()
+		long modlogs = getModlogs(guild_id);
+		
+		if(modlogs == Guild.DEFAULT_ID)
+			return;
+		
+		Main.jda.getTextChannelById(modlogs).sendMessage(new EmbedBuilder()
 				.setTitle("AMGN")
 				.setColor(GREEN_EMBED_COLOUR)
 				.setDescription(msg)

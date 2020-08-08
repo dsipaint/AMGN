@@ -33,7 +33,7 @@ public class Main
 		logger.info("Initialising bot account...");
 		try
 		{
-			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.GtSBqZCY0UeOE66yf4h4wbAtJyk").build();
+			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.EdGDxj951_02tPadBazrugUQhfU").build();
 		}
 		catch (LoginException e1)
 		{
@@ -104,31 +104,31 @@ public class Main
 		logger.info("Implementing intrinsic plugins..."); //prebuilt commands/plugins of the library go here
 
 		//help plugin
-		Plugin helpinstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.help.Help");
+		Plugin helpinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.Help");
 		GuildNetwork.enablePlugin(helpinstance);
 		
 		//enable/disable plugin
-		Plugin enabledisableinstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.controlEnableDisable.ControlEnableDisable");
+		Plugin enabledisableinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ControlEnableDisable");
 		GuildNetwork.enablePlugin(enabledisableinstance);
 		
 		//closenetwork plugin
-		Plugin closenetworkinstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.closenetwork.CloseNetwork");
+		Plugin closenetworkinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseNetwork");
 		GuildNetwork.enablePlugin(closenetworkinstance);
 		
 		//metadata plugin
-		Plugin metadatainstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.metadata.Metadata");
+		Plugin metadatainstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.Metadata");
 		GuildNetwork.enablePlugin(metadatainstance);
 		
 		//isrunning plugin
-		Plugin isrunninginstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.running.Running");
+		Plugin isrunninginstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.Running");
 		GuildNetwork.enablePlugin(isrunninginstance);
 		
 		//consistency plugin
-		Plugin consistencyinstance = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.consistency.Consistency");
+		Plugin consistencyinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.Consistency");
 		GuildNetwork.enablePlugin(consistencyinstance);
 		
 		//operators plugin
-		Plugin operatorsplugin = IOHandler.getPluginObjectFromPath("entities.plugins.intrinsic.operators.Operators");
+		Plugin operatorsplugin = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.Operators");
 		GuildNetwork.enablePlugin(operatorsplugin);
 		
 		logger.info("Finished setup.");

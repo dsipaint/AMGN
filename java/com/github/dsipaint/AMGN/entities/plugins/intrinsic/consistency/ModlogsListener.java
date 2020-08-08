@@ -1,13 +1,13 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency;
 
 import com.github.dsipaint.AMGN.entities.Guild;
-import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.main.GuildNetwork;
 
 import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class ModlogsListener extends Listener
+public class ModlogsListener extends ListenerAdapter
 {
 	public void onTextChannelDelete(TextChannelDeleteEvent e)
 	{
