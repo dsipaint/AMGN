@@ -87,18 +87,18 @@ plugins:
 }
 
 Here is a description of the fields:
-name: the name of your plugin. This can be seen in the help command, and is used to enable and disable your plugin from the discord client.
-author: The author of the plugin (presumably you). This is seen in the help command again.
-description: A description of your plugin- this is again seen in the help command.
-url: A url- turns your author-name in the help command into a clickable url, to advertise whatever you want to as a developer.
-image: An image url- an image to accompany your plugin in the help command
-version: the version of your plugin- also seen in the help command
+name: the name of your plugin. This can be seen in the help command, and is used to enable and disable your plugin from the discord client. (required)
+author: The author of the plugin (presumably you). This is seen in the help command again. (not required)
+description: A description of your plugin- this is again seen in the help command. (not required)
+url: A url- turns your author-name in the help command into a clickable url, to advertise whatever you want to as a developer. (not required)
+image: An image url- an image to accompany your plugin in the help command (not required)
+version: the version of your plugin- also seen in the help command (not required)
 
-commands: an array containing command metadata- each object represents a command
-	label: the keyword used to activate the command as a discord user
-	description: a description of this command's functionality
-	usageinfo: a helpful message describing how to use the command
-	permission: can take several values, "operator", "admin", "staff", or "all". These determine who can access your command.
+commands: an array containing command metadata- each object represents a command (not required)
+	label: the keyword used to activate the command as a discord user (not required)
+	description: a description of this command's functionality (not required)
+	usageinfo: a helpful message describing how to use the command (not required)
+	permission: can take several values, "operator", "admin", "staff", or "all". These determine who can access your command. (not required, default is admin)
 	
 
 This plugin.json forms the metadata of your plugin. You're then ready to code actual java, the real workings of the plugin.
@@ -204,3 +204,52 @@ plugin.json:
 }
 
 This sets up a basic plugin with as of yet, no function.
+The GuildNetwork class then contains many methods to make creating your commands (or listeners) much much easier.
+We can use GuildNetwork.getPrefix(long guild_id) to get the prefix for whichever guild the command is used in, or
+the default prefix if none is chosen. We can also use Command.getLabel to get the label of the command we just
+created. The superconstructor sets all of the command metadata ready to be called by Command's methods in this way.
+We can use these two methods like this:
+
+public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+{
+	String msg = e.getMessage().getContentRaw();
+	String[] args = msg.split(" ");
+	
+	//this checks if the command is indeed used
+	if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong() + this.getLabel()))
+	{
+		e.getChannel().sendMessage("The example command was used!").queue()
+	}
+}
+
+The Command class also comes with a method to check if a member has permission to use the command, as opposed to doing
+this manually, with Command.hasPermission(Member m):
+
+public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+{
+	String msg = e.getMessage().getContentRaw();
+	String[] args = msg.split(" ");
+	
+	//this checks if the command is indeed used
+	if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong() + this.getLabel())
+		&& this.hasPermission(e.getMember())
+	{
+		e.getChannel().sendMessage("The example command was used and the user had permission!").queue()
+	}
+}
+
+The Command class has getter methods for all the metadata you assigned in plugin.json, which you can use for
+whatever you need. GuildNetwork also contains getters for all guild metadata, similar to GuildNetwork.getPrefix(long guild_id).
+
+When certain events occur, a user may also wish to send a formal log to the guild's designated modlogs channel.
+AMGN provides support for this. GuildNetwork.sendToModlogs(long guild_id, String message). This method sends a message
+with the standard AMGN modlogs format, to the modlogs of the specified guild.
+
+With these tools, you are able to make a plugin with AMGN. You can then compile this plugin as a non-executable jar.
+All plugins must be placed in a folder called "plugins", which should be located in the same directory as the network.
+This is where the network will look for plugins. By placing a plugin here and launching the network, the plugin will
+be automatically enabled. This plugin can also be enabled after launching the network by placing it in the plugins
+directory and using the enableplugin command. Plugins can be disabled similarly with the disableplugin command.
+
+These are the basics of using AMGN. For more help, please contact the author on discord (al~#1819) or look at the
+javadocs- have fun, and get coding!!

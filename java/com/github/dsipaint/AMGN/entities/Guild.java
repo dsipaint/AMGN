@@ -1,6 +1,5 @@
 package com.github.dsipaint.AMGN.entities;
 
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 import com.github.dsipaint.AMGN.main.Main;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -31,37 +30,37 @@ public class Guild
 		this.prefix = DEFAULT_PREFIX;
 	}
 
-	public String getPrefix()
+	public final String getPrefix()
 	{
 		return prefix;
 	}
 
-	public void setPrefix(String prefix)
+	public final void setPrefix(String prefix)
 	{
 		this.prefix = prefix;
 	}
 
-	public long getModlogs()
+	public final long getModlogs()
 	{
 		return modlogs;
 	}
 
-	public void setModlogs(long modlogs)
+	public final void setModlogs(long modlogs)
 	{
 		this.modlogs = modlogs;
 	}
 
-	public long getModrole()
+	public final long getModrole()
 	{
 		return modrole;
 	}
 
-	public void setModrole(long modrole)
+	public final void setModrole(long modrole)
 	{
 		this.modrole = modrole;
 	}
 
-	public long getGuild_id()
+	public final long getGuild_id()
 	{
 		return guild_id;
 	}

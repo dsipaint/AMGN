@@ -1,9 +1,9 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.running;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 
-public class Running extends Plugin
+public final class Running extends Plugin
 {
 	public void onEnable()
 	{

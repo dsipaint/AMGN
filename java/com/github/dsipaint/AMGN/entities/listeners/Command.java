@@ -8,9 +8,9 @@ import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -37,7 +37,7 @@ public abstract class Command extends ListenerAdapter
 				
 				//if this is the desired command within the metadata
 				if(command_obj.containsValue(label))
-				{
+				{	
 					this.label = label.toLowerCase(); //take the command data we need
 					this.usage = command_obj.getString("usage");
 					this.desc = command_obj.getString("description");
@@ -76,7 +76,7 @@ public abstract class Command extends ListenerAdapter
 	public abstract void onGuildMessageReceived(GuildMessageReceivedEvent e); //must inherit and implement this method for it to be a command
 	
 	//returns true if this member has permission to run this command, as specified in plugin.json
-	public boolean hasPermission(Member m)
+	public final boolean hasPermission(Member m)
 	{
 		//operators always have permission
 		for(long op : GuildNetwork.operators)
@@ -118,22 +118,22 @@ public abstract class Command extends ListenerAdapter
 		return false;
 	}
 	
-	public String getLabel()
+	public final String getLabel()
 	{
 		return label;
 	}
 
-	public String getUsage()
+	public final String getUsage()
 	{
 		return usage;
 	}
 
-	public String getDesc()
+	public final String getDesc()
 	{
 		return desc;
 	}
 
-	public GuildPermission getPerm()
+	public final GuildPermission getPerm()
 	{
 		return perm;
 	}

@@ -2,14 +2,14 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable
 
 import java.io.File;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class EnableListener extends Command
+public final class EnableListener extends Command
 {
 	public EnableListener(Plugin main)
 	{

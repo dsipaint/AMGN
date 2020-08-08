@@ -1,14 +1,14 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.running;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 import com.github.dsipaint.AMGN.main.Main;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class RunningListener extends Command
+public final class RunningListener extends Command
 {
 	public RunningListener(Plugin plugin)
 	{

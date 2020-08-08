@@ -17,15 +17,15 @@ import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
 import com.github.dsipaint.AMGN.entities.Guild;
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 import com.github.dsipaint.AMGN.main.Main;
 
 public class IOHandler
 {
 	
 	//reads data in from guilds.json, using default values if not found (see default values in GuildNetwork.java
-	public static HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException, IOException, DeserializationException
+	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException, IOException, DeserializationException
 	{
 		JsonArray json_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("guild_data");
 		HashMap<Long, Guild> guilds_out = new HashMap<Long, Guild>();
@@ -53,7 +53,7 @@ public class IOHandler
 		return guilds_out;
 	}
 	
-	public static List<Long> readOperators(String path) throws FileNotFoundException, DeserializationException, IOException
+	public static final List<Long> readOperators(String path) throws FileNotFoundException, DeserializationException, IOException
 	{
 		JsonArray ops_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("operators");
 		List<Long> ops_out = new ArrayList<Long>();
@@ -65,6 +65,11 @@ public class IOHandler
 		return ops_out;
 	}
 	
+	public static final String readToken(String path) throws FileNotFoundException, DeserializationException, IOException
+	{
+		return ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).getString("token");
+	}
+	
 	/*
 	 * writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
 	 * 
@@ -72,7 +77,7 @@ public class IOHandler
 	 * Json.simple may not also pretty-print, and this allows me to do that at
 	 * least, even if it might not be super efficient
 	 */
-	public static void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path)
+	public static final void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path)
 	{
 		try
 		{
@@ -80,6 +85,8 @@ public class IOHandler
 			Object[] guild_arr = guilds.values().toArray();
 			
 			pw.println("{");
+			
+			pw.println("\t\"token\": " + Main.jda.getToken() + ",");
 			
 			pw.print("\t\"operators\": [");
 			for(int i = 0; i < operators.size() - 1; i++)
@@ -109,7 +116,7 @@ public class IOHandler
 	}
 	
 	//returns true if a valid plugin jar has this plugin name
-	public static boolean pluginExists(String name)
+	public static final boolean pluginExists(String name)
 	{
 		//a list of only the jars found directly in the plugins directory
 		File[] plugins_directory = new File(GuildNetwork.PLUGIN_PATH).listFiles((path) ->
@@ -131,7 +138,7 @@ public class IOHandler
 	}
 	
 	//if a plugin with the given path is ENABLED currently, return true
-	public static boolean isEnabled(Plugin plugin)
+	public static final boolean isEnabled(Plugin plugin)
 	{
 		//list of active plugins
 		if(Main.plugin_listeners.containsKey(plugin))
@@ -141,7 +148,7 @@ public class IOHandler
 	}
 	
 	//return a Plugin representation of a valid path
-	public static Plugin getPluginObjectFromPath(String path)
+	public static final Plugin getPluginObjectFromPath(String path)
 	{
 		try
 		{

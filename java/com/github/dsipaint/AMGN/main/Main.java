@@ -10,6 +10,7 @@ import org.json.simple.DeserializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
@@ -30,14 +31,28 @@ public class Main
 	{
 		//SETUP
 		logger.info("Commencing setup...");
+		String token = "";
+		try
+		{
+			logger.info("Reading network settings...");
+			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.json
+			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.json
+			token = IOHandler.readToken(GuildNetwork.NETWORKINFO_PATH); //read token from network.json
+		}
+		catch (IOException | DeserializationException e)
+		{
+			e.printStackTrace();
+		}
+		
 		logger.info("Initialising bot account...");
 		try
 		{
-			jda = new JDABuilder(AccountType.BOT).setToken("NjQyODM5OTg5NjQxNjc0NzUy.XccxZA.EdGDxj951_02tPadBazrugUQhfU").build();
+			jda = new JDABuilder(AccountType.BOT).setToken(token).build();
 		}
 		catch (LoginException e1)
 		{
 			e1.printStackTrace();
+			System.exit(0); //exit program if invalid token
 		}
 		
 		try
@@ -47,17 +62,6 @@ public class Main
 		catch (InterruptedException e1)
 		{
 			e1.printStackTrace();
-		}
-		
-		try
-		{
-			logger.info("Reading network settings...");
-			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.json
-			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.json
-		}
-		catch (IOException | DeserializationException e)
-		{
-			e.printStackTrace();
 		}
 		
 		logger.info("initialising listener cache...");
@@ -86,6 +90,13 @@ public class Main
 				{
 					//look for the actual plugin class here (if it exists)
 					Plugin p = IOHandler.getPluginObjectFromPath(file.getPath());
+					
+					//plugins must have a name
+					if(p.getName() == null)
+					{
+						logger.info("Plugin " + file.getPath() + " has no name, skipping...");
+						continue;
+					}
 					
 					//enable these classes/plugins with GuildNetwork.enablePlugin
 					if(GuildNetwork.enablePlugin(p))

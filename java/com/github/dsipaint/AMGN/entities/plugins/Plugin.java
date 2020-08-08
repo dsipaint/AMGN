@@ -7,7 +7,7 @@ import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
-import com.github.dsipaint.AMGN.main.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,7 +20,7 @@ public abstract class Plugin
 	
 	
 	//NOTE: it is possible to tidy these methods up a bit and make them more efficient
-	public String getName()
+	public final String getName()
 	{
 		try
 		{
@@ -35,7 +35,7 @@ public abstract class Plugin
 		return null;
 	}
 	
-	public String getVersion()
+	public final String getVersion()
 	{
 		try
 		{
@@ -50,7 +50,7 @@ public abstract class Plugin
 		return null;
 	}
 	
-	public String getAuthor()
+	public final String getAuthor()
 	{
 		try
 		{
@@ -65,7 +65,7 @@ public abstract class Plugin
 		return null;
 	}
 	
-	public String getUrl()
+	public final String getUrl()
 	{
 		try
 		{
@@ -80,7 +80,7 @@ public abstract class Plugin
 		return null;
 	}
 	
-	public String getImageUrl()
+	public final String getImageUrl()
 	{
 		try
 		{
@@ -95,7 +95,7 @@ public abstract class Plugin
 		return null;
 	}
 	
-	public String getDescription()
+	public final String getDescription()
 	{
 		try
 		{
@@ -110,7 +110,7 @@ public abstract class Plugin
 		return null;
 	}
 	
-	public final MessageEmbed getDisplayEmbed()
+	public MessageEmbed getDisplayEmbed()
 	{
 		return new EmbedBuilder()
 				.setTitle(this.getName() + " " + this.getVersion())

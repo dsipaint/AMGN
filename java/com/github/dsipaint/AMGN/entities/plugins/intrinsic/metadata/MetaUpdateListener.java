@@ -1,16 +1,16 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata;
 
 import com.github.dsipaint.AMGN.entities.Guild;
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class MetaUpdateListener extends Command
+public final class MetaUpdateListener extends Command
 {
 	public MetaUpdateListener(Plugin plugin)
 	{

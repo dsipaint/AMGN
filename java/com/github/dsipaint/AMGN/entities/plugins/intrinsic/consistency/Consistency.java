@@ -1,9 +1,9 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 
-public class Consistency extends Plugin
+public final class Consistency extends Plugin
 {
 	public void onEnable()
 	{

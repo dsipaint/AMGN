@@ -1,14 +1,14 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork;
 
 import com.github.dsipaint.AMGN.entities.Guild;
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.GuildNetwork;
 import com.github.dsipaint.AMGN.main.Main;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class CloseListener extends Command
+public final class CloseListener extends Command
 {
 	public CloseListener(Plugin plugin)
 	{
