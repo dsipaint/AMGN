@@ -1,0 +1,16 @@
+{
+	"name": "Help",
+	"version": "0.0.1",
+	"author": "al~",
+	"url": "https://github.com/dsipaint",
+	"image": "https://cdn.discordapp.com/avatars/475859944101380106/7996d6a5b0db135563981a4000c38e98.png",
+	"description": "Pulls command metadata to provide information about a command",
+	"commands": [
+		{
+			"label": "help",
+			"description": "Used to give info on all or one command!",
+			"usageinfo": "type ^help on its own, or ^help {command/plugin} for help with a particular command or plugin",
+			"permission": "all"
+		}
+	]
+}

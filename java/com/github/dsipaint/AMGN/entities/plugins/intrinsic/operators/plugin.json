@@ -1,0 +1,22 @@
+{
+	"name": "operatorcontrol",
+	"author": "al~",
+	"description": "Allows network operators to be added and removed with ease",
+	"url": "https://github.com/dsipaint",
+	"image": "https://cdn.discordapp.com/avatars/475859944101380106/7996d6a5b0db135563981a4000c38e98.png",
+	"version": "0.0.1",
+	"commands":[
+		{
+			"label": "setoperator",
+			"description": "Use to add a member as an operator of the network",
+			"usageinfo": "^setoperator {user id}",
+			"permission": "operator"
+		},
+		{
+			"label": "removeoperator",
+			"description": "Use to remove an operator of the network",
+			"usageinfo": "^removeoperator {user id}",
+			"permission": "operator"
+		}
+	]
+}

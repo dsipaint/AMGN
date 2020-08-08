@@ -1,0 +1,8 @@
+{
+	"name": "ConsistencyPlugin",
+	"author": "al~",
+	"version": "0.0.1",
+	"url": "https://github.com/dsipaint",
+	"image": "https://cdn.discordapp.com/avatars/475859944101380106/7996d6a5b0db135563981a4000c38e98.png",
+	"description": "Ensures metadata consistency if modroles/modlog channels are deleted"
+}
