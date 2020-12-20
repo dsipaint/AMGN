@@ -51,17 +51,16 @@ required fields, in the above format, or the network will close. Otherwise, you 
 simply running the jar file as normal.
 
 PLUGINS:
-Included in this API are intrinsic plugins, adding quality-of-life commands and features that a plugin outside of this
+Included in this API are intrinsic features (formerly intrinsic plugins), adding quality-of-life commands and features that a plugin outside of this
 library may struggle to facilitate for. This includes handling external plugins and the network metadata. For more info,
 use the help command in a guild with your network's bot in, when you launch the network with no external plugins.
-I have hinted at intrinsic and external plugins. As a developer, you are able to make external plugins for this network,
 as is the entire point of this project. This jar not only runs the network, but contains the API to make a plugin. Here
 I will teach you how to do this.
 CREATING A PLUGIN:
 Firstly, make sure this jar is in your classpath. There are two things that every plugin in the system needs:
 an entrypoint and metadata. The metadata follows a similar format to network.json from above. It must be stored in a file
-called plugin.json, in the main directory of your jar. As an example, here is the plugin.json from one of the intrinsic
-plugins:
+called plugin.json, in the main directory of your jar. As an example, here is the plugin.json from one of the outdated intrinsic
+"plugins":
 
 {
 	"name": "updatemeta",
