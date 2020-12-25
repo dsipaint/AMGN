@@ -3,25 +3,22 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
-import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.main.Main;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public final class CloseListener extends Command
-{
-	public CloseListener(Plugin plugin)
-	{
-		super(plugin, "closenetwork");
-	}
-	
+public final class CloseListener extends ListenerAdapter
+{	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		
 		//^closenetwork
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.CLOSE.getLabel())
+				&& Command.hasPermission(e.getMember(), DefaultCommand.CLOSE.getGuildPermission()))
 		{
 			//no permission handling for now
 			

@@ -1,25 +1,20 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
-import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public final class OpRemoveListener extends Command
+public final class OpRemoveListener extends ListenerAdapter
 {
-	public OpRemoveListener(Plugin plugin)
-	{
-		super(plugin, "removeoperator");
-	}
 	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()) && this.hasPermission(e.getMember()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + "removeoperator") && GuildNetwork.operators.contains(e.getMember().getIdLong()))
 		{
 			//valid user id and is a real user
 			if(args[1].matches("\\d{18}") && e.getGuild().getMemberById(args[1]) != null)

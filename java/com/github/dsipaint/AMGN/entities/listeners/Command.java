@@ -27,7 +27,7 @@ public abstract class Command extends ListenerAdapter
 		try
 		{
 			JsonObject plugin_metadata = (JsonObject) Jsoner.deserialize(
-					new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+					new InputStreamReader(getClass().getResourceAsStream("/plugin.json")));
 			
 			JsonArray command_metadata = (JsonArray) plugin_metadata.get("commands");
 			
@@ -39,7 +39,7 @@ public abstract class Command extends ListenerAdapter
 				if(command_obj.containsValue(label))
 				{	
 					this.label = label.toLowerCase(); //take the command data we need
-					this.usage = command_obj.getString("usage");
+					this.usage = command_obj.getString("usageinfo");
 					this.desc = command_obj.getString("description");
 					
 					switch(command_obj.getString("permission"))
@@ -86,6 +86,49 @@ public abstract class Command extends ListenerAdapter
 		}
 		
 		switch(this.perm)
+		{
+			
+			case OPERATOR:
+				break;
+				
+			case ADMIN:
+				if(m.hasPermission(Permission.ADMINISTRATOR))
+					return true;
+				
+				return false;
+				
+			case STAFF:
+				if(m.hasPermission(Permission.ADMINISTRATOR))
+					return true;
+				
+				//in this case no one can be staff
+				if(GuildNetwork.getModrole(m.getGuild().getIdLong()) == -1)
+					return false;
+				
+				//if member has modrole
+				if(m.getRoles().contains(m.getGuild().getRoleById(GuildNetwork.getModrole(m.getGuild().getIdLong()))))
+					return true;
+				
+				return false;
+				
+			case ALL:
+				return true;
+		}
+		
+		return false;
+	}
+	
+	//returns true if this member has permission to run this command, as specified in plugin.json
+	public static final boolean hasPermission(Member m, GuildPermission permission)
+	{
+		//operators always have permission
+		for(long op : GuildNetwork.operators)
+		{
+			if(op == m.getIdLong())
+				return true;
+		}
+		
+		switch(permission)
 		{
 			
 			case OPERATOR:

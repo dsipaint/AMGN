@@ -2,21 +2,15 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
-import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public final class MetaUpdateListener extends Command
-{
-	public MetaUpdateListener(Plugin plugin)
-	{
-		super(plugin, "updatemetainfo");
-	}
-	
+public final class MetaUpdateListener extends ListenerAdapter
+{	
 	//allows the changing of prefix, modlogs and modrole
 	//if no guild metadata is found, this command also creates a guild object with default values
 	//before using the command, and then writes this back to guilds.json
@@ -27,7 +21,7 @@ public final class MetaUpdateListener extends Command
 		String[] args = msg.split(" ");
 		
 		//^updatemetainfo
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + "updatemetainfo"))
 		{
 			if(args.length <= 2)
 				return;

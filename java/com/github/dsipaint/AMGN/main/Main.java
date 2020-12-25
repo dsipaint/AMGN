@@ -12,6 +12,17 @@ import org.slf4j.LoggerFactory;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModroleListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.HelpListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaUpdateListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaViewListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpAddListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpRemoveListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.AccountType;
@@ -23,6 +34,8 @@ public class Main
 {
 	public static JDA jda;
 	static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
+	
+	//TODO: add console command support
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
 	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners;
@@ -52,16 +65,10 @@ public class Main
 		catch (LoginException e1)
 		{
 			e1.printStackTrace();
+			if(jda != null)
+				jda.shutdownNow();
+			
 			System.exit(0); //exit program if invalid token
-		}
-		
-		try
-		{
-			jda.awaitReady();
-		}
-		catch (InterruptedException e1)
-		{
-			e1.printStackTrace();
 		}
 		
 		logger.info("initialising listener cache...");
@@ -89,7 +96,7 @@ public class Main
 				for(File file : plugins_directory)
 				{
 					//look for the actual plugin class here (if it exists)
-					Plugin p = IOHandler.getPluginObjectFromPath(file.getPath());
+					Plugin p = IOHandler.getPluginObjectFromJar(file);
 					
 					//plugins must have a name
 					if(p.getName() == null)
@@ -112,35 +119,32 @@ public class Main
 		}
 		
 		
-		logger.info("Implementing intrinsic plugins..."); //prebuilt commands/plugins of the library go here
+		logger.info("Implementing intrinsic features..."); //prebuilt commands/features of the library go here
 
-		//help plugin
-		Plugin helpinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.Help");
-		GuildNetwork.enablePlugin(helpinstance);
+		//help feature
+		jda.addEventListener(new HelpListener());
 		
 		//enable/disable plugin
-		Plugin enabledisableinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ControlEnableDisable");
-		GuildNetwork.enablePlugin(enabledisableinstance);
+		jda.addEventListener(new EnableListener());
+		jda.addEventListener(new DisableListener());
 		
 		//closenetwork plugin
-		Plugin closenetworkinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseNetwork");
-		GuildNetwork.enablePlugin(closenetworkinstance);
+		jda.addEventListener(new CloseListener());
 		
 		//metadata plugin
-		Plugin metadatainstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.Metadata");
-		GuildNetwork.enablePlugin(metadatainstance);
+		jda.addEventListener(new MetaViewListener());
+		jda.addEventListener(new MetaUpdateListener());
 		
 		//isrunning plugin
-		Plugin isrunninginstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.Running");
-		GuildNetwork.enablePlugin(isrunninginstance);
+		jda.addEventListener(new RunningListener());
 		
 		//consistency plugin
-		Plugin consistencyinstance = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.Consistency");
-		GuildNetwork.enablePlugin(consistencyinstance);
+		jda.addEventListener(new ModlogsListener());
+		jda.addEventListener(new ModroleListener());
 		
 		//operators plugin
-		Plugin operatorsplugin = IOHandler.getPluginObjectFromPath("com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.Operators");
-		GuildNetwork.enablePlugin(operatorsplugin);
+		jda.addEventListener(new OpAddListener());
+		jda.addEventListener(new OpRemoveListener());
 		
 		logger.info("Finished setup.");
 		//END SETUP

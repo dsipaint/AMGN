@@ -13,7 +13,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public abstract class Plugin
-{	
+{
+	static final String RESOURCE_PATH = "/plugin.json"; //absolute path inside jar
+	
 	public abstract void onEnable();
 	
 	public abstract void onDisable();
@@ -24,7 +26,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
 			return metadata.getString("name");
 		}
 		catch (DeserializationException | IOException e)
@@ -39,7 +41,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
 			return metadata.getString("version");
 		}
 		catch (DeserializationException | IOException e)
@@ -54,7 +56,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
 			return metadata.getString("author");
 		}
 		catch (DeserializationException | IOException e)
@@ -69,7 +71,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
 			return metadata.getString("url");
 		}
 		catch (DeserializationException | IOException e)
@@ -84,7 +86,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
 			return metadata.getString("image");
 		}
 		catch (DeserializationException | IOException e)
@@ -99,7 +101,7 @@ public abstract class Plugin
 	{
 		try
 		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream("plugin.json")));
+			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
 			return metadata.getString("description");
 		}
 		catch (DeserializationException | IOException e)

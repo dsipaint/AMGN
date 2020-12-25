@@ -6,10 +6,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
@@ -152,13 +158,54 @@ public class IOHandler
 	{
 		try
 		{
-			return (Plugin) Class.forName(path).newInstance();
+			return (Plugin) Class.forName(path).getDeclaredConstructor().newInstance();
 		}
-		catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+		catch (InstantiationException | IllegalAccessException | ClassNotFoundException |
+				IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
 		{
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	//quick hack/fix to get actual plugin instance from jar
+	public static final Plugin getPluginObjectFromJar(File file) throws IOException
+	{
+		JarFile jar = new JarFile(file.getPath());
+		Enumeration<JarEntry> entries = jar.entries();
+		
+		URL[] url = {new URL("jar:file:" + file.getAbsolutePath() + "!/")};
+		URLClassLoader loader = URLClassLoader.newInstance(url);
+		
+		while(entries.hasMoreElements())
+		{
+			JarEntry currententry = entries.nextElement();
+			
+			if(currententry.isDirectory() || !currententry.getName().endsWith(".class"))
+				continue;
+			
+			String classname = currententry.getName().replace(".class", "")
+					.replace("/", ".");
+			
+			try
+			{
+				Object possibleclass = loader.loadClass(classname).getDeclaredConstructor().newInstance();
+				
+				if(possibleclass instanceof Plugin)
+				{
+					jar.close();
+					return (Plugin) possibleclass;
+				}
+			}
+			catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+					IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		jar.close();
 		return null;
 	}
 }

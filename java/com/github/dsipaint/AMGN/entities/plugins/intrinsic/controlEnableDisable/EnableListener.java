@@ -4,17 +4,15 @@ import java.io.File;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public final class EnableListener extends Command
+public final class EnableListener extends ListenerAdapter
 {
-	public EnableListener(Plugin main)
-	{
-		super(main, "enable");
-	}
 	
 	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
 	{
@@ -22,7 +20,8 @@ public final class EnableListener extends Command
 		String[] args = msg.split(" ");
 		
 		//^enable
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.ENABLE.getLabel())
+				&& Command.hasPermission(e.getMember(), DefaultCommand.ENABLE.getGuildPermission()))
 		{
 			if(args.length == 1)
 				return;
