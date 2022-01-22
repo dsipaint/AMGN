@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class RunningListener extends ListenerAdapter
-{	
+{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
@@ -31,7 +31,7 @@ public final class RunningListener extends ListenerAdapter
 			e.getChannel().sendMessage(eb.build()).queue();
 		}
 	}
-	
+
 	private void appendEmbed(EmbedBuilder eb, String msg)
 	{
 		eb = eb.appendDescription(msg);

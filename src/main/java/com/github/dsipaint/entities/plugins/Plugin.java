@@ -3,11 +3,11 @@ package com.github.dsipaint.AMGN.entities.plugins;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
+
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-
-import com.github.dsipaint.AMGN.entities.GuildNetwork;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -21,6 +21,10 @@ public abstract class Plugin
 	public abstract void onDisable();
 	
 	
+	
+	/** 
+	 * @return String name of the plugin
+	 */
 	//NOTE: it is possible to tidy these methods up a bit and make them more efficient
 	public final String getName()
 	{
@@ -37,6 +41,10 @@ public abstract class Plugin
 		return null;
 	}
 	
+	
+	/** 
+	 * @return String listed version of the plugin
+	 */
 	public final String getVersion()
 	{
 		try
@@ -52,6 +60,10 @@ public abstract class Plugin
 		return null;
 	}
 	
+	
+	/** 
+	 * @return String listed author of the plugin
+	 */
 	public final String getAuthor()
 	{
 		try
@@ -67,6 +79,10 @@ public abstract class Plugin
 		return null;
 	}
 	
+	
+	/** 
+	 * @return String listed url for the plugin
+	 */
 	public final String getUrl()
 	{
 		try
@@ -82,6 +98,10 @@ public abstract class Plugin
 		return null;
 	}
 	
+	
+	/** 
+	 * @return String listed image url for the plugin
+	 */
 	public final String getImageUrl()
 	{
 		try
@@ -97,6 +117,10 @@ public abstract class Plugin
 		return null;
 	}
 	
+	
+	/** 
+	 * @return String description of the plugin
+	 */
 	public final String getDescription()
 	{
 		try
@@ -112,6 +136,10 @@ public abstract class Plugin
 		return null;
 	}
 	
+	
+	/** 
+	 * @return MessageEmbed embed displaying all info of the plugin
+	 */
 	public MessageEmbed getDisplayEmbed()
 	{
 		return new EmbedBuilder()

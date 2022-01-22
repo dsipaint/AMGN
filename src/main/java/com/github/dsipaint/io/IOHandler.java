@@ -17,20 +17,28 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.json.simple.DeserializationException;
-import org.json.simple.JsonArray;
-import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
-
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.main.AMGN;
 
+import org.json.simple.DeserializationException;
+import org.json.simple.JsonArray;
+import org.json.simple.JsonObject;
+import org.json.simple.Jsoner;
+
 public class IOHandler
 {
 	
-	//reads data in from guilds.json, using default values if not found (see default values in GuildNetwork.java
+	
+	/** 
+	 * @param path a path to the network.json file
+	 * @return HashMap<Long, Guild> a map of guild ids with a Guild object containing their network data
+	 * @throws FileNotFoundException if network.json is missing
+	 * @throws IOException
+	 * @throws DeserializationException if network.json is poorly-written
+	 */
+	//reads data in from network.json, using default values if not found (see default values in GuildNetwork.java
 	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException, IOException, DeserializationException
 	{
 		JsonArray json_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("guild_data");
@@ -41,7 +49,6 @@ public class IOHandler
 			JsonObject guild = (JsonObject) obj;
 			
 			/*objects parsed from the jsonarray that do not exist have a default value of null. As for primitive values, 
-			 * the toString method of the wrapper class is called, this causes a nullpointerexception if searching for
 			 * a primitive value which does not exist e.g. guild.getLong("modrole"), if no "modrole" has been specified
 			 * in that part of the json file. Therefore we must use methods such as getLongOrDefault for these cases,
 			 * to account for the fact that the values may not be there:
@@ -59,6 +66,14 @@ public class IOHandler
 		return guilds_out;
 	}
 	
+	
+	/** 
+	 * @param path
+	 * @return List<Long>
+	 * @throws FileNotFoundException
+	 * @throws DeserializationException
+	 * @throws IOException
+	 */
 	public static final List<Long> readOperators(String path) throws FileNotFoundException, DeserializationException, IOException
 	{
 		JsonArray ops_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("operators");
@@ -71,11 +86,25 @@ public class IOHandler
 		return ops_out;
 	}
 	
+	
+	/** 
+	 * @param path
+	 * @return String
+	 * @throws FileNotFoundException
+	 * @throws DeserializationException
+	 * @throws IOException
+	 */
 	public static final String readToken(String path) throws FileNotFoundException, DeserializationException, IOException
 	{
 		return ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).getString("token");
 	}
 	
+	
+	/** 
+	 * @param guilds
+	 * @param operators
+	 * @param path
+	 */
 	/*
 	 * writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
 	 * 
@@ -121,6 +150,11 @@ public class IOHandler
 		}
 	}
 	
+	
+	/** 
+	 * @param name
+	 * @return boolean
+	 */
 	//returns true if a valid plugin jar has this plugin name (if the jar physically exists, rather than if it is loaded in)
 	public static final boolean pluginExists(String name)
 	{
@@ -149,6 +183,11 @@ public class IOHandler
 		return false;
 	}
 	
+	
+	/** 
+	 * @param plugin
+	 * @return boolean
+	 */
 	//if a plugin with the given path is ENABLED currently, return true
 	public static final boolean isEnabled(Plugin plugin)
 	{
@@ -159,6 +198,11 @@ public class IOHandler
 		return false;
 	}
 	
+	
+	/** 
+	 * @param path
+	 * @return Plugin
+	 */
 	//return a Plugin representation of a valid path (i.e. an internal path such as com.github.dsipaint.io.IOHandler)
 	public static final Plugin getPluginObjectFromPath(String path)
 	{
@@ -175,6 +219,12 @@ public class IOHandler
 		return null;
 	}
 	
+	
+	/** 
+	 * @param file
+	 * @return Plugin
+	 * @throws IOException
+	 */
 	//quick hack/fix to get actual plugin instance from jar
 	public static final Plugin getPluginObjectFromJar(File file) throws IOException
 	{

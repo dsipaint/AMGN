@@ -2,18 +2,17 @@ package com.github.dsipaint.AMGN.entities.listeners;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Member;
+
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.entities.GuildPermission;
 
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
-import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.GuildPermission;
-import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -75,6 +74,11 @@ public abstract class Command extends ListenerAdapter
 	
 	public abstract void onGuildMessageReceived(GuildMessageReceivedEvent e); //must inherit and implement this method for it to be a command
 	
+	
+	/** 
+	 * @param m member to test permissions for
+	 * @return boolean true if the member can run this command, false otherwise
+	 */
 	//returns true if this member has permission to run this command, as specified in plugin.json
 	public final boolean hasPermission(Member m)
 	{
@@ -118,7 +122,12 @@ public abstract class Command extends ListenerAdapter
 		return false;
 	}
 	
-	//returns true if this member has permission to run this command, as specified in plugin.json
+	
+	/** 
+	 * @param m member to check permissions for
+	 * @param permission permission to check if the member has
+	 * @return boolean true if the member has permission to run this command, as specified in plugin.json, false otherwise
+	 */
 	public static final boolean hasPermission(Member m, GuildPermission permission)
 	{
 		//operators always have permission
@@ -161,21 +170,37 @@ public abstract class Command extends ListenerAdapter
 		return false;
 	}
 	
+	
+	/** 
+	 * @return String
+	 */
 	public final String getLabel()
 	{
 		return label;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	public final String getUsage()
 	{
 		return usage;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	public final String getDesc()
 	{
 		return desc;
 	}
 
+	
+	/** 
+	 * @return GuildPermission
+	 */
 	public final GuildPermission getPerm()
 	{
 		return perm;

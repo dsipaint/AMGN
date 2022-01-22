@@ -121,7 +121,7 @@ public final class HelpListener extends ListenerAdapter
 			});
 		}
 	}
-	
+
 	private MessageEmbed[] returnFormattedEmbedList(String desc)
 	{
 		int embednum = (desc.length()/MessageEmbed.TEXT_MAX_LENGTH) + 1; //how many embeds are needed, simple maths to find out

@@ -30,43 +30,75 @@ public class Guild
 		this.prefix = DEFAULT_PREFIX;
 	}
 
+	
+	/** 
+	 * @return String prefix Guild prefix
+	 */
 	public final String getPrefix()
 	{
 		return prefix;
 	}
 
+	
+	/** 
+	 * @param prefix Guild prefix
+	 */
 	public final void setPrefix(String prefix)
 	{
 		this.prefix = prefix;
 	}
 
+	
+	/** 
+	 * @return long modlogs channel id
+	 */
 	public final long getModlogs()
 	{
 		return modlogs;
 	}
 
+	
+	/** 
+	 * @param modlogs channel id
+	 */
 	public final void setModlogs(long modlogs)
 	{
 		this.modlogs = modlogs;
 	}
 
+	
+	/** 
+	 * @return long modrole role id
+	 */
 	public final long getModrole()
 	{
 		return modrole;
 	}
 
+	
+	/** 
+	 * @param modrole role id
+	 */
 	public final void setModrole(long modrole)
 	{
 		this.modrole = modrole;
 	}
 
+	
+	/** 
+	 * @return long id of the guild
+	 */
 	public final long getGuild_id()
 	{
 		return guild_id;
 	}
 	
 	
-	//returns json string for this object
+	
+	/** 
+	 * @param offset String padding for pretty-printing the json with
+	 * @return String json pretty-printed string of the Guild object
+	 */
 	public String asJson(String offset)
 	{
 		String json = offset + "{\n";
@@ -78,6 +110,10 @@ public class Guild
 		return json;
 	}
 	
+	
+	/** 
+	 * @return MessageEmbed
+	 */
 	public MessageEmbed asEmbed()
 	{
 		net.dv8tion.jda.api.entities.Guild guild = AMGN.bot.getGuildById(this.getGuild_id());
