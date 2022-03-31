@@ -129,7 +129,7 @@ this command could then not be found in the intrinsic help command. For formal c
 separately to listeners, using GuildNetwork.registerCommand(Plugin p, Command c). The plugin parameter is the same as for
 registering a listener- it refers to this plugin instance i.e. "this" in java syntax. The command parameter must be a
 Command object, which is again found in the API. The Command class is abstract, and is meant to be extended before use.
-create a class which extends this class. It must inherit the JDA method ListenerAdapter.onGuildMessageReceived(GuildMessageReceivedEvent)
+create a class which extends this class. It must inherit the JDA method ListenerAdapter.onMessageReceived(MessageReceivedEvent)
 the constructor of this class must also call its superclass constructor, which accepts a plugin instance (again, the plugin object we registered
 this listener with), and a string representing the label parameter of the command in the plugin.json file. From here, the constructor
 will ensure that this listener inherits the correct command metadata from plugin.json. As for listeners, commands are automatically
@@ -186,7 +186,7 @@ public class ExampleCommand extends Command
 		super(plugin, "example"); //the command label is "example" in plugin.json
 	}
 	
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		System.out.println("Command code goes here as in JDA");
 	}
@@ -218,31 +218,31 @@ the default prefix if none is chosen. We can also use Command.getLabel to get th
 created. The superconstructor sets all of the command metadata ready to be called by Command's methods in this way.
 We can use these two methods like this:
 ```java
-public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+public void onMessageReceived(MessageReceivedEvent e)
 {
 	String msg = e.getMessage().getContentRaw();
 	String[] args = msg.split(" ");
 	
 	//this checks if the command is indeed used
-	if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong() + this.getLabel()))
+	if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()))
 	{
-		e.getChannel().sendMessage("The example command was used!").queue()
+		e.getChannel().sendMessage("The example command was used!").queue();
 	}
 }
 ```
 The Command class also comes with a method to check if a member has permission to use the command, as opposed to doing
 this manually, with Command.hasPermission(Member m):
 ```java
-public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+public void onMessageReceived(MessageReceivedEvent e)
 {
 	String msg = e.getMessage().getContentRaw();
 	String[] args = msg.split(" ");
 	
 	//this checks if the command is indeed used
-	if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong() + this.getLabel())
-		&& this.hasPermission(e.getMember())
+	if(args[0].equalsIgnoreCase((GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel())
+		&& this.hasPermission(e.getMember()))
 	{
-		e.getChannel().sendMessage("The example command was used and the user had permission!").queue()
+		e.getChannel().sendMessage("The example command was used and the user had permission!").queue();
 	}
 }
 ```
