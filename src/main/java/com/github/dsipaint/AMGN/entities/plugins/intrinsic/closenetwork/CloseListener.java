@@ -6,12 +6,12 @@ import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.main.AMGN;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class CloseListener extends ListenerAdapter
 {	
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");

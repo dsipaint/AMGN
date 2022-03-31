@@ -1,4 +1,4 @@
-package com.github.dsipaint.entities;
+package com.github.dsipaint.AMGN.entities;
 
 public enum GuildPermission
 {

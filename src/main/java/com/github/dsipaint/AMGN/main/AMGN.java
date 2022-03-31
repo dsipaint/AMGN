@@ -25,6 +25,7 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListen
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import org.json.simple.DeserializationException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.dv8tion.jda.api.JDA;

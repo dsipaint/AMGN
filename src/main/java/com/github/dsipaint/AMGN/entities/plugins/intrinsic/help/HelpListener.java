@@ -7,12 +7,12 @@ import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class HelpListener extends ListenerAdapter
 {
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
@@ -50,7 +50,7 @@ public final class HelpListener extends ListenerAdapter
 				
 				//produce the formatted list of embeds and display them
 				for(MessageEmbed embed : returnFormattedEmbedList(commandlist.toString()))
-					e.getChannel().sendMessage(embed).queue();
+					e.getChannel().sendMessageEmbeds(embed).queue();
 				
 				return;
 			}
@@ -71,7 +71,7 @@ public final class HelpListener extends ListenerAdapter
 						eb = eb.addField("Author:", "al~", true);
 						eb = eb.addField("Plugin:", "AMGN-inbuilt", true);
 						
-						e.getChannel().sendMessage(eb.build()).queue();
+						e.getChannel().sendMessageEmbeds(eb.build()).queue();
 				}
 					
 			}
@@ -82,7 +82,7 @@ public final class HelpListener extends ListenerAdapter
 				//display all plugins with commands with the specified name
 				if(plugin.getName().equalsIgnoreCase(args[1]))
 				{
-					e.getChannel().sendMessage(plugin.getDisplayEmbed()).queue();
+					e.getChannel().sendMessageEmbeds(plugin.getDisplayEmbed()).queue();
 					
 					//list all commands from this plugin
 					StringBuilder plugin_commands = new StringBuilder();
@@ -94,7 +94,7 @@ public final class HelpListener extends ListenerAdapter
 					
 					
 					for(MessageEmbed embed : returnFormattedEmbedList(plugin_commands.toString()))
-						e.getChannel().sendMessage(embed).queue();
+						e.getChannel().sendMessageEmbeds(embed).queue();
 					
 					return;
 				}
@@ -114,7 +114,7 @@ public final class HelpListener extends ListenerAdapter
 						eb = eb.addField("Author:", plugin.getAuthor(), true);
 						eb = eb.addField("Plugin:", plugin.getName(), true);
 						
-						e.getChannel().sendMessage(eb.build()).queue();
+						e.getChannel().sendMessageEmbeds(eb.build()).queue();
 						return;
 					}
 				});

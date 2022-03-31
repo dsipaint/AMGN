@@ -6,12 +6,12 @@ import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class RunningListener extends ListenerAdapter
 {
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
@@ -28,7 +28,7 @@ public final class RunningListener extends ListenerAdapter
 				appendEmbed(eb, plugin.getName() + " " + plugin.getVersion() + " (written by " + plugin.getAuthor() + ")\n");
 			});
 			
-			e.getChannel().sendMessage(eb.build()).queue();
+			e.getChannel().sendMessageEmbeds(eb.build()).queue();
 		}
 	}
 

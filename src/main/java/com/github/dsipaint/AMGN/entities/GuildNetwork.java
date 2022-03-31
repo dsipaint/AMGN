@@ -1,17 +1,17 @@
 package com.github.dsipaint.AMGN.entities;
-import java.lang.reflect.Member;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.management.relation.Role;
 
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildNetwork
@@ -180,7 +180,7 @@ public class GuildNetwork
 		if(modlogs == Guild.DEFAULT_ID)
 			return;
 		
-		AMGN.bot.getTextChannelById(modlogs).sendMessage(new EmbedBuilder()
+		AMGN.bot.getTextChannelById(modlogs).sendMessageEmbeds(new EmbedBuilder()
 				.setTitle("AMGN")
 				.setColor(GREEN_EMBED_COLOUR)
 				.setDescription(msg)

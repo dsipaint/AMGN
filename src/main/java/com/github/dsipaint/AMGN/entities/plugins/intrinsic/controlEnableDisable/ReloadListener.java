@@ -6,14 +6,14 @@ import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.main.AMGN;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ReloadListener extends ListenerAdapter
 {
 	//for ^reload and ^reloadall
 	
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String[] args = e.getMessage().getContentRaw().split(" ");
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RELOAD.getLabel())

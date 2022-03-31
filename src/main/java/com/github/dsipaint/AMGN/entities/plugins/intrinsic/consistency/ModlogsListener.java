@@ -4,12 +4,12 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
-import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent;
+import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class ModlogsListener extends ListenerAdapter
 {
-	public void onTextChannelDelete(TextChannelDeleteEvent e)
+	public void onChannelDelete(ChannelDeleteEvent e)
 	{
 		long id = e.getChannel().getIdLong();
 		

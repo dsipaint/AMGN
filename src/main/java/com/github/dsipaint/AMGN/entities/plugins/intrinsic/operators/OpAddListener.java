@@ -3,12 +3,12 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class OpAddListener extends ListenerAdapter
 {	
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");

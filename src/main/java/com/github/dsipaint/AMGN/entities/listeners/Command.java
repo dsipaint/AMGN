@@ -2,18 +2,18 @@ package com.github.dsipaint.AMGN.entities.listeners;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Member;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.entities.GuildPermission;
-
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public abstract class Command extends ListenerAdapter
@@ -72,7 +72,7 @@ public abstract class Command extends ListenerAdapter
 		}
 	}
 	
-	public abstract void onGuildMessageReceived(GuildMessageReceivedEvent e); //must inherit and implement this method for it to be a command
+	public abstract void MessageReceived(MessageReceivedEvent e); //must inherit and implement this method for it to be a command
 	
 	
 	/** 

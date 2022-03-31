@@ -1,13 +1,12 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata;
 
-import javax.management.relation.Role;
-
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class MetaUpdateListener extends ListenerAdapter
@@ -16,7 +15,7 @@ public final class MetaUpdateListener extends ListenerAdapter
 	//if no guild metadata is found, this command also creates a guild object with default values
 	//before using the command, and then writes this back to guilds.json
 	//NOTE: defaulting guilds may break system for now- concurrency issue, looping through list and adding new guild to list
-	public void onGuildMessageReceived(GuildMessageReceivedEvent e)
+	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
