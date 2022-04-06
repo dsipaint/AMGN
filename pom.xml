@@ -49,7 +49,7 @@
           			<archive>
             			<manifest>
               				<addClasspath>true</addClasspath>
-              				<mainClass>com.github.dsipaint.main.AMGN</mainClass>
+              				<mainClass>com.github.dsipaint.AMGN.main.AMGN</mainClass>
             			</manifest>
           			</archive>
         		</configuration>
