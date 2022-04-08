@@ -24,7 +24,6 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpRemoveLis
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
-import org.json.simple.DeserializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,12 +49,10 @@ public class AMGN
 		String token = "";
 		try
 		{
-			logger.info("Reading network settings...");
-			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.json
-			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.json
-			token = IOHandler.readToken(GuildNetwork.NETWORKINFO_PATH); //read token from network.json
+			logger.info("Reading token from network settings...");
+			token = IOHandler.readToken(GuildNetwork.NETWORKINFO_PATH); //read token from network.yml
 		}
-		catch (IOException | DeserializationException e)
+		catch (IOException e)
 		{
 			logger.error("Couldn't read network settings");
 			e.printStackTrace();
@@ -87,12 +84,23 @@ public class AMGN
 		{
 			e1.printStackTrace();
 		}
+
+		try
+		{
+			logger.info("Reading operators and guild data from network settings...");
+			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.yml
+			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.yml
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 		
-		logger.info("Loading guild members, adding default guild settings for missing network.json guilds...");
+		logger.info("Loading guild members, adding default guild settings for missing network.yml guilds...");
 		bot.getGuilds().forEach(guild ->
 		{
 			guild.loadMembers();//good idea???
-			//add default guild data NOTE: this won't save this data to network.json- this must be done manually if you want actual values
+			//add default guild data NOTE: this won't save this data to network.yml- this must be done manually if you want actual values
 			if(!GuildNetwork.guild_data.containsKey(guild.getIdLong()))
 			{
 				logger.warn("Guild " + guild + " has no settings in network.json- using default values-this won't save this data to network.json- this must be done manually if you want actual values");

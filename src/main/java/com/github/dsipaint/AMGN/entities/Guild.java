@@ -15,9 +15,10 @@ public class Guild
 	
 	public Guild(long guild_id, long modlogs, long modrole, String prefix)
 	{
-		this.guild_id = guild_id;
-		this.modlogs = modlogs;
-		this.modrole = modrole;
+		//if ID can't be resolved, set it to default id
+		this.guild_id = (AMGN.bot.getGuildById(guild_id) == null ? DEFAULT_ID : guild_id );
+		this.modlogs = (AMGN.bot.getTextChannelById(modlogs) == null ? DEFAULT_ID : modlogs );
+		this.modrole = (AMGN.bot.getRoleById(modrole) == null ? DEFAULT_ID : modrole );
 		this.prefix = prefix;
 	}
 	

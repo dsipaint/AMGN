@@ -1,11 +1,9 @@
 package com.github.dsipaint.AMGN.io;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -22,45 +20,62 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.main.AMGN;
 
-import org.json.simple.DeserializationException;
-import org.json.simple.JsonArray;
-import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
+import org.yaml.snakeyaml.Yaml;
 
 public class IOHandler
 {
 	
 	
 	/** 
-	 * @param path a path to the network.json file
+	 * @param path a path to the network.yml file
 	 * @return HashMap<Long, Guild> a map of guild ids with a Guild object containing their network data
-	 * @throws FileNotFoundException if network.json is missing
-	 * @throws IOException
-	 * @throws DeserializationException if network.json is poorly-written
+	 * @throws FileNotFoundException if network.yml is missing
 	 */
-	//reads data in from network.json, using default values if not found (see default values in GuildNetwork.java
-	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException, IOException, DeserializationException
+	//reads data in from network.yml, using default values if not found (see default values in GuildNetwork.java
+	@SuppressWarnings("unchecked")
+	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException
 	{
-		JsonArray json_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("guild_data");
+		Yaml yaml_in = new Yaml();
+		Map<String, Object> network_data = yaml_in.load(new FileReader(new File(path)));
+		ArrayList<Object> guilds_data = (ArrayList<Object>) network_data.get("guild_data");
 		HashMap<Long, Guild> guilds_out = new HashMap<Long, Guild>();
-		
-		json_in.forEach(obj ->
+
+		guilds_data.forEach(obj ->
 		{
-			JsonObject guild = (JsonObject) obj;
+			Map<String, Object> guild = (Map<String, Object>) obj;
+
+			/*
+				if the id number is too big to be an int, it will be parsed as a long
+			  	otherwise, it will be parsed as an int
+			  	all IDs are guaranteed to be longs, so parse them as longs- test data crashes code because test IDs are ints and not longs
+			  	in practice, all IDs should be longs and this crash should not occur- if you are getting a crash related to
+			  	converting ints to longs, look at this code
+			*/
 			
-			/*objects parsed from the jsonarray that do not exist have a default value of null. As for primitive values, 
-			 * a primitive value which does not exist e.g. guild.getLong("modrole"), if no "modrole" has been specified
-			 * in that part of the json file. Therefore we must use methods such as getLongOrDefault for these cases,
-			 * to account for the fact that the values may not be there:
-			 */
-			Guild g = new Guild(
-					guild.getLongOrDefault("guild_id", Guild.DEFAULT_ID),
-					guild.getLongOrDefault("modlogs", Guild.DEFAULT_ID),
-					guild.getLongOrDefault("modrole", Guild.DEFAULT_ID),
-					guild.getStringOrDefault("prefix", Guild.DEFAULT_PREFIX)
-					);
-			
-			guilds_out.put(guild.getLong("guild_id"), g);
+			Guild parsed_guild_obj = new Guild(
+				(long) (guild.getOrDefault("guild_id", Guild.DEFAULT_ID)),
+				(long) guild.getOrDefault("modlogs", Guild.DEFAULT_ID),
+				(long) guild.getOrDefault("modrole", Guild.DEFAULT_ID),
+				(String) guild.getOrDefault("prefix", Guild.DEFAULT_PREFIX)
+				);
+			guilds_out.put(parsed_guild_obj.getGuild_id(), parsed_guild_obj);
+
+			if(parsed_guild_obj.getGuild_id() == Guild.DEFAULT_ID)
+				AMGN.logger.warn("There is a missing ID for this guild- in order to fully integrate AMGN with this guild, please specify its id.");
+			if(parsed_guild_obj.getModlogs() == Guild.DEFAULT_ID)
+			{
+				AMGN.logger.warn("Modlogs ID is missing for " 
+					+ (parsed_guild_obj.getGuild_id() == Guild.DEFAULT_ID ? "this guild" : AMGN.bot.getGuildById(parsed_guild_obj.getGuild_id()))
+					+ ". In order to use modlogs features for this guild with AMGN, please set a value for the modlogs with the updatemetainfo"
+					+ " command or by editing " + GuildNetwork.NETWORKINFO_PATH + ".");
+			}
+			if(parsed_guild_obj.getModrole() == Guild.DEFAULT_ID)
+			{
+				AMGN.logger.warn("Modrole ID is missing for " 
+					+ (parsed_guild_obj.getGuild_id() == Guild.DEFAULT_ID ? "this guild" : AMGN.bot.getGuildById(parsed_guild_obj.getGuild_id()))
+					+ ". In order to use modrole features for this guild with AMGN, please set a value for the modrole with the updatemetainfo"
+					+ " command or by editing " + GuildNetwork.NETWORKINFO_PATH + ".");
+			}
 		});
 		
 		return guilds_out;
@@ -71,17 +86,14 @@ public class IOHandler
 	 * @param path
 	 * @return List<Long>
 	 * @throws FileNotFoundException
-	 * @throws DeserializationException
-	 * @throws IOException
 	 */
-	public static final List<Long> readOperators(String path) throws FileNotFoundException, DeserializationException, IOException
+	@SuppressWarnings("unchecked")
+	public static final List<Long> readOperators(String path) throws FileNotFoundException
 	{
-		JsonArray ops_in = (JsonArray) ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).get("operators");
+		List<Long> ops_in = (List<Long>) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("operators");
 		List<Long> ops_out = new ArrayList<Long>();
-		ops_in.forEach(object ->
-		{
-			ops_out.add(Long.parseLong(object.toString()));
-		});
+
+		ops_in.forEach(op_id ->{ops_out.add((long) op_id);});
 		
 		return ops_out;
 	}
@@ -91,12 +103,11 @@ public class IOHandler
 	 * @param path
 	 * @return String
 	 * @throws FileNotFoundException
-	 * @throws DeserializationException
-	 * @throws IOException
 	 */
-	public static final String readToken(String path) throws FileNotFoundException, DeserializationException, IOException
+	@SuppressWarnings("unchecked")
+	public static final String readToken(String path) throws FileNotFoundException
 	{
-		return ((JsonObject) Jsoner.deserialize(new FileReader(new File(path)))).getString("token");
+		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("token");
 	}
 	
 	
@@ -105,49 +116,40 @@ public class IOHandler
 	 * @param operators
 	 * @param path
 	 */
-	/*
-	 * writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
-	 * 
-	 * This method no longer depends on Json.simple as it was acting weird-
-	 * Json.simple may not also pretty-print, and this allows me to do that at
-	 * least, even if it might not be super efficient
-	 */
-	public static final void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path)
+	//writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
+	public static final void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path) throws IOException
 	{
-		try
+		Yaml yaml_out = new Yaml();
+		Map<String, Object> parse_objects = new HashMap<String, Object>();
+
+		//parse token first
+		parse_objects.put("token", AMGN.bot.getToken().replace("Bot ", ""));
+		//then parse operators
+		parse_objects.put("operators", operators);
+		//then parse guild data
+		List<Map<String, Object>> parse_guilds = new ArrayList<Map<String, Object>>();
+		guilds.values().forEach(guild ->
 		{
-			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(path))));
-			Object[] guild_arr = guilds.values().toArray();
-			
-			pw.println("{");
-			
-			pw.println("\t\"token\": " + AMGN.bot.getToken() + ",");
-			
-			pw.print("\t\"operators\": [");
-			for(int i = 0; i < operators.size() - 1; i++)
-				pw.print(operators.get(i) + ", ");
-			
-			pw.print(operators.get(operators.size() - 1) + "],\n");
-			
-			
-			pw.println("\t\"guild_data\": [");
-			
-			//we do last entry manually so we don't add the comma
-			for(int i = 0; i < guild_arr.length - 1; i++)
-				pw.println(((Guild) guild_arr[i]).asJson("\t\t") + ",");
-			
-			pw.println(((Guild) guild_arr[guild_arr.length - 1]).asJson("\t\t")); //(no comma, as this is the last in the list)
-			
-			pw.println("\t]\n");
-			pw.println("}");
-			
-			
-			pw.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+			//we now don't write default ids out
+			//missing values are parsed in as default values
+			//and any values that aren't longs are simply
+			//treated as invalid, even if they are the default id
+
+			Map<String, Object> guild_list_obj = new HashMap<String, Object>();
+			if(guild.getGuild_id() != Guild.DEFAULT_ID)
+				guild_list_obj.put("guild_id", guild.getGuild_id());
+			if(guild.getModlogs() != Guild.DEFAULT_ID)
+				guild_list_obj.put("modlogs", guild.getModlogs());
+			if(guild.getModrole() != Guild.DEFAULT_ID)
+				guild_list_obj.put("modrole", guild.getModrole());
+
+			guild_list_obj.put("prefix", guild.getPrefix());
+
+			parse_guilds.add(guild_list_obj);
+		});
+		parse_objects.put("guild_data", parse_guilds);
+
+		yaml_out.dump(parse_objects, new FileWriter(new File(path)));
 	}
 	
 	
@@ -170,7 +172,7 @@ public class IOHandler
 				while(jar_entries.hasMoreElements())
 				{
 					JarEntry currententry = jar_entries.nextElement();
-					if(currententry.getName().equals("plugin.json"))
+					if(currententry.getName().equals("plugin.yml"))
 						return true;
 				}
 			}

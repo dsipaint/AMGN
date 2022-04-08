@@ -1,15 +1,14 @@
 package com.github.dsipaint.AMGN.entities.listeners;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import org.json.simple.DeserializationException;
-import org.json.simple.JsonArray;
-import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
+
+import org.yaml.snakeyaml.Yaml;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,27 +20,26 @@ public abstract class Command extends ListenerAdapter
 	private String label, usage, desc; //TODO: change from private to protected to allow local referencing?
 	private GuildPermission perm;
 	
+	@SuppressWarnings("unchecked")
 	public Command(Plugin plugin, String label)
 	{
-		try
-		{
-			JsonObject plugin_metadata = (JsonObject) Jsoner.deserialize(
-					new InputStreamReader(getClass().getResourceAsStream("/plugin.json")));
+		Map<String, Object> plugin_metadata = new Yaml().load(
+					new InputStreamReader(getClass().getResourceAsStream("/plugin.yml")));
 			
-			JsonArray command_metadata = (JsonArray) plugin_metadata.get("commands");
+			List<Object> command_metadata = (List<Object>) plugin_metadata.get("commands");
 			
 			command_metadata.forEach(command ->
 			{
-				JsonObject command_obj = (JsonObject) command;
+				Map<String, Object> command_obj = (Map<String, Object>) command;
 				
 				//if this is the desired command within the metadata
 				if(command_obj.containsValue(label))
 				{	
 					this.label = label.toLowerCase(); //take the command data we need
-					this.usage = command_obj.getString("usageinfo");
-					this.desc = command_obj.getString("description");
+					this.usage = (String) command_obj.get("usageinfo");
+					this.desc = (String) command_obj.get("description");
 					
-					switch(command_obj.getString("permission"))
+					switch((String) command_obj.get("permission"))
 					{
 						case "operator":
 							this.perm = GuildPermission.OPERATOR;
@@ -65,11 +63,6 @@ public abstract class Command extends ListenerAdapter
 					}
 				}
 			});
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	public abstract void onMessageReceived(MessageReceivedEvent e); //must inherit and implement this method for it to be a command
@@ -79,7 +72,7 @@ public abstract class Command extends ListenerAdapter
 	 * @param m member to test permissions for
 	 * @return boolean true if the member can run this command, false otherwise
 	 */
-	//returns true if this member has permission to run this command, as specified in plugin.json
+	//returns true if this member has permission to run this command, as specified in plugin.yml
 	public final boolean hasPermission(Member m)
 	{
 		//operators always have permission
@@ -126,7 +119,7 @@ public abstract class Command extends ListenerAdapter
 	/** 
 	 * @param m member to check permissions for
 	 * @param permission permission to check if the member has
-	 * @return boolean true if the member has permission to run this command, as specified in plugin.json, false otherwise
+	 * @return boolean true if the member has permission to run this command, as specified in plugin.yml, false otherwise
 	 */
 	public static final boolean hasPermission(Member m, GuildPermission permission)
 	{
