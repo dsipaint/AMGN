@@ -1,5 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata;
 
+import java.io.IOException;
+
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
@@ -38,7 +40,15 @@ public final class MetaUpdateListener extends ListenerAdapter
 				Guild guild = GuildNetwork.guild_data.getOrDefault(guild_id, new Guild(guild_id));
 				guild.setPrefix(args[2]);
 				GuildNetwork.guild_data.put(e.getGuild().getIdLong(), guild); //*overwrites* if data was already there, or *sets* if data was not
-				IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to guilds.json
+
+				try
+				{
+					IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to network.yml
+				}
+				catch(IOException e1)
+				{
+					e1.printStackTrace();
+				}
 				
 				e.getChannel().sendMessage("New prefix for this guild was set to " + args[2]).queue();
 				GuildNetwork.sendToModlogs(guild_id, "New prefix for this guild was set to " + args[2]
@@ -60,7 +70,14 @@ public final class MetaUpdateListener extends ListenerAdapter
 							Guild guild = GuildNetwork.guild_data.getOrDefault(guild_id, new Guild(guild_id));
 							guild.setModlogs(Long.parseLong(args[2]));
 							GuildNetwork.guild_data.put(e.getGuild().getIdLong(), guild); //*overwrites* if data was already there, or *sets* if data was not
-							IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to guilds.json
+							try
+							{
+								IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to network.yml
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
 							
 							e.getChannel().sendMessage("Modlogs channel for server updated to "+ tc.getAsMention()).queue();
 							GuildNetwork.sendToModlogs(guild_id, "Modlogs channel for server updated to "+ tc.getAsMention()
@@ -87,7 +104,14 @@ public final class MetaUpdateListener extends ListenerAdapter
 							Guild guild = GuildNetwork.guild_data.getOrDefault(guild_id, new Guild(guild_id));
 							guild.setModrole(Long.parseLong(args[2]));
 							GuildNetwork.guild_data.put(e.getGuild().getIdLong(), guild); //*overwrites* if data was already there, or *sets* if data was not
-							IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to guilds.json							
+							try
+							{
+								IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to network.yml
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
 							e.getChannel().sendMessage("Modrole updated to " + r.getName()).queue();
 							GuildNetwork.sendToModlogs(guild_id, "Modrole updated to " + r.getName()
 									+ " by " + e.getAuthor().getAsTag());

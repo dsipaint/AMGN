@@ -1,20 +1,18 @@
 package com.github.dsipaint.AMGN.entities.plugins;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 
-import org.json.simple.DeserializationException;
-import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
+import org.yaml.snakeyaml.Yaml;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public abstract class Plugin
 {
-	static final String RESOURCE_PATH = "/plugin.json"; //absolute path inside jar
+	static final String RESOURCE_PATH = "/plugin.yml"; //absolute path inside jar
 	
 	public abstract void onEnable();
 	
@@ -28,17 +26,8 @@ public abstract class Plugin
 	//NOTE: it is possible to tidy these methods up a bit and make them more efficient
 	public final String getName()
 	{
-		try
-		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-			return metadata.getString("name");
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		return (String) metadata.get("name");
 	}
 	
 	
@@ -47,17 +36,8 @@ public abstract class Plugin
 	 */
 	public final String getVersion()
 	{
-		try
-		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-			return metadata.getString("version");
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		return (String) metadata.get("version");
 	}
 	
 	
@@ -66,17 +46,8 @@ public abstract class Plugin
 	 */
 	public final String getAuthor()
 	{
-		try
-		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-			return metadata.getString("author");
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		return (String) metadata.get("author");
 	}
 	
 	
@@ -85,17 +56,8 @@ public abstract class Plugin
 	 */
 	public final String getUrl()
 	{
-		try
-		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-			return metadata.getString("url");
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		return (String) metadata.get("url");
 	}
 	
 	
@@ -104,17 +66,8 @@ public abstract class Plugin
 	 */
 	public final String getImageUrl()
 	{
-		try
-		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-			return metadata.getString("image");
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		return (String) metadata.get("image");
 	}
 	
 	
@@ -123,17 +76,8 @@ public abstract class Plugin
 	 */
 	public final String getDescription()
 	{
-		try
-		{
-			JsonObject metadata = (JsonObject) Jsoner.deserialize(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-			return metadata.getString("description");
-		}
-		catch (DeserializationException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		return (String) metadata.get("description");
 	}
 	
 	

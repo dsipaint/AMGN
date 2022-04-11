@@ -1,5 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators;
 
+import java.io.IOException;
+
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
@@ -22,7 +24,14 @@ public final class OpAddListener extends ListenerAdapter
 				if(!GuildNetwork.operators.contains(Long.parseLong(args[1])))
 				{
 					GuildNetwork.operators.add(Long.parseLong(args[1]));
-					IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+					try
+					{
+						IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+					}
+					catch(IOException e1)
+					{
+						e1.printStackTrace();
+					}
 					GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), e.getAuthor().getAsTag() + " added "
 							+ e.getGuild().getMemberById(args[1]).getUser().getAsTag() + " as an operator.");
 					

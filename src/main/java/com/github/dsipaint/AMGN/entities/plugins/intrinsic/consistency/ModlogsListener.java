@@ -1,5 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency;
 
+import java.io.IOException;
+
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
@@ -19,7 +21,15 @@ public final class ModlogsListener extends ListenerAdapter
 		{
 			g.setModlogs(Guild.DEFAULT_ID);
 			GuildNetwork.guild_data.put(id, g);
-			IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+			try
+			{
+				IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+			}
+			catch(IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			
 			//no point sending to modlogs, as we know the modlogs channel was just deleted
 		}
 		
