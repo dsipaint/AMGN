@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.io.Config;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -13,21 +14,40 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 public abstract class Plugin
 {
 	static final String RESOURCE_PATH = "/plugin.yml"; //absolute path inside jar
+	private String config_path, //relative path for config files
+		name,
+		version,
+		author,
+		url,
+		imageurl,
+		description;
+
+	private Config config; //config object for the plugin
 	
 	public abstract void onEnable();
 	
 	public abstract void onDisable();
 	
-	
+	public Plugin()
+	{
+		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
+		name = (String) metadata.get("name");
+		version = (String) metadata.get("version");
+		author = (String) metadata.get("author");
+		url = (String) metadata.get("url");
+		imageurl = (String) metadata.get("image");
+		description = (String) metadata.get("description");
+		
+		config_path = "./plugins/" + getName().toLowerCase();
+		config = new Config(this);
+	}
 	
 	/** 
 	 * @return String name of the plugin
 	 */
-	//NOTE: it is possible to tidy these methods up a bit and make them more efficient
 	public final String getName()
 	{
-		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-		return (String) metadata.get("name");
+		return this.name;
 	}
 	
 	
@@ -36,8 +56,7 @@ public abstract class Plugin
 	 */
 	public final String getVersion()
 	{
-		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-		return (String) metadata.get("version");
+		return this.version;
 	}
 	
 	
@@ -46,8 +65,7 @@ public abstract class Plugin
 	 */
 	public final String getAuthor()
 	{
-		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-		return (String) metadata.get("author");
+		return this.author;
 	}
 	
 	
@@ -56,8 +74,7 @@ public abstract class Plugin
 	 */
 	public final String getUrl()
 	{
-		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-		return (String) metadata.get("url");
+		return this.url;
 	}
 	
 	
@@ -66,8 +83,7 @@ public abstract class Plugin
 	 */
 	public final String getImageUrl()
 	{
-		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-		return (String) metadata.get("image");
+		return this.imageurl;
 	}
 	
 	
@@ -76,10 +92,24 @@ public abstract class Plugin
 	 */
 	public final String getDescription()
 	{
-		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
-		return (String) metadata.get("description");
+		return this.description;
 	}
-	
+
+	/** 
+	 * @return Config config object for the plugin
+	 */
+	public final Config getConfig()
+	{
+		return this.config;
+	}
+
+	/** 
+	 * @return String config path of the plugin i.e. ./plugins/name/
+	 */
+	public final String getConfigPath()
+	{
+		return this.config_path;
+	}
 	
 	/** 
 	 * @return MessageEmbed embed displaying all info of the plugin

@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -172,8 +173,16 @@ public class IOHandler
 				while(jar_entries.hasMoreElements())
 				{
 					JarEntry currententry = jar_entries.nextElement();
+					//if a valid plugin i.e. has a plugin.yml
 					if(currententry.getName().equals("plugin.yml"))
-						return true;
+					{
+						URL url = new URL("jar:file:" + jar.getAbsolutePath() + "!/plugin.yml");
+						JarURLConnection jarcon = (JarURLConnection) url.openConnection();
+						Map<String, Object> pluginyml = new Yaml().load(jarcon.getInputStream());
+						//check that the name of the plugin is our name
+						if(((String) pluginyml.get("name")).equalsIgnoreCase(name))
+                            return true; //if so, the plugin does exist
+					}
 				}
 			}
 			catch (IOException e1)

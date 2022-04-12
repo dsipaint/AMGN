@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class EnableListener extends ListenerAdapter
 {
-	//TODO: this and disablelistener, and possible IOHandler.pluginExists are broken
 	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String[] args = e.getMessage().getContentRaw().split(" ");
