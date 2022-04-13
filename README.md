@@ -6,6 +6,14 @@ serving many many servers. With this system, developers can write plugins for yo
 to know the bot's token. The advantage of plugins is that on a large scale, this provides the flexibility of managing bot features independently, helping to minimise downtime. I used this in the server I code for, of 330,000 users, and it improved the efficiency of our bot by about 600%. Bot features are managed independently, whilst also being controlled centrally by a central repository. This provides complete control without compromising flexibility. This library extends the JDA library, and knowledge of JDA is required to use this library.
 
 ## Howto
+## Build latest version:
+- clone this repo
+- run `maven package`
+
+## Add as a dependency:
+- clone this repo
+- run dependency.sh
+
 ### Preparing the network:
 Before running the network, the network needs to know a bit about the users and servers it will work with. The network
 accesses this data by reading "./network.json". Without this file, the network will not run. This file contains 
