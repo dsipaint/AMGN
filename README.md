@@ -8,7 +8,7 @@ to know the bot's token. The advantage of plugins is that on a large scale, this
 ## Howto
 ## Build latest version:
 - clone this repo
-- run `maven package`
+- run `mvn package`
 
 ## Add as a dependency:
 - clone this repo
