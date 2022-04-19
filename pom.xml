@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.dsipaint</groupId>
   <artifactId>AMGN</artifactId>
-  <version>alpha-1.2.0</version>
+  <version>alpha-1.2.1</version>
   <name>AMGN</name>
 
     <properties>
