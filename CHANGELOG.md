@@ -1,3 +1,11 @@
+## alpha-1.2.1
+### ADDED
++ Added verbose logging for config resource generation
+
+### CHANGED
+~ Fixed generating config resources, previously not working
+~ Fixed retrieving config values, previously bugged
+
 ## alpha-1.2
 ### ADDED
 + Added native config support for generating default config files

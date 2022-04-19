@@ -16,6 +16,7 @@ import java.util.jar.JarFile;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.AMGN.main.AMGN;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -39,9 +40,10 @@ public class Config
     //can generate files that are stored in the jar- will most commonly be used for template config.ymls
     public final void generateResource(String filename)
     {
+        AMGN.logger.info("Generating resource " + filename + " for plugin " + plugin.getName() + "...");
         //a list of only the jars found directly in the plugins directory
 		File[] plugins_directory = new File(GuildNetwork.PLUGIN_PATH).listFiles((path) -> {return path.getName().endsWith(".jar");});
-		
+		AMGN.logger.info("Locating plugin...");
 		for(File jar : plugins_directory)
 		{
 			try
@@ -51,23 +53,41 @@ public class Config
 				while(jar_entries.hasMoreElements())
 				{
 					JarEntry currententry = jar_entries.nextElement();
+                    //if this is a "valid" plugin
 					if(currententry.getName().equals("plugin.yml"))
                     {
+                        //check that this is our plugin
 						URL url = new URL("jar:file:" + jar.getAbsolutePath() + "!/plugin.yml");
 						JarURLConnection jarcon = (JarURLConnection) url.openConnection();
-                        InputStream newfilein = jarcon.getInputStream();
-						Map<String, Object> pluginyml = new Yaml().load(newfilein);
-						//check that the name of the plugin is our name
-						if(((String) pluginyml.get("name")).equalsIgnoreCase(filename))
+                        InputStream pluginyamlin = jarcon.getInputStream();
+						Map<String, Object> pluginyml = new Yaml().load(pluginyamlin);
+						if(((String) pluginyml.get("name")).equalsIgnoreCase(this.plugin.getName()))
                         {
-                            //if so, copy the file to ./plugins/name/filename
+                            AMGN.logger.info("Located plugin.");
+                            File config_dir = new File(plugin.getConfigPath());
+                            
+                            if(!config_dir.exists() || !config_dir.isDirectory())
+                            {
+                                AMGN.logger.info("plugin config directory does not exist- creating...");
+                                Files.createDirectories(config_dir.toPath());
+                            }
+
+                            AMGN.logger.info("copying resource " + filename + " to " + plugin.getConfigPath() + "/" + filename);
+                            //if so, copy the specified file to the config folder
+                            url = new URL("jar:file:" + jar.getAbsolutePath() + "!/" + filename);
+                            jarcon = (JarURLConnection) url.openConnection();
+                            InputStream newfilein = jarcon.getInputStream();
+
                             File newfileout = new File(plugin.getConfigPath() + "/" + filename);
                             Files.copy(newfilein, newfileout.toPath(), StandardCopyOption.REPLACE_EXISTING);
                             newfilein.close();
+                            pluginyamlin.close();
+                            
+                            AMGN.logger.info("Resource " + plugin.getConfigPath() + "/" + filename + " generated.");
                             return;
                         }
 
-                        newfilein.close();
+                        pluginyamlin.close();
                     }
 				}
 			}
@@ -95,7 +115,7 @@ public class Config
     @SuppressWarnings("unchecked")
     private final Object getValueFromMap(Map<String, Object> map, String key)
     {
-        Object value = map.get("key");
+        Object value = map.get(key);
         //if we couldn't find the value, check inside nested objects if possible
         if(value == null)
         {
