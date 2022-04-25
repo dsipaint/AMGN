@@ -1,3 +1,8 @@
+## alpha-1.3.0
+### ADDED
++ Added ONLINE_STATUS to the bot's enabled cache flags
++ Added ACTIVITY to the bot's enabled cache flags
+
 ## alpha-1.2.1
 ### ADDED
 + Added verbose logging for config resource generation

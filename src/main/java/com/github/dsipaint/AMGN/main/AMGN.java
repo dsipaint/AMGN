@@ -32,6 +32,8 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import okhttp3.Cache;
 
 public class AMGN
 {
@@ -64,6 +66,8 @@ public class AMGN
 			bot = JDABuilder.createDefault(token)
 					.enableIntents(EnumSet.allOf(GatewayIntent.class))
 					.setMemberCachePolicy(MemberCachePolicy.ALL)
+					.enableCache(CacheFlag.ONLINE_STATUS,
+						CacheFlag.ACTIVITY) //honestly I just need these here for one plugin rn
 					.build(); //TODO: change to a plugin-specific gateway intent system
 		}
 		catch (LoginException e1)
