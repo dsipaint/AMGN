@@ -21,6 +21,9 @@ public final class MetaUpdateListener extends ListenerAdapter
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
+
+		if(!e.isFromGuild())
+			return;
 		
 		//^updatemetainfo
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + "updatemetainfo"))

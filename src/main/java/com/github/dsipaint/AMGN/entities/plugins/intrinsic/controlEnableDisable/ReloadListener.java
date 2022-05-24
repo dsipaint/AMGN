@@ -16,6 +16,10 @@ public class ReloadListener extends ListenerAdapter
 	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String[] args = e.getMessage().getContentRaw().split(" ");
+
+		if(!e.isFromGuild())
+			return;
+
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RELOAD.getLabel())
 				&& Command.hasPermission(e.getMember(), DefaultCommand.RELOAD.getGuildPermission()))
 		{

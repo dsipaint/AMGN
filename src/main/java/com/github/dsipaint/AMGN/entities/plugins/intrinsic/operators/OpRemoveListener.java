@@ -13,6 +13,9 @@ public final class OpRemoveListener extends ListenerAdapter
 	
 	public void onMessageReceived(MessageReceivedEvent e)
 	{
+		if(!e.isFromGuild())
+			return;
+			
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		

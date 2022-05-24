@@ -1,3 +1,7 @@
+## alpha-1.3.1
+### CHANGED
+~ Fixed intrinsic, guild-specific commands being able to be called/listened for in private channels
+
 ## alpha-1.3.0
 ### ADDED
 + Added ONLINE_STATUS to the bot's enabled cache flags

@@ -16,6 +16,9 @@ public final class HelpListener extends ListenerAdapter
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
+
+		if(!e.isFromGuild())
+			return;
 		
 		//^help
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.HELP.getLabel())

@@ -17,6 +17,9 @@ public final class EnableListener extends ListenerAdapter
 	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		String[] args = e.getMessage().getContentRaw().split(" ");
+
+		if(!e.isFromGuild())
+			return;
 		
 		//^enable
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.ENABLE.getLabel())

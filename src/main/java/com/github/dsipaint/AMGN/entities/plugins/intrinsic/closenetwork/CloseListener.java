@@ -15,13 +15,14 @@ public final class CloseListener extends ListenerAdapter
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
+
+		if(!e.isFromGuild())
+			return;
 		
 		//^closenetwork
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.CLOSE.getLabel())
 				&& Command.hasPermission(e.getMember(), DefaultCommand.CLOSE.getGuildPermission()))
 		{
-			//no permission handling for now
-			
 			//disable every active plugin
 			AMGN.plugin_listeners.forEach((plugin, listenerlist) ->
 			{

@@ -16,6 +16,9 @@ public final class DisableListener extends ListenerAdapter
 	{
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
+
+		if(!e.isFromGuild())
+			return;
 		
 		//^disable
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.DISABLE.getLabel())
