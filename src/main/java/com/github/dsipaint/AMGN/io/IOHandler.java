@@ -149,7 +149,7 @@ public class IOHandler
 			parse_guilds.add(guild_list_obj);
 		});
 		parse_objects.put("guild_data", parse_guilds);
-
+		//TODO: use tidier yaml dump settings (see customcommands)
 		yaml_out.dump(parse_objects, new FileWriter(new File(path)));
 	}
 	
