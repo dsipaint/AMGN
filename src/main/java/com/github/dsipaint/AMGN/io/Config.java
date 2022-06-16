@@ -35,7 +35,8 @@ public class Config
     }
 
     //TODO: add method: public boolean exists(String filename)
-    //TODO: add setting methods for setting config data
+    //TODO: add setting methods for setting/writing config data
+    //TODO: use tidier yaml dump settings (see customcommands)
 
     //can generate files that are stored in the jar- will most commonly be used for template config.ymls
     public final void generateResource(String filename)
