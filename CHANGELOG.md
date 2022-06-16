@@ -1,3 +1,6 @@
+## alpha-1.4.1
++ Added Menu native support and implementation
+
 ## alpha-1.3.1
 ### CHANGED
 ~ Fixed intrinsic, guild-specific commands being able to be called/listened for in private channels

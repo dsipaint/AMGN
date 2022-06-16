@@ -7,10 +7,15 @@ import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModroleListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
@@ -24,23 +29,20 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpRemoveLis
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import okhttp3.Cache;
 
 public class AMGN
 {
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
+
+	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
-	//TODO: add config system
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
 	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners;
@@ -136,6 +138,7 @@ public class AMGN
 		//consistency plugin
 		bot.addEventListener(new ModlogsListener());
 		bot.addEventListener(new ModroleListener());
+		bot.addEventListener(new MenuDeleteListener());
 		
 		//operators plugin
 		bot.addEventListener(new OpAddListener());

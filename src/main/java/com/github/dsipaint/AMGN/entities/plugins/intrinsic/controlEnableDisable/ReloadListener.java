@@ -34,6 +34,12 @@ public class ReloadListener extends ListenerAdapter
 				{
 					plugin.onDisable(); //disable plugin
 					AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
+					AMGN.menucache.forEach(menu ->
+					{
+						if(menu.getPlugin().equals(plugin))
+							menu.softDestroy();
+					});
+					AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
 					plugin.onEnable(); //re-enable plugin
 					
 					e.getChannel().sendMessage("Plugin was successfully reloaded.").queue();

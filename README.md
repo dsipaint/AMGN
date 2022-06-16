@@ -228,6 +228,57 @@ The Command class has getter methods for all the metadata you assigned in plugin
 ###  Programming logging
 When certain events occur, a user may also wish to send a formal log to the guild's designated modlogs channel. AMGN provides support for this: `GuildNetwork.sendToModlogs(long guild_id, String message)`. This method sends a message with the standard AMGN modlogs format, to the modlogs of the specified guild.
 
+### Programming Menus
+AMGN now has inbuilt support for menus! A menu is a message with reactions placed on by a bot. When a reaction is pressed, the bot performs some action- this can be anything from giving a role to that user, or "changing the page" of a message backwards and forwards. To do this, use the MenuBuilder class:
+
+```java
+MenuBuilder builder = new MenuBuilder(message, new Button(emote, press, unpress ->
+	{
+		System.out.println(press.getEmote().getName()  + " button was pressed!");
+	},
+	message ->
+	{
+		System.out.println(unpress.getEmote().getName() + " button was unpressed!");
+	}));
+
+Menu menu = builder.build();
+```
+
+This will set up a menu on a pre-existing message, with one button. You can alternatively pass the constructor the text to become a message, or the embed object to become a message. This message will be sent when the build method is called. The button uses an emote of their choice, set in the constructor. The two Consumers in the Button constructor are respectively handlers for what to do when the button is pressed, and then unpressed passing a `MenuButtonClickEvent` object as a parameter to those consumers. This object contains all info about the click or unclick event, accessed with getters.
+A menu is immutable once made, but contains some getters for getting the message and buttons associated with it. To add more buttons or remove buttons before the Menu is built, we can do this:
+
+```java
+builder.addButton(emote2, message, press ->
+	{
+		System.out.println("Our other button was pressed!");
+	},
+	unpress ->
+	{
+		System.out.println("Our other button was unpressed!");
+	});
+```
+
+we can also use the `builder.removeButton` method to remove a button that was added. These commands can be chained too, like so:
+```java
+MenuBuilder builder = new MenuBuilder(emote, message, press ->
+	{
+		System.out.println(press.getEmote().getName() + " button was pressed!");
+	},
+	unpress ->
+	{
+		System.out.println(unpress.getEmote().getName() + " button was unpressed!");
+	})
+	.addButton(emote2, message, press ->
+	{
+		System.out.println("Our other button was pressed!");
+	},
+	unpress ->
+	{
+		System.out.println("Our other button was unpressed!");
+	});
+```
+And so on for how many more buttons you need to add. To then build the Menu, which will send the message if not already sent, and add the buttons and their functionality. Finally, if you want to destroy an existing menu, simply reference the menu and call its `destroy` method.
+
 With these tools, you are able to make a plugin with AMGN. You can then compile this plugin as a non-executable jar. All plugins must be placed in a folder called "plugins", which should be located in the same directory as the network. This is where the network will look for plugins. By placing a plugin here and launching the network, the plugin will be automatically enabled. This plugin can also be enabled after launching the network by placing it in the plugins directory and using the `enableplugin` command. Plugins can be disabled similarly with the disableplugin command.
 
 These are the basics of using AMGN. For more help, please contact the author on discord (al~#1819) or look at the javadocs- have fun, and get coding!!
