@@ -59,6 +59,9 @@ Included in this API are intrinsic plugins, adding quality-of-life commands and 
 ## Running AMGN with plugins
 If you simply wish to run AMGN with some custom plugins, make sure you have the AMGN jar and `network.yml` set up as specified above. Then make a `plugins` directory if one is not already there and add an AMGN plugin jar into this directory. When plugins are loaded for the first time, any config files that allow you to customise the plugin can be found in the plugins directory in a directory with the same name as the plugin. Change the values in these files to customise the way your plugin behaves. You can acquire plugin jars by asking me for some, or making some yourself.
 
+### Customising AMGN plugins
+AMGN plugin developers may allow you to customise a plugin for tailored usage. This may be done via commands, which will probably be explained by the developer, or by editing the plugin's config files (which the developer should probably also explain). Config files are YAML files which can usually be found in the `plugins/{plugin name}/` directory. Often there is one `config.yml`, but there can be multiple config files with different names. change the values in here as you need to customise your plugin.
+
 ## Developing plugins for AMGN
 I have hinted at intrinsic and external plugins. As a developer, you are able to make external plugins for this network,
 as is the entire point of this project. This jar not only runs the network, but contains the API to make a plugin.
@@ -226,7 +229,7 @@ public void onMessageReceived(MessageReceivedEvent e)
 The Command class has getter methods for all the metadata you assigned in plugin.json, which you can use for whatever you need. GuildNetwork also contains getters for all guild metadata, just like we saw `GuildNetwork.getPrefix(long guild_id)`.
 
 ###  Programming logging
-When certain events occur, a user may also wish to send a formal log to the guild's designated modlogs channel. AMGN provides support for this: `GuildNetwork.sendToModlogs(long guild_id, String message)`. This method sends a message with the standard AMGN modlogs format, to the modlogs of the specified guild.
+When certain events occur, a user may also wish to send a formal log to the guild's designated modlogs channel. AMGN provides support for this: `GuildNetwork.sendToModlogs(long guild_id, String message)`. This method sends a message with the standard AMGN modlogs format, to the modlogs of the specified guild. You may also access the `AMGN.logger` if you wish to do any console-logging.
 
 ### Programming Menus
 AMGN now has inbuilt support for menus! A menu is a message with reactions placed on by a bot. When a reaction is pressed, the bot performs some action- this can be anything from giving a role to that user, or "changing the page" of a message backwards and forwards. To do this, use the MenuBuilder class:
@@ -280,5 +283,32 @@ MenuBuilder builder = new MenuBuilder(emote, message, press ->
 And so on for how many more buttons you need to add. To then build the Menu, which will send the message if not already sent, and add the buttons and their functionality. Finally, if you want to destroy an existing menu, simply reference the menu and call its `destroy` method.
 
 With these tools, you are able to make a plugin with AMGN. You can then compile this plugin as a non-executable jar. All plugins must be placed in a folder called "plugins", which should be located in the same directory as the network. This is where the network will look for plugins. By placing a plugin here and launching the network, the plugin will be automatically enabled. This plugin can also be enabled after launching the network by placing it in the plugins directory and using the `enableplugin` command. Plugins can be disabled similarly with the disableplugin command.
+
+### Managing plugin configs
+Developers may wish to allow some form of storage/customisation for their plugin settings, and AMGN has inbuilt support for this. Every `Plugin` object comes with a `Config` object that can handle a config setup for a plugin. Configs are usually kept in `plugins/{plugin name}/`, where `{plugin name}` is the name of your plugin defined in `plugin.yml`. To access the Config object for your plugin, simply call `Plugin.getConfig()`. For example inside the onEnable method:
+
+```java
+	Config config = this.getConfig();
+```
+
+You can then retrieve values from an existing config file like this:
+```java
+	String myvalue = (String) config.getValueFromConfig("config_file.yml", "value name");
+```
+
+This method returns a castable Object, the first parameter is the path to the config file relative to the plugin config path (which can also be referenced easily in code with `plugin.getConfigPath()`), and the second parameter is the name of the value you wish to retrieve. The eventually-cast string will be the value associated with this name in the yml file. There is also a method to retrieve a `Map` containing all key-value pairs in the yaml file (including nested ones). this is called like so:
+```java
+	Map<String, Object> wholeconfigmap = config.getConfig("filename");
+```
+where the filename is relative as before. For easily accessing values, or even nested values from within these returned Maps, there is the `getValueFromMap`, which accepts the Map and the String key to search for respectively as parameters.
+
+Finally, it is possible a config file does not exist for a plugin yet. Developers should account for this themselves by catching `FileNotFoundException`s and not assuming the plugin has a generated config. You may find yourself writing this a lot in your plugins:
+```java
+		//generate the default config if there is no config present
+        File config = new File(this.getConfigPath() + "/config.yml");
+        if(!config.exists())
+            this.getConfig().generateResource("config.yml");
+```
+Here we can see that AMGN provides a way to generate a config file that doesn't exist. Just call the `Config.generateResource` method, passing the name of the file you need to generate. How does AMGN know how to generate this file? In the `resources` folder, where you defined the `plugin.yml` file, you create the file here with the same name you wish to generate. Then in the file, write a default config you wish to exist when the file is generated by the plugin. When you call the generateResource method, AMGN will copy your template in `resources` inside the compiled jar, to the config filepath for your plugin. You can then normally use the methods to call and use values from this config. As of now, AMGN cannot write new values to existing configs.
 
 These are the basics of using AMGN. For more help, please contact the author on discord (al~#1819) or look at the javadocs- have fun, and get coding!!
