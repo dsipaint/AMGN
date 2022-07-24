@@ -120,13 +120,13 @@ public abstract class Plugin
 				.setTitle(this.getName() + " " + (this.getVersion() == null ? "" : this.getVersion()))
 				.setColor(GuildNetwork.GREEN_EMBED_COLOUR);
 
-		if(this.getAuthor() != null)
+		if(this.getAuthor() != null && !this.getAuthor().isEmpty())
 			eb.setAuthor("Author: " + this.getAuthor(), this.getUrl(), null);
 
-		if(this.getImageUrl() != null)
+		if(this.getImageUrl() != null && !this.getImageUrl().isEmpty())
 			eb.setImage(this.getImageUrl());
 
-		if(this.getDescription() != null)
+		if(this.getDescription() != null && !this.getDescription().isEmpty())
 			eb.setDescription(this.getDescription());
 
 		return eb.build();
