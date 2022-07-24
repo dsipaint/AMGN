@@ -1,4 +1,7 @@
 ## alpha-1.4.1
+Actually made optional plugin.yml parameters optional, in line with the documentation
+
+## alpha-1.4
 + Added Menu native support and implementation
 
 ## alpha-1.3.1

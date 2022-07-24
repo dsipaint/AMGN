@@ -116,12 +116,19 @@ public abstract class Plugin
 	 */
 	public MessageEmbed getDisplayEmbed()
 	{
-		return new EmbedBuilder()
-				.setTitle(this.getName() + " " + this.getVersion())
-				.setAuthor("Author: " + this.getAuthor(), this.getUrl(), null)
-				.setImage(this.getImageUrl())
-				.setColor(GuildNetwork.GREEN_EMBED_COLOUR)
-				.setDescription(this.getDescription())
-				.build();
+		EmbedBuilder eb = new EmbedBuilder()
+				.setTitle(this.getName() + " " + (this.getVersion() == null ? "" : this.getVersion()))
+				.setColor(GuildNetwork.GREEN_EMBED_COLOUR);
+
+		if(this.getAuthor() != null)
+			eb.setAuthor("Author: " + this.getAuthor(), this.getUrl(), null);
+
+		if(this.getImageUrl() != null)
+			eb.setImage(this.getImageUrl());
+
+		if(this.getDescription() != null)
+			eb.setDescription(this.getDescription());
+
+		return eb.build();
 	}
 }
