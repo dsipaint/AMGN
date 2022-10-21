@@ -36,9 +36,11 @@ html {
 #pluginlist {
     width: 20%;
     height: 100%;
-    border: 2px solid green;
+    float: left;
 }
 
 #maincontent {
-    border: 2px solid red;
+    height: 100%;
+    width: 79.8%;
+    float: left;
 }
