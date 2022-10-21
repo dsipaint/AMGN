@@ -14,7 +14,22 @@ html {
 #topbanner {
     margin: 0px;
     padding-left: 20px;
+    padding-top: 20px;
+    height: 10%;
     border-bottom: 2px solid #92C5D6;
+}
+
+#topbanner > img {
+    margin-right: 20px;
+}
+
+#topbanner > * {
+    float: left;
+}
+
+#topbanner > div > h1 {
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 .plugin{
@@ -41,6 +56,22 @@ html {
 
 #maincontent {
     height: 100%;
-    width: 79.8%;
+    width: 77%;
     float: left;
+    padding: 10px;
+}
+
+#plugintitle {
+    height: 10%;
+}
+
+#plugintitle > h1 {
+    width: fit-content;
+    float: left;
+    margin: 0px;
+}
+
+#plugintitle > img {
+    float: left;
+    margin-right: 20px;
 }
