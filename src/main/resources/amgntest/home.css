@@ -21,15 +21,37 @@ html {
 
 #topbanner > img {
     margin-right: 20px;
+    border-radius: 35px;
 }
 
-#topbanner > * {
+.topleft {
     float: left;
 }
 
-#topbanner > div > h1 {
+.topleft > h1 {
     margin-bottom: 0px;
     margin-top: 0px;
+}
+
+.topright {
+    float: right;
+    margin-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#signin {
+    cursor: pointer;
+    background-color: 	#7289da;
+    border-radius: 5px;
+}
+
+#guildselector {
+    border: 2px solid #4A4A4A;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .plugin{
@@ -52,6 +74,7 @@ html {
     width: 20%;
     height: 100%;
     float: left;
+    border-right: 2px solid #4A4A4A;
 }
 
 #maincontent {
@@ -74,4 +97,5 @@ html {
 #plugintitle > img {
     float: left;
     margin-right: 20px;
+    border-radius: 35px;
 }
