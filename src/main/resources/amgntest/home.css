@@ -99,3 +99,11 @@ html {
     margin-right: 20px;
     border-radius: 35px;
 }
+
+#savesettings {
+    float: right;
+    background-color: rgb(19, 140, 19);
+    padding: 10px;
+    border-radius: 7px;
+    cursor: pointer;
+}
