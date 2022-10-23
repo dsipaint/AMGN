@@ -46,7 +46,12 @@ html {
     cursor: pointer;
     background-color: 	#7289da;
     border-radius: 5px;
-    display:none;
+    display: none;
+}
+
+#signin > a {
+    text-decoration: none;
+    color: white;
 }
 
 #accountinfo > * {
@@ -92,6 +97,7 @@ html {
     height: 100%;
     float: left;
     border-right: 2px solid #4A4A4A;
+    display: none;
 }
 
 #maincontent {
@@ -99,6 +105,7 @@ html {
     width: 77%;
     float: left;
     padding: 10px;
+    display: none;
 }
 
 #plugintitle {
@@ -123,4 +130,12 @@ html {
     padding: 10px;
     border-radius: 7px;
     cursor: pointer;
+}
+
+#nocontent {
+    padding-left: 20px;
+}
+
+p > a {
+    color: white;
 }
