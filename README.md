@@ -27,16 +27,16 @@ operators:
 guild_data:
   - guild_id: 12345
     prefix: "^"
-	modlogs: 12345
+    modlogs: 12345
   
   - guild_id: 634667687233978388
     prefix: "&"
-	modlogs: 634667687233978390
-	
+    modlogs: 634667687233978390
+    
   - guild_id: 123456789
     prefix: ":"
-	modlogs: 23456455
-	modrole: 12343545
+    modlogs: 23456455
+    modrole: 12343545
 ```
 | Variable | Required | Type |Default | Description |
 | -------- | -------- | ---- | ------ | ----------- |
@@ -82,13 +82,13 @@ plugins:
   version: "0.0.1"
   commands:
     - label: "updatemetainfo"
-	  description: "Use to update your guild's metadata for the network"
-	  usageinfo: "^usageinfo {prefix/modlogs/modrole} {new value}"
-	  permission: "admin"
-	
-	- label: "viewmetainfo"
-	  usageinfo: "Use to view a guild's metadata"
-	  permission: "staff"
+      description: "Use to update your guild's metadata for the network"
+      usageinfo: "^usageinfo {prefix/modlogs/modrole} {new value}"
+      permission: "admin"
+    
+    - label: "viewmetainfo"
+      usageinfo: "Use to view a guild's metadata"
+      permission: "staff"
 ```
 
 | Variable | Required | Type | Description |

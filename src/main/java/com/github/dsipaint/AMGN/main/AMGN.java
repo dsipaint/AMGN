@@ -46,7 +46,6 @@ public class AMGN
 
 	/*
 	 * TODO:
-	 * 	TEST if file-copying happens correctly before proceeding
 	 * 	when this works, be able to choose location of web assets from network.yml
 	 */
 
