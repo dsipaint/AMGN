@@ -44,11 +44,6 @@ public class AMGN
 	  3. use this location for spring
 	*/
 
-	/*
-	 * TODO:
-	 * 	when this works, be able to choose location of web assets from network.yml
-	 */
-
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
@@ -218,16 +213,16 @@ public class AMGN
 
 		try
 		{
-			File webdir = new File(GuildNetwork.WEB_PATH);
+			File webdir = new File(GuildNetwork.WEB_DEFAULT_PATH);
 			if(!webdir.exists())
 				webdir.mkdir();
 
 			//by default we use ./web/ for web assets
-			if(IOHandler.copyFileToExternalPath("web/homepage.html", GuildNetwork.WEB_PATH + "/homepage.html"))
-				logger.info("homepage.html did not exist- copied to " + GuildNetwork.WEB_PATH);
+			if(IOHandler.copyFileToExternalPath("web/homepage.html", GuildNetwork.WEB_DEFAULT_PATH + "/homepage.html"))
+				logger.info("homepage.html did not exist- copied to " + GuildNetwork.WEB_DEFAULT_PATH);
 
-			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_PATH + "/home.css"))
-				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_PATH);
+			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_DEFAULT_PATH + "/home.css"))
+				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_DEFAULT_PATH);
 		}
 		catch(IOException e)
 		{

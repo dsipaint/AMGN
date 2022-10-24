@@ -21,8 +21,6 @@ crucial information for your bot, and takes this form:
 ```yaml
 token: 1234567890afdlfjfkadadsfnkfasd
 
-web_dir: "./my_web_location"
-
 operators:
   - 475859944101380106
 
@@ -43,7 +41,6 @@ guild_data:
 | Variable | Required | Type |Default | Description |
 | -------- | -------- | ---- | ------ | ----------- |
 | token | yes | string | N/A | your bot's token |
-| web_dir | no | string | ./web/ | location of the webpanel assets |
 | operators | no | list of strings | N/A | user ids of operators of your network |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
