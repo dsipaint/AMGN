@@ -9,6 +9,7 @@ import javax.security.auth.login.LoginException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
@@ -228,6 +229,8 @@ public class AMGN
 		{
 			e.printStackTrace();
 		}
+
+		SpringApplication.run(AMGN.class, args);
 		
 		logger.info("Finished setup.");
 		//END SETUP
