@@ -1,3 +1,8 @@
+## beta-1.0
+Add webpanel!!
+Generate network.yml automatically if one is not found
+Add a program exit if network settings cannot be read
+
 ## alpha-1.4.1
 Actually made optional plugin.yml parameters optional, in line with the documentation
 

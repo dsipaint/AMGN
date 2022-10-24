@@ -39,11 +39,16 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class AMGN
 {
 	/*
-	* 1. make some template pages
-	  2. if these do not exist in some external location, copy them out of the jar to this location
+	  1. make some template pages DONE
+	  2. if these do not exist in some external location, copy them out of the jar to this location DONE
 	  3. use this location for spring
-	  4. there will be a homepage
 	*/
+
+	/*
+	 * TODO:
+	 * 	TEST if file-copying happens correctly before proceeding
+	 * 	when this works, be able to choose location of web assets from network.yml
+	 */
 
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
@@ -58,6 +63,21 @@ public class AMGN
 		//SETUP
 		logger.info("Commencing setup...");
 		String token = "";
+
+		try
+		{
+			//by default we use ./web/ for web assets
+			if(IOHandler.copyFileToExternalPath("networkdefault.yml", GuildNetwork.NETWORKINFO_PATH))
+			{
+				logger.info("network.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				System.exit(0);
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+
 		try
 		{
 			logger.info("Reading token from network settings...");
@@ -67,6 +87,7 @@ public class AMGN
 		{
 			logger.error("Couldn't read network settings");
 			e.printStackTrace();
+			System.exit(1); //exit if not able to read network settings
 		}
 		
 		logger.info("Initialising bot account...");
@@ -107,6 +128,7 @@ public class AMGN
 		catch(IOException e)
 		{
 			e.printStackTrace();
+			System.exit(1); //exit if not able to read network settings
 		}
 		
 		logger.info("Loading guild members, adding default guild settings for missing network.yml guilds...");
@@ -189,6 +211,26 @@ public class AMGN
 				logger.info("No plugins folder found. Created a plugins folder.");
 		}
 		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		logger.info("Setting up webpanel...");
+
+		try
+		{
+			File webdir = new File(GuildNetwork.WEB_PATH);
+			if(!webdir.exists())
+				webdir.mkdir();
+
+			//by default we use ./web/ for web assets
+			if(IOHandler.copyFileToExternalPath("web/homepage.html", GuildNetwork.WEB_PATH + "/homepage.html"))
+				logger.info("homepage.html did not exist- copied to " + GuildNetwork.WEB_PATH);
+
+			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_PATH + "/home.css"))
+				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_PATH);
+		}
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}

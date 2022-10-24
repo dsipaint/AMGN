@@ -4,10 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -16,12 +19,12 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.yaml.snakeyaml.Yaml;
+
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.main.AMGN;
-
-import org.yaml.snakeyaml.Yaml;
 
 public class IOHandler
 {
@@ -273,5 +276,27 @@ public class IOHandler
 		
 		jar.close();
 		return null;
+	}
+
+	//copy a file from inside the jar, to a path outside the jar
+	//returns false if file already exists and was not copied
+	//returns true if file was copied
+	public static final boolean copyFileToExternalPath(String internalpath, String externalpath) throws IOException
+	{
+		ClassLoader cl = new IOHandler().getClass().getClassLoader();
+		InputStream inputstream = cl.getResourceAsStream(internalpath);
+
+		File copyFile = new File(externalpath);
+
+		try
+		{
+			Files.copy(inputstream, copyFile.toPath());
+		}
+		catch(FileAlreadyExistsException e)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }
