@@ -10,6 +10,7 @@ import javax.security.auth.login.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
@@ -37,6 +38,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
+@SpringBootApplication
 public class AMGN
 {
 	/*
@@ -214,16 +216,16 @@ public class AMGN
 
 		try
 		{
-			File webdir = new File(GuildNetwork.WEB_DEFAULT_PATH);
+			File webdir = new File(GuildNetwork.WEB_PATH);
 			if(!webdir.exists())
 				webdir.mkdir();
 
 			//by default we use ./web/ for web assets
-			if(IOHandler.copyFileToExternalPath("web/homepage.html", GuildNetwork.WEB_DEFAULT_PATH + "/homepage.html"))
-				logger.info("homepage.html did not exist- copied to " + GuildNetwork.WEB_DEFAULT_PATH);
+			if(IOHandler.copyFileToExternalPath("web/homepage.html", GuildNetwork.WEB_PATH + "/homepage.html"))
+				logger.info("homepage.html did not exist- copied to " + GuildNetwork.WEB_PATH);
 
-			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_DEFAULT_PATH + "/home.css"))
-				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_DEFAULT_PATH);
+			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_PATH + "/home.css"))
+				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_PATH);
 		}
 		catch(IOException e)
 		{

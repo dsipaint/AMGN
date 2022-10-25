@@ -24,7 +24,7 @@ public class GuildNetwork
 	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
-	public static final String WEB_DEFAULT_PATH = "./web"; //path for all web assets
+	public static final String WEB_PATH = "./web"; //path for all web assets
 	
 	
 	/** 
