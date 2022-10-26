@@ -42,10 +42,8 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class AMGN
 {
 	/*
-	  1. make some template pages DONE
-	  2. if these do not exist in some external location, copy them out of the jar to this location DONE
-	  3. use this location for spring
-	*/
+	 * TODO: make homepage a template
+	 */
 
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
