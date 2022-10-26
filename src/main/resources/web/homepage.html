@@ -14,21 +14,21 @@
                 <em>powered by AMGN</em>
             </div>
 
-            <div class="topright" id="signin">
+            <div class="topright notoken" id="signin">
                 <a href="https://discord.com/oauth2/authorize?response_type=code&client_id={client_id}scope=identify%20guilds&state={our_state}&redirect_uri={our_uri}e&prompt=none">Sign in with Discord</a>
             </div>
-            <div class="topright" id="accountinfo">
+            <div class="topright token" id="accountinfo">
                 <div class="topright" id="signout" onclick="">
                     Sign out
                 </div>
                 <div class="topright">{Username}</div>
                 <img src="{user pfp}" alt="profile picture" width="30" height="30">
             </div>
-            <div class="topright" id="guildselector" onclick="">
+            <div class="topright token" id="guildselector" onclick="">
                 Select Guild
             </div>
         </div>
-        <div id="pluginlist">
+        <div id="pluginlist" class="token">
             <!-- TODO: need to design function to add plugin details to main area -->
             <div class="plugin" onclick="">
                 {Plugin name 1}
@@ -43,7 +43,7 @@
                 {Plugin name 4}
             </div>
         </div>
-        <div id="maincontent">
+        <div id="maincontent" class="token">
             <div id="plugintitle">
                 <img src="{plugin image}" alt="plugin image" width="70" height="70">
                 <h1>{plugin name}</h1>
@@ -55,7 +55,7 @@
             <div id="savesettings"  onclick="">Save Settings</div>
         </div>
 
-        <div id="nocontent">
+        <div id="nocontent" class="notoken">
             <h1>Hey there!</h1>
             <p>
                 Welcome to the webpanel for ${botname}. If you want to configure the bot for one or more servers, make sure you sign in <a href="">here</a>.
