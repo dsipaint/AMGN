@@ -224,6 +224,9 @@ public class AMGN
 
 			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_PATH + "/home.css"))
 				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_PATH);
+
+			if(IOHandler.copyFileToExternalPath("web/cleanup.js", GuildNetwork.WEB_PATH + "/cleanup.js"))
+				logger.info("cleanup.js did not exist- copied to " + GuildNetwork.WEB_PATH);
 		}
 		catch(IOException e)
 		{

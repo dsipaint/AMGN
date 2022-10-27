@@ -5,9 +5,12 @@
         <title th:text="${botname} + '- powered by AMGN'"></title>
         <link rel="stylesheet" type="text/css" href="home.css"/>
         <link rel="icon" type="image/x-icon" th:href="${botpfp}">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="cleanup.js"></script>
     </head>
 
-    <body>
+    <body onload="toggleLoginVisibility()">
         <div id="topbanner">
             <img class="topleft" th:src="${botpfp}", alt="bot image" width="70" height="70">
             <div class="topleft">
