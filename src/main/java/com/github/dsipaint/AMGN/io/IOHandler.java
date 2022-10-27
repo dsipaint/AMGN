@@ -113,6 +113,18 @@ public class IOHandler
 	{
 		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("token");
 	}
+
+	@SuppressWarnings("unchecked")
+	public static final String readClientId(String path) throws FileNotFoundException
+	{
+		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("clientid");
+	}
+
+	@SuppressWarnings("unchecked")
+	public static final String readRedirectUri(String path) throws FileNotFoundException
+	{
+		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("redirecturi");
+	}
 	
 	
 	/** 

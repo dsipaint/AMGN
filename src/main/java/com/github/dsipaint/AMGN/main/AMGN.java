@@ -116,6 +116,17 @@ public class AMGN
 
 		try
 		{
+			logger.info("Reading webpanel settings from network settings- clientid and redirect uri");
+			GuildNetwork.clientid = IOHandler.readClientId(GuildNetwork.NETWORKINFO_PATH);
+			GuildNetwork.redirecturi = IOHandler.readRedirectUri(GuildNetwork.NETWORKINFO_PATH);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		try
+		{
 			logger.info("Reading operators and guild data from network settings...");
 			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.yml
 			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.yml
@@ -123,7 +134,6 @@ public class AMGN
 		catch(IOException e)
 		{
 			e.printStackTrace();
-			System.exit(1); //exit if not able to read network settings
 		}
 		
 		logger.info("Loading guild members, adding default guild settings for missing network.yml guilds...");

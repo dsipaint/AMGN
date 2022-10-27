@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
+import com.github.dsipaint.AMGN.entities.Guild;
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.main.AMGN;
 
 @Controller
@@ -17,6 +19,8 @@ public class WebpanelController
     {
         model.addAttribute("botname", AMGN.bot.getSelfUser().getName());
         model.addAttribute("botpfp", AMGN.bot.getSelfUser().getAvatarUrl());
+        model.addAttribute("clientid", GuildNetwork.clientid);
+        model.addAttribute("redirecturi", GuildNetwork.redirecturi);
         return "homepage";
     }
 

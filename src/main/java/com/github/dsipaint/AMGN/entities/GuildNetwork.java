@@ -20,6 +20,8 @@ public class GuildNetwork
 	
 	public static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
 	public static List<Long> operators;
+	public static String clientid;
+	public static String redirecturi;
 	
 	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
