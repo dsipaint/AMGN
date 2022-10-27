@@ -237,6 +237,9 @@ public class AMGN
 
 			if(IOHandler.copyFileToExternalPath("web/cleanup.js", GuildNetwork.WEB_PATH + "/cleanup.js"))
 				logger.info("cleanup.js did not exist- copied to " + GuildNetwork.WEB_PATH);
+
+			if(IOHandler.copyFileToExternalPath("web/plugindisplay.js", GuildNetwork.WEB_PATH + "/plugindisplay.js"))
+				logger.info("plugindisplay.js did not exist- copied to " + GuildNetwork.WEB_PATH);
 		}
 		catch(IOException e)
 		{
