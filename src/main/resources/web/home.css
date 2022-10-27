@@ -134,6 +134,6 @@ p > a {
     color: white;
 }
 
-.token .notoken {
+.token, .notoken {
     display: none;
 }

@@ -7,10 +7,10 @@ function toggleLoginVisibility()
         var cookie = cookies[i].split("=");
         if(cookie[0] == "discordtoken")
         {
-            $(".notoken").show();
+            $(".token").show();
             return;
         }
     }
 
-    $(".token").show();
+    $(".notoken").show();
 }
