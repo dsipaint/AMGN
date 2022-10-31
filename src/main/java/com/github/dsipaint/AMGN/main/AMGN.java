@@ -41,10 +41,6 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 @SpringBootApplication
 public class AMGN
 {
-	/*
-	 * TODO: make homepage a template
-	 */
-
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
@@ -118,6 +114,7 @@ public class AMGN
 		{
 			logger.info("Reading webpanel settings from network settings- clientid and redirect uri");
 			GuildNetwork.clientid = IOHandler.readClientId(GuildNetwork.NETWORKINFO_PATH);
+			GuildNetwork.clientsecret = IOHandler.readClientSecret(GuildNetwork.NETWORKINFO_PATH);
 			GuildNetwork.redirecturi = IOHandler.readRedirectUri(GuildNetwork.NETWORKINFO_PATH);
 		}
 		catch(IOException e)

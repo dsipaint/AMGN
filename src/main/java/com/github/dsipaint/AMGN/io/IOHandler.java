@@ -121,6 +121,12 @@ public class IOHandler
 	}
 
 	@SuppressWarnings("unchecked")
+	public static final String readClientSecret(String path) throws FileNotFoundException
+	{
+		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("clientsecret");
+	}
+
+	@SuppressWarnings("unchecked")
 	public static final String readRedirectUri(String path) throws FileNotFoundException
 	{
 		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("redirecturi");

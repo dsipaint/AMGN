@@ -1,6 +1,7 @@
 token: 1234567890afdlfjfkadadsfnkfasd
 
 clientid: 127348349832489324
+clientsecret: 127348349832489324
 redirecturi: "https://localhost/redirect"
 
 operators:
