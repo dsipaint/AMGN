@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,9 @@ import com.github.dsipaint.AMGN.main.AMGN;
 @Controller
 public class WebpanelController
 {
-    static final String TOKEN_URL="https://discord.com/api/oauth2/token";
+    static final String TOKEN_URL="https://discord.com/api/oauth2/token",
+        API_URL = "https://discord.com/api/v10",
+        IMAGE_URL = "https://cdn.discordapp.com/avatars/userid/hash.png";
 
     @RequestMapping("/webpanel")
     public String getCustomWebpanel(Model model)
@@ -51,24 +55,29 @@ public class WebpanelController
         HttpEntity<Map<String, Object>> authentity = new HttpEntity<>(authbody);
         
         ResponseEntity<JsonNode> tokenresp = template.postForEntity(TOKEN_URL, authentity, JsonNode.class);
-
+        String usertoken = tokenresp.getBody().get("access_token").asText();
         //for username and pfp try GETting /users/me
+        HttpHeaders userinfoheaders = new HttpHeaders();
+        userinfoheaders.set("Authorization", "Bearer " + usertoken);
+        ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
 
-        Cookie token = new Cookie("discord_token", tokenresp.getBody().get("access_token").asText());
+
+        Cookie token = new Cookie("discord_token", usertoken);
         token.setPath("/webpanel");
         response.addCookie(token);
 
-        Cookie username = new Cookie("discord_username", "");
+        Cookie username = new Cookie("discord_username", userinfo.getBody().get("username").asText());
         username.setPath("/webpanel");
         response.addCookie(token);
 
-        Cookie pfp = new Cookie("discord_pfp", "");
+        Cookie pfp = new Cookie("discord_pfp",
+            IMAGE_URL.replace("userid", userinfo.getBody().get("id").asText())
+            .replace("hash", userinfo.getBody().get("avatar").asText()));
         pfp.setPath("/webpanel");
         response.addCookie(token);
 
         //return a redirect page
-        //redirect page should take user back to the webpanel
-        return "";
+        return "redirect";
     }
 
     @Bean
