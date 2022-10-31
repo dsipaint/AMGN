@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,14 +46,17 @@ public class WebpanelController
     {
         //add login cookies
         RestTemplate template = new RestTemplate();
-        Map<String, Object> authbody = new HashMap<String, Object>();
-        authbody.put("client_id", GuildNetwork.clientid);
-        authbody.put("client_secret", GuildNetwork.clientsecret);
-        authbody.put("code", code);
-        authbody.put("grant_type", "authorization_code");
-        authbody.put("redirect_uri", GuildNetwork.redirecturi);
+        StringBuilder authparams = new StringBuilder()
+            .append("client_id=" + GuildNetwork.clientid)
+            .append("&client_secret=" + GuildNetwork.clientsecret)
+            .append("&code=" + code)
+            .append("&grant_type=authorization_code")
+            .append("&redirect_uri=" + GuildNetwork.redirecturi);
 
-        HttpEntity<Map<String, Object>> authentity = new HttpEntity<>(authbody);
+        HttpHeaders auth_headers = new HttpHeaders();
+        auth_headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<String> authentity = new HttpEntity<String>(authparams.toString(), auth_headers);
         
         ResponseEntity<JsonNode> tokenresp = template.postForEntity(TOKEN_URL, authentity, JsonNode.class);
         String usertoken = tokenresp.getBody().get("access_token").asText();
@@ -68,13 +72,13 @@ public class WebpanelController
 
         Cookie username = new Cookie("discord_username", userinfo.getBody().get("username").asText());
         username.setPath("/webpanel");
-        response.addCookie(token);
+        response.addCookie(username);
 
         Cookie pfp = new Cookie("discord_pfp",
             IMAGE_URL.replace("userid", userinfo.getBody().get("id").asText())
             .replace("hash", userinfo.getBody().get("avatar").asText()));
         pfp.setPath("/webpanel");
-        response.addCookie(token);
+        response.addCookie(pfp);
 
         //return a redirect page
         return "redirect";
