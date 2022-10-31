@@ -22,7 +22,7 @@
             </div>
 
             <div class="topright notoken" id="signin">
-                <a href="'https://discord.com/oauth2/authorize?response_type=code&client_id=' + ${clientid} + '&scope=identify%20guilds&redirect_uri=' + ${redirecturi} + '&prompt=none'">Sign in with Discord</a>
+                <a th:href="'https://discord.com/oauth2/authorize?response_type=code&client_id=' + ${clientid} + '&scope=identify guilds&redirect_uri=' + ${redirecturi} + '&prompt=none'">Sign in with Discord</a>
             </div>
             <div class="topright token" id="accountinfo">
                 <div class="topright" id="signout" onclick="">
@@ -55,7 +55,7 @@
         <div id="nocontent" class="notoken">
             <h1>Hey there!</h1>
             <p>
-                Welcome to the webpanel for ${botname}. If you want to configure the bot for one or more servers, make sure you sign in <a href="'https://discord.com/oauth2/authorize?response_type=code&client_id=' + ${clientid} + '&scope=identify%20guilds&redirect_uri=' + ${redirecturi} + '&prompt=none'">here</a>.
+                Welcome to the webpanel for ${botname}. If you want to configure the bot for one or more servers, make sure you sign in <a th:href="'https://discord.com/oauth2/authorize?response_type=code&client_id=' + ${clientid} + '&scope=identify guilds&redirect_uri=' + ${redirecturi} + '&prompt=none'">here</a>.
                 <br><br><b>TODO: al (guy who made this), add more promotional content here!</b>
             </p>
         </div>
