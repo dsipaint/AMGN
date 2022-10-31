@@ -10,7 +10,6 @@ function toggleLoginVisibility()
             for(var j = 0; j < cookies.length; j++)
             {
                 var cookie2 = cookies[j].split("=");
-                console.log(cookie2);
                 if(cookie2[0] == "discord_username")
                     $("#username").text(cookie2[1]);
                 else if(cookie2[0] == "discord_pfp")
