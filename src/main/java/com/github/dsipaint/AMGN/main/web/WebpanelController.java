@@ -1,8 +1,5 @@
 package com.github.dsipaint.AMGN.main.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
