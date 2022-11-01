@@ -26,8 +26,8 @@ function toggleLoginVisibility()
 
 function clearcookies()
 {
-    document.cookie = "discord_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "discord_username=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "discord_pfp=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "discord_token=;path=/webpanel;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "discord_username=;path=/webpanel;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "discord_pfp=;path=/webpanel;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     location.reload();
 }
