@@ -24,10 +24,11 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.main.AMGN;
-
-import net.dv8tion.jda.api.entities.Guild;
 
 @Controller
 public class WebpanelController
@@ -94,13 +95,29 @@ public class WebpanelController
     //returns a list of guilds for this bot, for an authenticated user
     @GetMapping(value="/webpanel/api/guilds", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Guild> getBotGuilds(HttpServletRequest request)
+    public JsonNode getBotGuilds(HttpServletRequest request)
     {
+        TOKEN_CACHE.add("12345");
+        if(request.getCookies() == null)
+            return null;
+
         for(Cookie c : request.getCookies())
         {
             if(c.getName().equals("discord_token")
                 && TOKEN_CACHE.contains(c.getValue()))
-                return AMGN.bot.getGuilds();
+                {
+                    ObjectMapper mapper = new ObjectMapper();
+                    ArrayNode guild_data = mapper.createArrayNode();
+                    AMGN.bot.getGuilds().forEach(guild -> {
+                        ObjectNode objectnode = mapper.createObjectNode();
+                        objectnode.put("id", guild.getId());
+                        objectnode.put("name", guild.getName());
+                        objectnode.put("picture", guild.getIconUrl());
+                        guild_data.add(objectnode);
+                    });
+
+                    return guild_data;
+                }
         }
 
         return null;
