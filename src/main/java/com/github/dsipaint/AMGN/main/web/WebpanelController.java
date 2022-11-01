@@ -1,6 +1,10 @@
 package com.github.dsipaint.AMGN.main.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
@@ -11,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -21,12 +26,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.main.AMGN;
 
+import net.dv8tion.jda.api.entities.Guild;
+
 @Controller
 public class WebpanelController
 {
     static final String TOKEN_URL="https://discord.com/api/oauth2/token",
         API_URL = "https://discord.com/api/v10",
         IMAGE_URL = "https://cdn.discordapp.com/avatars/userid/hash.png";
+
+    static List<String> TOKEN_CACHE = new ArrayList<String>(); //yes, this is a bad idea: change this in the future
 
     @RequestMapping("/webpanel")
     public String getCustomWebpanel(Model model)
@@ -79,6 +88,20 @@ public class WebpanelController
 
         //return a redirect page
         return "redirect";
+    }
+
+    //returns a list of guilds for this bot, for an authenticated user
+    @GetMapping("/webpanel/api/guilds")
+    public List<Guild> getBotGuilds(HttpServletRequest request)
+    {
+        for(Cookie c : request.getCookies())
+        {
+            if(c.getName().equals("discord_token")
+                && TOKEN_CACHE.contains(c.getValue()))
+                return AMGN.bot.getGuilds();
+        }
+
+        return null;
     }
 
     @Bean
