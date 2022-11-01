@@ -92,7 +92,7 @@ public class WebpanelController
     }
 
     //returns a list of guilds for this bot, for an authenticated user
-    @GetMapping("/webpanel/api/guilds")
+    @GetMapping(value="/webpanel/api/guilds", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<Guild> getBotGuilds(HttpServletRequest request)
     {
