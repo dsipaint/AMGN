@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
@@ -92,6 +93,7 @@ public class WebpanelController
 
     //returns a list of guilds for this bot, for an authenticated user
     @GetMapping("/webpanel/api/guilds")
+    @ResponseBody
     public List<Guild> getBotGuilds(HttpServletRequest request)
     {
         for(Cookie c : request.getCookies())
