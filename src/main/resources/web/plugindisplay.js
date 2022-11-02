@@ -10,10 +10,10 @@ class PluginConfig extends React.Component
         return(
             <div>
                 <div id="plugintitle">
-                    <img src="{plugin image}" alt="plugin image" width="70" height="70"/>
-                    <h1>{pluginname}</h1>
+                    <img src="" alt="plugin image" width="70" height="70"/>
+                    <h1>pluginname</h1>
                 </div>
-                <p>{Plugindescription}</p>
+                <p>Plugindescription</p>
                 <div id="options">
                     options go here
                 </div>
