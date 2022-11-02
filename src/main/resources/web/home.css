@@ -103,6 +103,11 @@ html {
     padding: 10px;
 }
 
+#maincontent > div {
+    height: 100%;
+    margin: 0px;
+}
+
 #plugintitle {
     height: 10%;
 }
