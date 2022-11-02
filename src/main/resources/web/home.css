@@ -92,14 +92,16 @@ html {
     width: 20%;
     height: 100%;
     float: left;
+    clear: left;
     border-right: 2px solid #4A4A4A;
 }
 
 #maincontent {
     height: 100%;
-    width: 77%;
+    width: 76%;
     float: left;
     padding: 10px;
+    border: 2px solid red;
 }
 
 #plugintitle {
