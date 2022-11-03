@@ -12,6 +12,7 @@
         <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
         <script src="cleanup.js"></script>
         <script src="plugindisplay.js" type="text/babel"></script>
+        <script src="guilddisplay.js" type="text/babel"></script>
     </head>
 
     <body onload="toggleLoginVisibility()">
@@ -32,9 +33,7 @@
                 <div id="username" class="topright">{Username}</div>
                 <img id="userpfp" src="" alt="profile picture" width="30" height="30">
             </div>
-            <div class="topright token" id="guildselector" onclick="">
-                Select Guild
-            </div>
+            <div class="topright token" id="guildselector"></div>
         </div>
         <div id="pluginlist" class="token">
             <!-- TODO: need to design function to add plugin details to main area -->
