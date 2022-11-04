@@ -74,6 +74,7 @@ html {
     border-radius: 5px;
     padding: 0px;
     cursor: pointer;
+    width: fit-content;
 }
 
 #guildselector > div {
@@ -83,8 +84,23 @@ html {
     height: 100%;
 }
 
+#selectedguild{
+    margin: 0px;
+    padding: 0px;
+}
+
+#selectedguild > div {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
+}
+
+#selectedguildimg {
+    border-radius: 15px;
+    float: left;
+}
+
 .guild {
-    width: 100%;
     margin: 0px;
     margin-top: 5px;
     height: 35px;
