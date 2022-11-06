@@ -1,9 +1,13 @@
 package com.github.dsipaint.AMGN.main;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.security.auth.login.LoginException;
 
@@ -225,23 +229,26 @@ public class AMGN
 			if(!webdir.exists())
 				webdir.mkdir();
 
-			//by default we use ./web/ for web assets
-			if(IOHandler.copyFileToExternalPath("web/homepage.html", GuildNetwork.WEB_PATH + "/homepage.html"))
-				logger.info("homepage.html did not exist- copied to " + GuildNetwork.WEB_PATH);
+			//extract any missing web assets to external location
+			File jarfile = new File(new AMGN().getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+			JarFile jarinstance = new JarFile(jarfile);
+			Enumeration<JarEntry> entries = jarinstance.entries();
+			while(entries.hasMoreElements())
+			{
+				JarEntry entry = entries.nextElement();
+				//extract internal resources held in web/ directory
+				if(entry.getName().startsWith("web/") && !entry.getName().equals("web/"))
+				{
+					//copy these if they are missing, to ./web/
+					String plainfilename = entry.getName().replace("web/", "");
+					if(IOHandler.copyFileToExternalPath(entry.getName(), GuildNetwork.WEB_PATH + "/" + plainfilename))
+						logger.info(plainfilename + " did not exist- copied to " + GuildNetwork.WEB_PATH);
+				}
+			}
 
-			if(IOHandler.copyFileToExternalPath("web/home.css", GuildNetwork.WEB_PATH + "/home.css"))
-				logger.info("home.css did not exist- copied to " + GuildNetwork.WEB_PATH);
-
-			if(IOHandler.copyFileToExternalPath("web/cleanup.js", GuildNetwork.WEB_PATH + "/cleanup.js"))
-				logger.info("cleanup.js did not exist- copied to " + GuildNetwork.WEB_PATH);
-
-			if(IOHandler.copyFileToExternalPath("web/plugindisplay.js", GuildNetwork.WEB_PATH + "/plugindisplay.js"))
-				logger.info("plugindisplay.js did not exist- copied to " + GuildNetwork.WEB_PATH);
-
-			if(IOHandler.copyFileToExternalPath("web/redirect.html", GuildNetwork.WEB_PATH + "/redirect.html"))
-				logger.info("redirect.html did not exist- copied to " + GuildNetwork.WEB_PATH);
+			jarinstance.close();
 		}
-		catch(IOException e)
+		catch(IOException | URISyntaxException e)
 		{
 			e.printStackTrace();
 		}
