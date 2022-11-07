@@ -68,6 +68,10 @@ public class WebpanelController
         
         ResponseEntity<JsonNode> tokenresp = template.postForEntity(TOKEN_URL, authentity, JsonNode.class);
         String usertoken = tokenresp.getBody().get("access_token").asText();
+
+        if(!TOKEN_CACHE.contains(usertoken))
+            TOKEN_CACHE.add(usertoken);
+
         //for username and pfp try GETting /users/me
         HttpHeaders userinfoheaders = new HttpHeaders();
         userinfoheaders.set("Authorization", "Bearer " + usertoken);
@@ -97,7 +101,6 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotGuilds(HttpServletRequest request)
     {
-        TOKEN_CACHE.add("12345");
         if(request.getCookies() == null)
             return null;
 
