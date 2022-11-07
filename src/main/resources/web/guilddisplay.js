@@ -14,13 +14,11 @@ class GuildList extends React.Component
     {
         super(props);
         $.get("/webpanel/api/guilds", function(data) {
-            console.log(data);
             //store guild data in array
+            this.state = {
+                guilds: data
+            }
         });
-        //temporary for testing
-        this.state = {
-            guilds: [{"id":"634667687233978388","name":"New Tester","picture":"https://cdn.discordapp.com/icons/634667687233978388/41a5b3467bfd8992a5e1f487d87822ad.png"},{"id":"700489766642253828","name":"Unnamed Project Dev Server","picture":null},{"id":"614260951167795204","name":"Safe Haven","picture":"https://cdn.discordapp.com/icons/614260951167795204/f95daf2df262f87aba0e64f197f28396.png"}],
-        }
 
         this.selectGuild = this.selectGuild.bind(this);
     }
