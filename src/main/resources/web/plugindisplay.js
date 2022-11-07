@@ -1,8 +1,18 @@
+function sayhi()
+{
+    console.log("hi!!!");
+}
+
 class PluginConfig extends React.Component
 {
     constructor(props)
     {
         super(props);
+        $.get("/webpanel/api/plugins", function(data) {
+            this.state = {
+                names: data
+            }
+        });
     }
 
     render()
@@ -10,18 +20,11 @@ class PluginConfig extends React.Component
         return(
             <div>
                 <div id="pluginlist">
-                    <div class="plugin" onclick="">
-                        Plugin name 1
-                    </div>
-                    <div class="plugin" onclick="">
-                        Plugin name 2
-                    </div>
-                    <div class="plugin" onclick="">
-                        Plugin name 3
-                    </div>
-                    <div class="plugin" onclick="">
-                        Plugin name 4
-                    </div>
+                    {this.state.names.map(({name}) =>(
+                        <div class="plugin" onClick={sayhi}>
+                            {name}
+                        </div>
+                    ))}
                 </div>
                 <div id="pluginsettings">
                     <div id="plugintitle">
