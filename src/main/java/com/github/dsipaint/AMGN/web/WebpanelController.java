@@ -111,20 +111,54 @@ public class WebpanelController
         {
             if(c.getName().equals("discord_token")
                 && TOKEN_CACHE.contains(c.getValue()))
-                {
-                    ObjectMapper mapper = new ObjectMapper();
-                    ArrayNode guild_data = mapper.createArrayNode();
-                    AMGN.bot.getGuilds().forEach(guild -> {
-                        ObjectNode objectnode = mapper.createObjectNode();
-                        objectnode.put("id", guild.getId());
-                        objectnode.put("name", guild.getName());
-                        objectnode.put("picture", guild.getIconUrl());
-                        guild_data.add(objectnode);
-                    });
+            {
+                ObjectMapper mapper = new ObjectMapper();
+                ArrayNode guild_data = mapper.createArrayNode();
+                AMGN.bot.getGuilds().forEach(guild -> {
+                    ObjectNode objectnode = mapper.createObjectNode();
+                    objectnode.put("id", guild.getId());
+                    objectnode.put("name", guild.getName());
+                    objectnode.put("picture", guild.getIconUrl());
+                    guild_data.add(objectnode);
+                });
 
-                    response.setStatus(201);
-                    return guild_data;
-                }
+                response.setStatus(201);
+                return guild_data;
+            }
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //returns a list of plugin names that the bot currently has enabled
+    @GetMapping(value="/webpanel/api/plugins", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode getBotPlugins(HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        for(Cookie c : request.getCookies())
+        {
+            if(c.getName().equals("discord_token")
+                && TOKEN_CACHE.contains(c.getValue()))
+            {
+                ObjectMapper mapper = new ObjectMapper();
+                ArrayNode plugin_data = mapper.createArrayNode();
+                AMGN.plugin_listeners.keySet().forEach(plugin ->
+                {
+                    ObjectNode plugin_name = mapper.createObjectNode();
+                    plugin_name.put("name", plugin.getName());
+                    plugin_data.add(plugin_name);
+                });
+
+                response.setStatus(201);
+                return plugin_data;
+            }
         }
 
         response.setStatus(403);
