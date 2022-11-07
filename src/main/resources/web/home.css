@@ -138,6 +138,20 @@ html {
     background-color: #4A4A4A;
 }
 
+#content {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    margin: 0px;
+}
+
+#content > div {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
 #pluginlist {
     width: 20%;
     height: 100%;
@@ -146,16 +160,12 @@ html {
     border-right: 2px solid #4A4A4A;
 }
 
-#maincontent {
+#pluginsettings {
+    float: left;
     height: 100%;
     width: 76%;
-    float: left;
-    padding: 10px;
-}
-
-#maincontent > div {
-    height: 100%;
     margin: 0px;
+    padding-left: 10px;
 }
 
 #plugintitle {
