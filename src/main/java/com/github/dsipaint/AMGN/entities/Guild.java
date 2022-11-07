@@ -1,6 +1,6 @@
 package com.github.dsipaint.AMGN.entities;
 
-import com.github.dsipaint.AMGN.main.AMGN;
+import com.github.dsipaint.AMGN.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;

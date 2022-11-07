@@ -21,10 +21,10 @@ import java.util.jar.JarFile;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 public class IOHandler
 {

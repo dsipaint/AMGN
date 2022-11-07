@@ -88,7 +88,7 @@
 
 					<archive>
             			<manifest>
-              				<mainClass>com.github.dsipaint.AMGN.main.AMGN</mainClass>
+              				<mainClass>com.github.dsipaint.AMGN.AMGN</mainClass>
             			</manifest>
          			 </archive>
         		</configuration>

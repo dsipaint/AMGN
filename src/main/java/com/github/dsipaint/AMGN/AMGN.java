@@ -1,4 +1,4 @@
-package com.github.dsipaint.AMGN.main;
+package com.github.dsipaint.AMGN;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;

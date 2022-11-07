@@ -1,4 +1,4 @@
-package com.github.dsipaint.AMGN.main.web;
+package com.github.dsipaint.AMGN.web;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 @Controller
 public class WebpanelController

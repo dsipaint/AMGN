@@ -1,8 +1,8 @@
 package com.github.dsipaint.AMGN.entities.listeners.menu;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.entities.Message;
 
