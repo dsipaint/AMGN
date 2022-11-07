@@ -99,10 +99,13 @@ public class WebpanelController
     //returns a list of guilds for this bot, for an authenticated user
     @GetMapping(value="/webpanel/api/guilds", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonNode getBotGuilds(HttpServletRequest request)
+    public JsonNode getBotGuilds(HttpServletRequest request, HttpServletResponse response)
     {
         if(request.getCookies() == null)
-            return null;
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
 
         for(Cookie c : request.getCookies())
         {
@@ -119,11 +122,13 @@ public class WebpanelController
                         guild_data.add(objectnode);
                     });
 
+                    response.setStatus(201);
                     return guild_data;
                 }
         }
 
-        return null;
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
     @Bean
