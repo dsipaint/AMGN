@@ -9,7 +9,7 @@ class PluginConfig extends React.Component
     {
         super(props);
         this.state = {
-            names: []
+            plugins: []
         }
 
         this.updatePluginNames = this.updatePluginNames.bind(this);
@@ -23,7 +23,7 @@ class PluginConfig extends React.Component
     updatePluginNames(data)
     {
         this.setState({
-            names: data
+            plugins: data
         });
     }
 
@@ -32,7 +32,7 @@ class PluginConfig extends React.Component
         return(
             <div>
                 <div id="pluginlist">
-                    {this.state.names.map(({name}) =>(
+                    {this.state.plugins.map(({name}) =>(
                         <div class="plugin" onClick={sayhi}>
                             {name}
                         </div>
