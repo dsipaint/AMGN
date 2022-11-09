@@ -42,17 +42,21 @@ class PluginConfig extends React.Component
                         </div>
                     ))}
                 </div>
-                <div id="pluginsettings">
-                    <div id="plugintitle">
-                        <img src={this.state.selectedplugin.picture} alt="plugin image" width="70" height="70"/>
-                        <h1>{this.state.selectedplugin.name + " " + this.state.selectedplugin.version}</h1>
+
+                {
+                    this.state.selectedplugin.name === undefined ? "No plugin selected!" :
+                    <div id="pluginsettings">  
+                        <div id="plugintitle">
+                            <img src={this.state.selectedplugin.picture} alt="plugin image" width="70" height="70"/>
+                            <h1>{this.state.selectedplugin.name + " " + this.state.selectedplugin.version}</h1>
+                        </div>
+                        <p>{this.state.selectedplugin.description}</p>
+                        <div id="options">
+                            options go here
+                        </div>
+                        <div id="savesettings"  onclick="">Save Settings</div>
                     </div>
-                    <p>{this.state.selectedplugin.description}</p>
-                    <div id="options">
-                        options go here
-                    </div>
-                    <div id="savesettings"  onclick="">Save Settings</div>
-                </div>
+                }
             </div>
         );
     }
