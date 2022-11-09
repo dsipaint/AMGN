@@ -131,7 +131,7 @@ public class WebpanelController
         // return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
-    //returns a list of plugin names that the bot currently has enabled
+    //returns a list of plugins that the bot currently has enabled
     @GetMapping(value="/webpanel/api/plugins", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JsonNode getBotPlugins(HttpServletRequest request, HttpServletResponse response)
@@ -151,9 +151,13 @@ public class WebpanelController
                 ArrayNode plugin_data = mapper.createArrayNode();
                 AMGN.plugin_listeners.keySet().forEach(plugin ->
                 {
-                    ObjectNode plugin_name = mapper.createObjectNode();
-                    plugin_name.put("name", plugin.getName());
-                    plugin_data.add(plugin_name);
+                    ObjectNode plugin_obj = mapper.createObjectNode();
+                    plugin_obj.put("name", plugin.getName());
+                    plugin_obj.put("author", plugin.getAuthor());
+                    plugin_obj.put("description", plugin.getDescription());
+                    plugin_obj.put("picture", plugin.getImageUrl());
+                    plugin_obj.put("version", plugin.getVersion());
+                    plugin_data.add(plugin_obj);
                 });
 
                 response.setStatus(201);
