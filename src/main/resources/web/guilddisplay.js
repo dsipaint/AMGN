@@ -53,7 +53,7 @@ class GuildList extends React.Component
     {
         return(
             <div>
-                { <div id="selectedguild" onClick={toggleGuilds}>{this.state.selectedguild ? "Select Guild" : <div><img id="selectedguildimg" src={this.state.selectedguild.picture} width="30" height="30"></img><div>{this.state.selectedguild.name}</div></div>}</div> }
+                { <div id="selectedguild" onClick={toggleGuilds}>{this.state.selectedguild.name === undefined ? "Select Guild" : <div><img id="selectedguildimg" src={this.state.selectedguild.picture} width="30" height="30"></img><div>{this.state.selectedguild.name}</div></div>}</div> }
                 {this.state.guilds.map(({picture, name, id}) =>(
                     <div class="guild" onClick={() => this.selectGuild(id)}><img src={picture} width="30" height="30"></img><div>{name}</div></div>
                 ))}
