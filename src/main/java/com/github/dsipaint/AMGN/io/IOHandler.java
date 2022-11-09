@@ -39,9 +39,7 @@ public class IOHandler
 	@SuppressWarnings("unchecked")
 	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException
 	{
-		Yaml yaml_in = new Yaml();
-		Map<String, Object> network_data = yaml_in.load(new FileReader(new File(path)));
-		ArrayList<Object> guilds_data = (ArrayList<Object>) network_data.get("guild_data");
+		ArrayList<Object> guilds_data = (ArrayList<Object>) readYamlData(GuildNetwork.NETWORKINFO_PATH, "guild_data");
 		HashMap<Long, Guild> guilds_out = new HashMap<Long, Guild>();
 
 		guilds_data.forEach(obj ->
