@@ -101,17 +101,17 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotGuilds(HttpServletRequest request, HttpServletResponse response)
     {
-        if(request.getCookies() == null)
-        {
-            response.setStatus(403);
-            return new ObjectMapper().createObjectNode().put("error", "invalid token");
-        }
+        // if(request.getCookies() == null)
+        // {
+        //     response.setStatus(403);
+        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // }
 
-        for(Cookie c : request.getCookies())
-        {
-            if(c.getName().equals("discord_token")
-                && TOKEN_CACHE.contains(c.getValue()))
-            {
+        // for(Cookie c : request.getCookies())
+        // {
+        //     if(c.getName().equals("discord_token")
+        //         && TOKEN_CACHE.contains(c.getValue()))
+        //     {
                 ObjectMapper mapper = new ObjectMapper();
                 ArrayNode guild_data = mapper.createArrayNode();
                 AMGN.bot.getGuilds().forEach(guild -> {
@@ -124,11 +124,11 @@ public class WebpanelController
 
                 response.setStatus(201);
                 return guild_data;
-            }
-        }
+        //     }
+        // }
 
-        response.setStatus(403);
-        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
     //returns a list of plugin names that the bot currently has enabled
@@ -136,17 +136,17 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotPlugins(HttpServletRequest request, HttpServletResponse response)
     {
-        if(request.getCookies() == null)
-        {
-            response.setStatus(403);
-            return new ObjectMapper().createObjectNode().put("error", "invalid token");
-        }
+        // if(request.getCookies() == null)
+        // {
+        //     response.setStatus(403);
+        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // }
 
-        for(Cookie c : request.getCookies())
-        {
-            if(c.getName().equals("discord_token")
-                && TOKEN_CACHE.contains(c.getValue()))
-            {
+        // for(Cookie c : request.getCookies())
+        // {
+        //     if(c.getName().equals("discord_token")
+        //         && TOKEN_CACHE.contains(c.getValue()))
+        //     {
                 ObjectMapper mapper = new ObjectMapper();
                 ArrayNode plugin_data = mapper.createArrayNode();
                 AMGN.plugin_listeners.keySet().forEach(plugin ->
@@ -158,11 +158,11 @@ public class WebpanelController
 
                 response.setStatus(201);
                 return plugin_data;
-            }
-        }
+        //     }
+        // }
 
-        response.setStatus(403);
-        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
     @Bean

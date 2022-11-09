@@ -8,10 +8,22 @@ class PluginConfig extends React.Component
     constructor(props)
     {
         super(props);
-        $.get("/webpanel/api/plugins", function(data) {
-            this.state = {
-                names: data
-            }
+        this.state = {
+            names: []
+        }
+
+        this.updatePluginNames = this.updatePluginNames.bind(this);
+    }
+
+    async componentDidMount()
+    {
+        await $.get("/webpanel/api/plugins", this.updatePluginNames);
+    }
+
+    updatePluginNames(data)
+    {
+        this.setState({
+            names: data
         });
     }
 
