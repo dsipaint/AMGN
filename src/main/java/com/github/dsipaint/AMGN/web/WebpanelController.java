@@ -169,6 +169,44 @@ public class WebpanelController
         // return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
+    // //returns the network info for the network
+    // //for now, any authorised user may use this but I may change it to just operators
+    // @GetMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    // public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
+    // {
+    //     // if(request.getCookies() == null)
+    //     // {
+    //     //     response.setStatus(403);
+    //     //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    //     // }
+
+    //     // for(Cookie c : request.getCookies())
+    //     // {
+    //     //     if(c.getName().equals("discord_token")
+    //     //         && TOKEN_CACHE.contains(c.getValue()))
+    //     //     {
+    //         ObjectMapper mapper = new ObjectMapper();
+    //         ArrayNode plugin_data = mapper.createArrayNode();
+    //         AMGN.plugin_listeners.keySet().forEach(plugin ->
+    //         {
+    //             ObjectNode plugin_obj = mapper.createObjectNode();
+    //             plugin_obj.put("name", plugin.getName());
+    //             plugin_obj.put("author", plugin.getAuthor());
+    //             plugin_obj.put("description", plugin.getDescription());
+    //             plugin_obj.put("picture", plugin.getImageUrl());
+    //             plugin_obj.put("version", plugin.getVersion());
+    //             plugin_data.add(plugin_obj);
+    //         });
+
+    //         response.setStatus(201);
+    //         return plugin_data;
+    // //     }
+    // // }
+
+    // // response.setStatus(403);
+    // // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    // }
+
     @Bean
     public FileTemplateResolver secondaryTemplateResolver()
     {

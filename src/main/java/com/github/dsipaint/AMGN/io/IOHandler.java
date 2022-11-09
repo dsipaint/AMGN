@@ -88,48 +88,13 @@ public class IOHandler
 	
 	/** 
 	 * @param path
-	 * @return List<Long>
-	 * @throws FileNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	public static final List<Long> readOperators(String path) throws FileNotFoundException
-	{
-		List<Long> ops_in = (List<Long>) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("operators");
-		List<Long> ops_out = new ArrayList<Long>();
-
-		ops_in.forEach(op_id ->{ops_out.add((long) op_id);});
-		
-		return ops_out;
-	}
-	
-	
-	/** 
-	 * @param path
 	 * @return String
 	 * @throws FileNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public static final String readToken(String path) throws FileNotFoundException
+	public static final Object readYamlData(String path, String value) throws FileNotFoundException
 	{
-		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("token");
-	}
-
-	@SuppressWarnings("unchecked")
-	public static final String readClientId(String path) throws FileNotFoundException
-	{
-		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("clientid");
-	}
-
-	@SuppressWarnings("unchecked")
-	public static final String readClientSecret(String path) throws FileNotFoundException
-	{
-		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("clientsecret");
-	}
-
-	@SuppressWarnings("unchecked")
-	public static final String readRedirectUri(String path) throws FileNotFoundException
-	{
-		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("redirecturi");
+		return ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get(value);
 	}
 	
 	

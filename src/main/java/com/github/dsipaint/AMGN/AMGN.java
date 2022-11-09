@@ -76,7 +76,7 @@ public class AMGN
 		try
 		{
 			logger.info("Reading token from network settings...");
-			token = IOHandler.readToken(GuildNetwork.NETWORKINFO_PATH); //read token from network.yml
+			token = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "token");//read token from network.yml
 		}
 		catch (IOException e)
 		{
@@ -117,9 +117,9 @@ public class AMGN
 		try
 		{
 			logger.info("Reading webpanel settings from network settings- clientid and redirect uri");
-			GuildNetwork.clientid = IOHandler.readClientId(GuildNetwork.NETWORKINFO_PATH);
-			GuildNetwork.clientsecret = IOHandler.readClientSecret(GuildNetwork.NETWORKINFO_PATH);
-			GuildNetwork.redirecturi = IOHandler.readRedirectUri(GuildNetwork.NETWORKINFO_PATH);
+			GuildNetwork.clientid = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "clientid");
+			GuildNetwork.clientsecret = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "clientsecret");
+			GuildNetwork.redirecturi = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "redirecturi");
 		}
 		catch(IOException e)
 		{
@@ -130,7 +130,7 @@ public class AMGN
 		{
 			logger.info("Reading operators and guild data from network settings...");
 			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.yml
-			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.yml
+			GuildNetwork.operators = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
 		}
 		catch(IOException e)
 		{
