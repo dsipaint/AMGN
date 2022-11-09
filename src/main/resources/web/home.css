@@ -172,16 +172,23 @@ html {
     height: 10%;
 }
 
-#plugintitle > h1 {
-    width: fit-content;
+#plugintitletxt {
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
     float: left;
+    border: 2px solid red;
+}
+
+#plugintitletxt > h1 {
+    width: fit-content;
     margin: 0px;
 }
 
 #plugintitle > img {
-    float: left;
     margin-right: 20px;
     border-radius: 35px;
+    float: left;
 }
 
 #savesettings {
