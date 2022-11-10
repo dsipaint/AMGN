@@ -174,6 +174,7 @@ public class WebpanelController
     //returns the network info for the network
     //for now, any authorised user may use this but I may change it to just operators
     @GetMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     @SuppressWarnings("unchecked")
     public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
     {
