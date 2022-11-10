@@ -1,5 +1,6 @@
 package com.github.dsipaint.AMGN.web;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.io.IOHandler;
 
 @Controller
 public class WebpanelController
@@ -169,43 +171,57 @@ public class WebpanelController
         // return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
-    // //returns the network info for the network
-    // //for now, any authorised user may use this but I may change it to just operators
-    // @GetMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
-    // public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
-    // {
-    //     // if(request.getCookies() == null)
-    //     // {
-    //     //     response.setStatus(403);
-    //     //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-    //     // }
+    //returns the network info for the network
+    //for now, any authorised user may use this but I may change it to just operators
+    @GetMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @SuppressWarnings("unchecked")
+    public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
+    {
+        // if(request.getCookies() == null)
+        // {
+        //     response.setStatus(403);
+        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // }
 
-    //     // for(Cookie c : request.getCookies())
-    //     // {
-    //     //     if(c.getName().equals("discord_token")
-    //     //         && TOKEN_CACHE.contains(c.getValue()))
-    //     //     {
-    //         ObjectMapper mapper = new ObjectMapper();
-    //         ArrayNode plugin_data = mapper.createArrayNode();
-    //         AMGN.plugin_listeners.keySet().forEach(plugin ->
-    //         {
-    //             ObjectNode plugin_obj = mapper.createObjectNode();
-    //             plugin_obj.put("name", plugin.getName());
-    //             plugin_obj.put("author", plugin.getAuthor());
-    //             plugin_obj.put("description", plugin.getDescription());
-    //             plugin_obj.put("picture", plugin.getImageUrl());
-    //             plugin_obj.put("version", plugin.getVersion());
-    //             plugin_data.add(plugin_obj);
-    //         });
+        // for(Cookie c : request.getCookies())
+        // {
+        //     if(c.getName().equals("discord_token")
+        //         && TOKEN_CACHE.contains(c.getValue()))
+        //     {
+                    ObjectMapper mapper = new ObjectMapper();
+                    ObjectNode network_data = mapper.createObjectNode();
+                    try
+                    {
+                        
+                        ArrayNode operators = mapper.createArrayNode();
+                        ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
+                        op_data.forEach(operators::add);
+                        network_data.set("operators", operators);
 
-    //         response.setStatus(201);
-    //         return plugin_data;
-    // //     }
-    // // }
+                        ArrayNode guilds = mapper.createArrayNode();
+                        IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH).values().forEach(guild -> {
+                            ObjectNode obj = mapper.createObjectNode();
+                            obj.put("id", guild.getGuild_id());
+                            obj.put("modlogs", guild.getModlogs());
+                            obj.put("modrole", guild.getModrole());
+                            obj.put("prefix", guild.getPrefix());
+                        });
+                        network_data.set("guild_data", guilds);
+                    }
+                    catch(FileNotFoundException e)
+                    {
+                        e.printStackTrace();
+                    }
 
-    // // response.setStatus(403);
-    // // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+                    response.setStatus(201);
+                    return network_data;
+    //            }
+    //     }
     // }
+
+    // response.setStatus(403);
+    // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
 
     @Bean
     public FileTemplateResolver secondaryTemplateResolver()
