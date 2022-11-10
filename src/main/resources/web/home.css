@@ -141,7 +141,6 @@ html {
 #content {
     height: 100%;
     width: 100%;
-    padding: 10px;
     margin: 0px;
 }
 
@@ -196,16 +195,21 @@ ul {
 
 .listinput {
     background-color: #4A4A4A;
+    color: white;
     border: 1px solid white;
     border-radius: 5px;
     margin-right: 5px;
 }
 
-#addelement {
+.addelement {
     cursor: pointer;
-    border: 2px solid #4A4A4A;
+    font-size: large;
     border-radius: 5px;
     user-select: none;
+}
+
+.objectdisplay {
+    margin-bottom: 10px;
 }
 
 #savesettings {

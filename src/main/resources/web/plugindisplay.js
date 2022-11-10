@@ -1,3 +1,11 @@
+var id = 0;
+
+function givename()
+{
+    id++;
+    return "nested-item" + id;
+}
+
 class ListItem extends React.Component
 {
     constructor(props)
@@ -24,16 +32,115 @@ class ListItem extends React.Component
 
     render()
     {
-        console.log(this.state.list);
         return (
             <div>
                 <ul>
                     {this.state.list.map(function(item){
-                        return <li>{item}</li>;
+                        switch(typeof item)
+                        {
+                            case "object":
+                                if(Array.isArray(item))
+                                    return <ListItem list={item} listname={givename()}/>
+                                else
+                                    return <ObjectItem object={item} objectname={givename()} />;
+                            
+                            case "undefined":
+                                return;
+
+                            case "boolean":
+                                return "Boolean item TODO: need to make";
+
+                            default:
+                                return <DefaultItem item={item} />;
+                        }
                     })}
+                    {this.props.addmore == "true" ? <div><input type="text" id={this.props.listname} class="listinput"></input><span id="class" onClick={this.addElement}>+</span></div> : ""}
                 </ul>
-                <input type="text" id={this.props.listname} class="listinput"></input><span id="addelement" onClick={this.addElement}>+</span>
             </div>
+        );
+    }
+}
+
+class ObjectItem extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            object: props.object
+        }
+    }
+
+    render()
+    {
+        return (
+            <div class="objectdisplay">
+                {
+                    Object.keys(this.state.object).map((key) => {
+                        var item = this.state.object[key];
+                        switch(typeof item)
+                        {
+                            case "object":
+                                if(Array.isArray(item))
+                                    return <ListItem list={item} listname={givename()}/>
+                                else
+                                    return <ObjectItem object={item} objectname={givename()}/>;
+                                    
+                            case "undefined":
+                                return;
+
+                            case "boolean":
+                                return "Boolean item TODO: need to make";
+
+                            default:
+                                return <DefaultItem item={item} name={key}/>;
+                        }
+                    })
+                }
+            </div>
+        );
+    }
+}
+
+class BooleanItem extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+    }
+
+    render()
+    {
+        return (
+            <div>
+                <div class="objectname">
+                    {this.props.name ? this.props.name : ""}
+                </div>
+                <input type="checkbox"></input>
+            </div>
+        );
+    }
+}
+
+class DefaultItem extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            item: props.item
+        }
+    }
+
+    render()
+    {
+        return (
+            <div>
+                <div class="objectname">
+                    {this.props.name ? this.props.name + ":" : ""}
+                </div>
+                <input type="text" value={this.state.item} class="listinput"></input>
+            </div> 
         );
     }
 }
@@ -108,7 +215,9 @@ class PluginConfig extends React.Component
                                 this.state.networkinfo.operators === undefined ? "No network settings to show" :
                                 <div>
                                     <h2>Operators:</h2>
-                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist"/>
+                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist" addmore="true"/>
+                                    <h2>Guild Data:</h2>
+                                    <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" addmore="false"/>
                                 </div>
                             }
                         </div>
