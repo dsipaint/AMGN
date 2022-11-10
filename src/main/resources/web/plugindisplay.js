@@ -1,3 +1,43 @@
+class ListItem extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            list: props.list
+        }
+
+        this.addElement = this.addElement.bind(this);
+    }
+
+    addElement()
+    {
+        if($("#" + this.props.listname).val() == "")
+            return;
+
+        this.setState({
+            list: [...this.state.list, $("#" + this.props.listname).val()]
+        });
+
+        $("#" + this.props.listname).val("");
+    }
+
+    render()
+    {
+        console.log(this.state.list);
+        return (
+            <div>
+                <ul>
+                    {this.state.list.map(function(item){
+                        return <li>{item}</li>;
+                    })}
+                </ul>
+                <input type="text" id={this.props.listname} class="listinput"></input><span id="addelement" onClick={this.addElement}>+</span>
+            </div>
+        );
+    }
+}
+
 class PluginConfig extends React.Component
 {
     constructor(props)
@@ -5,22 +45,32 @@ class PluginConfig extends React.Component
         super(props);
         this.state = {
             plugins: [],
-            selectedplugin: {}
+            selectedplugin: {},
+            networkinfo: {}
         }
 
         this.updatePluginNames = this.updatePluginNames.bind(this);
         this.selectPlugin = this.selectPlugin.bind(this);
+        this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
     }
 
     async componentDidMount()
     {
         await $.get("/webpanel/api/plugins", this.updatePluginNames);
+        await $.get("/webpanel/api/networkinfo", this.setNetworkInfoInState)
     }
 
     updatePluginNames(data)
     {
         this.setState({
             plugins: data
+        });
+    }
+
+    setNetworkInfoInState(data)
+    {
+        this.setState({
+            networkinfo: data
         });
     }
 
@@ -49,8 +99,20 @@ class PluginConfig extends React.Component
                 {
                     this.state.selectedplugin.name === undefined ? 
                     
-                    <div id="plugintitle">
-                        <h1>Edit Network Settings</h1>
+                    <div>
+                        <div id="plugintitle">
+                            <h1>Edit Network Settings</h1>
+                        </div>
+                        <div id="options">
+                            {
+                                this.state.networkinfo.operators === undefined ? "No network settings to show" :
+                                <div>
+                                    <h2>Operators:</h2>
+                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist"/>
+                                </div>
+                            }
+                        </div>
+                        <div id="savesettings"  onclick="">Save Settings</div>
                     </div>
 
                     :
@@ -65,7 +127,7 @@ class PluginConfig extends React.Component
                         </div>
                         <p>{this.state.selectedplugin.description}</p>
                         <div id="options">
-                            options go here
+                            Options go here
                         </div>
                         <div id="savesettings"  onclick="">Save Settings</div>
                     </div>
