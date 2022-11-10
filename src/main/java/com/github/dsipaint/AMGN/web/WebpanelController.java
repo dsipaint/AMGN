@@ -206,6 +206,8 @@ public class WebpanelController
                             obj.put("modlogs", guild.getModlogs());
                             obj.put("modrole", guild.getModrole());
                             obj.put("prefix", guild.getPrefix());
+
+                            guilds.add(obj);
                         });
                         network_data.set("guild_data", guilds);
                     }
