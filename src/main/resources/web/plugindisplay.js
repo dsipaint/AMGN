@@ -16,6 +16,7 @@ class ListItem extends React.Component
         }
 
         this.addElement = this.addElement.bind(this);
+        this.removeElement = this.removeElement.bind(this);
     }
 
     addElement()
@@ -30,8 +31,26 @@ class ListItem extends React.Component
         $("#" + this.props.listname).val("");
     }
 
+    removeElement(element)
+    {
+        this.setState({
+            list: this.state.list.filter(function(item){
+                return item !== element;
+            })
+        });
+    }
+
     render()
     {
+        var removebutton = function (element)
+        {
+            return (
+                this.props.removemore == "true" ? <span class="removeelement" onClick={() => {this.removeElement(element)}}>x</span> : ""
+            );
+        };
+
+        removebutton = removebutton.bind(this);
+
         return (
             <div>
                 <ul>
@@ -40,21 +59,47 @@ class ListItem extends React.Component
                         {
                             case "object":
                                 if(Array.isArray(item))
-                                    return <ListItem list={item} listname={givename()}/>
+                                {
+                                    return (
+                                        <div>
+                                            <ListItem list={item} listname={givename()}/>
+                                            {removebutton(item)}
+                                        </div>
+                                    );
+                                }
                                 else
-                                    return <ObjectItem object={item} objectname={givename()} />;
+                                {
+                                    return (
+                                        <div>
+                                            <ObjectItem object={item} objectname={givename()} />
+                                            {removebutton(item)}
+                                        </div>
+                                    );   
+                                }
                             
                             case "undefined":
                                 return;
 
                             case "boolean":
-                                return "Boolean item TODO: need to make";
+                                return (
+                                    <div>
+                                        <BooleanItem name={key}/>
+                                        {removebutton(item)}
+                                    </div>
+                                );
 
                             default:
-                                return <DefaultItem item={item} />;
+                                return (
+                                    <div>
+                                        <DefaultItem item={item} />
+                                        {removebutton(item)}
+                                    </div>
+                                );
                         }
-                    })}
-                    {this.props.addmore == "true" ? <div><input type="text" id={this.props.listname} class="listinput"></input><span id="class" onClick={this.addElement}>+</span></div> : ""}
+                    })
+                    }
+                    {this.props.addmore == "true" ? <div><input type="text" id={this.props.listname} class="listinput"></input>
+                    <span id="addelement" class="addelement" onClick={this.addElement}>+</span></div> : ""}
                 </ul>
             </div>
         );
@@ -90,7 +135,7 @@ class ObjectItem extends React.Component
                                 return;
 
                             case "boolean":
-                                return "Boolean item TODO: need to make";
+                                return <BooleanItem name={key}/>;
 
                             default:
                                 return <DefaultItem item={item} name={key}/>;
@@ -215,9 +260,9 @@ class PluginConfig extends React.Component
                                 this.state.networkinfo.operators === undefined ? "No network settings to show" :
                                 <div>
                                     <h2>Operators:</h2>
-                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist" addmore="true"/>
+                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist" addmore="true" removemore="true"/>
                                     <h2>Guild Data:</h2>
-                                    <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" addmore="false"/>
+                                    <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" addmore="false" removemore="false"/>
                                 </div>
                             }
                         </div>

@@ -208,6 +208,11 @@ ul {
     user-select: none;
 }
 
+.removeelement {
+    cursor: pointer;
+    color: rgb(252, 70, 70);
+}
+
 .objectdisplay {
     margin-bottom: 10px;
 }
