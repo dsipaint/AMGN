@@ -233,9 +233,18 @@ class PluginConfig extends React.Component
         });
     }
 
-    setNetworkInfo()
+    setNetworkInfo(operators, guildinfo)
     {
-        console.log("setting network info");
+        console.log(operators);
+        console.log(guildinfo);
+        $.ajax("/webpanel/api/networkinfo", {
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify({
+                operators: operators,
+                guild_data: guildinfo
+            })
+        });
     }
 
     selectPlugin(plugin)
@@ -278,7 +287,7 @@ class PluginConfig extends React.Component
                                 </div>
                             }
                         </div>
-                        <div id="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+                        <div id="savesettings"  onClick={() => {this.setNetworkInfo(this.state.networkinfo.operators, this.state.networkinfo.guild_data)}}>Save Settings</div>
                     </div>
 
                     :
