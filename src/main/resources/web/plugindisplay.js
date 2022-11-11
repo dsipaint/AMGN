@@ -204,6 +204,7 @@ class PluginConfig extends React.Component
         this.updatePluginNames = this.updatePluginNames.bind(this);
         this.selectPlugin = this.selectPlugin.bind(this);
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
+        this.setNetworkInfo = this.setNetworkInfo.bind(this);
     }
 
     async componentDidMount()
@@ -224,6 +225,11 @@ class PluginConfig extends React.Component
         this.setState({
             networkinfo: data
         });
+    }
+
+    setNetworkInfo()
+    {
+        console.log("setting network info");
     }
 
     selectPlugin(plugin)
@@ -266,7 +272,7 @@ class PluginConfig extends React.Component
                                 </div>
                             }
                         </div>
-                        <div id="savesettings"  onclick="">Save Settings</div>
+                        <div id="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
                     </div>
 
                     :
