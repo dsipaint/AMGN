@@ -1,8 +1,11 @@
 package com.github.dsipaint.AMGN.web;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
+import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
@@ -225,6 +231,62 @@ public class WebpanelController
     // response.setStatus(403);
     // return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
+
+        //for now, any authorised user may use this but I may change it to just operators
+        //allows client to save network data
+        @PutMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
+        @ResponseBody
+        @SuppressWarnings("unchecked")
+        public JsonNode putNetworkInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+        {
+            // if(request.getCookies() == null)
+            // {
+            //     response.setStatus(403);
+            //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+            // }
+    
+            // for(Cookie c : request.getCookies())
+            // {
+            //     if(c.getName().equals("discord_token")
+            //         && TOKEN_CACHE.contains(c.getValue()))
+            //     {
+                        ArrayNode ops = body.withArray("operators");
+                        List<Long> new_ops = new ArrayList<Long>();
+                        ops.forEach(op ->{
+                            new_ops.add(op.asLong());
+                        });
+                        GuildNetwork.operators = new_ops;
+
+                        ArrayNode guild_data = body.withArray("guild_data");
+                        Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
+                        guild_data.forEach(guildnode ->{
+                            new_guild_data.put(guildnode.get("id").asLong(),
+                                new Guild(guildnode.get("id").asLong(),
+                                        guildnode.get("modlogs").asLong(),
+                                        guildnode.get("modrole").asLong(),
+                                        guildnode.get("prefix").asText()
+                            ));
+                        });
+                        GuildNetwork.guild_data = new_guild_data;
+
+                        try
+                        {
+                            IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        response.setStatus(201);
+                        return new ObjectMapper().createObjectNode().put("success", "network data saved");
+        //         }
+        //     }
+        // }
+    
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
 
     @Bean
     public FileTemplateResolver secondaryTemplateResolver()

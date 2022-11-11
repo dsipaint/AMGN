@@ -2,7 +2,9 @@
 + Add webpanel!!
 + Generate network.yml automatically if one is not found
 + Add a program exits if network settings cannot be read
-~ Refine internal methods for fetching network data
+TODO
+add guild-specific plugin configs
+add plugin whitelists/blacklists
 
 ## alpha-1.4.1
 ~ Actually made optional plugin.yml parameters optional, in line with the documentation
