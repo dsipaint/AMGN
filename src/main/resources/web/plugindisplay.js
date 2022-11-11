@@ -176,11 +176,21 @@ class DefaultItem extends React.Component
             item: props.item,
             id: givename()
         }
+
+        this.onValueChange = this.onValueChange.bind(this);
     }
 
     componentDidMount()
     {
         $("#" + this.state.id).val(this.state.item);
+        $("#" + this.state.id).on("input", this.onValueChange);
+    }
+
+    onValueChange(event)
+    {
+        this.setState({
+            item: $("#" + this.state.id).val()
+        });
     }
 
     render()
@@ -235,8 +245,6 @@ class PluginConfig extends React.Component
 
     setNetworkInfo(operators, guildinfo)
     {
-        console.log(operators);
-        console.log(guildinfo);
         $.ajax("/webpanel/api/networkinfo", {
             method: "PUT",
             contentType: "application/json",
