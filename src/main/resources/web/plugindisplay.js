@@ -221,6 +221,8 @@ class PluginConfig extends React.Component
         this.selectPlugin = this.selectPlugin.bind(this);
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
+
+        this.debugdisplaystate = this.debugdisplaystate.bind(this);
     }
 
     async componentDidMount()
@@ -262,6 +264,11 @@ class PluginConfig extends React.Component
         });
     }
 
+    debugdisplaystate()
+    {
+        console.log(this.state.networkinfo);
+    }
+
     render()
     {
         return(
@@ -296,6 +303,7 @@ class PluginConfig extends React.Component
                             }
                         </div>
                         <div id="savesettings"  onClick={() => {this.setNetworkInfo(this.state.networkinfo.operators, this.state.networkinfo.guild_data)}}>Save Settings</div>
+                        <div onClick={this.debugdisplaystate}>DEBUG BUTTON</div>
                     </div>
 
                     :
