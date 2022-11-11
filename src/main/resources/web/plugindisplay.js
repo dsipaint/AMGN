@@ -173,8 +173,14 @@ class DefaultItem extends React.Component
     {
         super(props);
         this.state = {
-            item: props.item
+            item: props.item,
+            id: givename()
         }
+    }
+
+    componentDidMount()
+    {
+        $("#" + this.state.id).val(this.state.item);
     }
 
     render()
@@ -184,7 +190,7 @@ class DefaultItem extends React.Component
                 <div class="objectname">
                     {this.props.name ? this.props.name + ":" : ""}
                 </div>
-                <input type="text" value={this.state.item} class="listinput"></input>
+                <input type="text" id={this.state.id} class="listinput"></input>
             </div> 
         );
     }
