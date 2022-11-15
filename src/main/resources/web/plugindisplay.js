@@ -28,6 +28,8 @@ class ListItem extends React.Component
             list: [...this.state.list, $("#" + this.props.listname).val()]
         });
 
+        this.props.updatehook(this.props.updatekey, this.state.list);
+
         $("#" + this.props.listname).val("");
     }
 
@@ -38,6 +40,8 @@ class ListItem extends React.Component
                 return item !== element;
             })
         });
+
+        this.props.updatehook(this.props.updatekey, this.state.list);
     }
 
     render()
@@ -221,6 +225,7 @@ class PluginConfig extends React.Component
         this.selectPlugin = this.selectPlugin.bind(this);
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
+        this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
 
         this.debugdisplaystate = this.debugdisplaystate.bind(this);
     }
@@ -243,6 +248,23 @@ class PluginConfig extends React.Component
         this.setState({
             networkinfo: data
         });
+    }
+
+    setPropertiesForChildren(key, value)
+    {
+        var newstate = {...this.state};
+        var keypath = key.split(".");
+        for(var i = 0; i < keypath.length; i++)
+        {
+            if(!newstate[keypath[i]])
+                newstate[keypath[i]] = {}
+
+            newstate = newstate[keypath[i]];
+        }
+
+
+        newstate[keypath.length - 1] = value;
+        this.setState(newstate);
     }
 
     setNetworkInfo(operators, guildinfo)
@@ -296,7 +318,7 @@ class PluginConfig extends React.Component
                                 this.state.networkinfo.operators === undefined ? "No network settings to show" :
                                 <div>
                                     <h2>Operators:</h2>
-                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist" addmore="true" removemore="true"/>
+                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
                                     <h2>Guild Data:</h2>
                                     <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" addmore="false" removemore="false"/>
                                 </div>
