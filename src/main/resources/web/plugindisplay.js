@@ -226,6 +226,7 @@ class PluginConfig extends React.Component
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
         this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
+        this.setProperty = this.setProperty.bind(this);
 
         this.debugdisplaystate = this.debugdisplaystate.bind(this);
     }
@@ -250,20 +251,21 @@ class PluginConfig extends React.Component
         });
     }
 
-    setPropertiesForChildren(key, value)
-    {
-        var newstate = {...this.state};
-        var keypath = key.split(".");
-        for(var i = 0; i < keypath.length; i++)
-        {
-            if(!newstate[keypath[i]])
-                newstate[keypath[i]] = {}
-
-            newstate = newstate[keypath[i]];
+    setProperty(obj, path, value){
+        const [head, ...rest] = path.split('.')
+    
+        return {
+            ...obj,
+            [head]: rest.length
+                ? this.setProperty(obj[head], rest.join('.'), value)
+                : value
         }
+    }
 
+    setPropertiesForChildren(path, value)
+    {
+        var newstate = this.setProperty(this.state, path, value);
 
-        newstate[keypath.length - 1] = value;
         this.setState(newstate);
     }
 
