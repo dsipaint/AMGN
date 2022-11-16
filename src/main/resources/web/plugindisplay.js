@@ -54,11 +54,13 @@ class ListItem extends React.Component
         };
 
         removebutton = removebutton.bind(this);
+        var updatehookref = this.props.updatehook;
+        var updatekeyref = this.props.updatekey;
 
         return (
             <div>
                 <ul>
-                    {this.state.list.map(function(item){
+                    {this.state.list.map(function(item, i){
                         switch(typeof item)
                         {
                             case "object":
@@ -84,18 +86,10 @@ class ListItem extends React.Component
                             case "undefined":
                                 return;
 
-                            case "boolean":
-                                return (
-                                    <div>
-                                        <BooleanItem name={key}/>
-                                        {removebutton(item)}
-                                    </div>
-                                );
-
                             default:
                                 return (
                                     <div>
-                                        <DefaultItem item={item} />
+                                        <DefaultItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                         {removebutton(item)}
                                     </div>
                                 );
@@ -195,6 +189,8 @@ class DefaultItem extends React.Component
         this.setState({
             item: $("#" + this.state.id).val()
         });
+
+        this.props.updatehook(this.props.updatekey, $("#" + this.state.id).val());
     }
 
     render()
@@ -322,7 +318,7 @@ class PluginConfig extends React.Component
                                     <h2>Operators:</h2>
                                     <ListItem list={this.state.networkinfo.operators} listname="operatorlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
                                     <h2>Guild Data:</h2>
-                                    <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" addmore="false" removemore="false"/>
+                                    {/* <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/> */}
                                 </div>
                             }
                         </div>
