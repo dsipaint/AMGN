@@ -68,7 +68,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div>
-                                            <ListItem list={item} listname={givename()}/>
+                                            <ListItem list={item} listname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                             {removebutton(item)}
                                         </div>
                                     );
@@ -77,7 +77,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div>
-                                            <ObjectItem object={item} objectname={givename()} />
+                                            <ObjectItem object={item} objectname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                             {removebutton(item)}
                                         </div>
                                     );   
@@ -116,6 +116,9 @@ class ObjectItem extends React.Component
 
     render()
     {
+        var updatehookref = this.props.updatehook;
+        var updatekeyref = this.props.updatekey;
+
         return (
             <div class="objectdisplay">
                 {
@@ -125,18 +128,18 @@ class ObjectItem extends React.Component
                         {
                             case "object":
                                 if(Array.isArray(item))
-                                    return <ListItem list={item} listname={givename()}/>
+                                    return <ListItem list={item} listname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
                                 else
-                                    return <ObjectItem object={item} objectname={givename()}/>;
+                                    return <ObjectItem object={item} objectname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
                                     
                             case "undefined":
                                 return;
 
                             case "boolean":
-                                return <BooleanItem name={key}/>;
+                                return <BooleanItem name={key} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
 
                             default:
-                                return <DefaultItem item={item} name={key}/>;
+                                return <DefaultItem item={item} name={key} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
                         }
                     })
                 }
@@ -318,7 +321,7 @@ class PluginConfig extends React.Component
                                     <h2>Operators:</h2>
                                     <ListItem list={this.state.networkinfo.operators} listname="operatorlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
                                     <h2>Guild Data:</h2>
-                                    {/* <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/> */}
+                                    <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
                                 </div>
                             }
                         </div>
