@@ -6,6 +6,23 @@ function givename()
     return "nested-item" + id;
 }
 
+class Config extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+    }
+
+    render()
+    {
+        if(Arrays.isArray(this.props.item))
+            return <ListItem updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+        else
+            return <ObjectItem updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+            
+    }
+}
+
 class ListItem extends React.Component
 {
     constructor(props)
@@ -21,16 +38,17 @@ class ListItem extends React.Component
 
     addElement()
     {
-        if($("#" + this.props.listname).val() == "")
+        if($("#" + this.props.updatekey.replace("\.", "_")).val() == "")
             return;
 
+        var updatekeyref = this.props.updatekey.replace("\.", "_");
         this.setState({
-            list: [...this.state.list, $("#" + this.props.listname).val()]
+            list: [...this.state.list, $("#" + updatekeyref).val()]
         });
 
         this.props.updatehook(this.props.updatekey, this.state.list);
-
-        $("#" + this.props.listname).val("");
+        
+        $("#" + this.props.updatekey.replace("\.", "_")).val("");
     }
 
     removeElement(element)
@@ -68,7 +86,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div>
-                                            <ListItem list={item} listname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                             {removebutton(item)}
                                         </div>
                                     );
@@ -77,7 +95,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div>
-                                            <ObjectItem object={item} objectname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                             {removebutton(item)}
                                         </div>
                                     );   
@@ -96,7 +114,7 @@ class ListItem extends React.Component
                         }
                     })
                     }
-                    {this.props.addmore == "true" ? <div><input type="text" id={this.props.listname} class="listinput"></input>
+                    {this.props.addmore == "true" ? <div><input type="text" id={this.props.updatekey.replace("\.", "_")} class="listinput"></input>
                     <span id="addelement" class="addelement" onClick={this.addElement}>+</span></div> : ""}
                 </ul>
             </div>
@@ -128,9 +146,9 @@ class ObjectItem extends React.Component
                         {
                             case "object":
                                 if(Array.isArray(item))
-                                    return <ListItem list={item} listname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                    return <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
                                 else
-                                    return <ObjectItem object={item} objectname={givename()} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                    return <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
                                     
                             case "undefined":
                                 return;
@@ -319,9 +337,9 @@ class PluginConfig extends React.Component
                                 this.state.networkinfo.operators === undefined ? "No network settings to show" :
                                 <div>
                                     <h2>Operators:</h2>
-                                    <ListItem list={this.state.networkinfo.operators} listname="operatorlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
+                                    <ListItem list={this.state.networkinfo.operators} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
                                     <h2>Guild Data:</h2>
-                                    <ListItem list={this.state.networkinfo.guild_data} listname="guildlist" updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
+                                    <ListItem list={this.state.networkinfo.guild_data} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
                                 </div>
                             }
                         </div>
