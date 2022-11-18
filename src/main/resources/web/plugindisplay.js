@@ -67,7 +67,7 @@ class ListItem extends React.Component
         var removebutton = function (element)
         {
             return (
-                this.props.removemore == "true" ? <span class="removeelement" onClick={() => {this.removeElement(element)}}>x</span> : ""
+                this.props.removemore == "true" ? <i class="fa-solid fa-xmark removeelement" onClick={() => {this.removeElement(element)}}></i> : ""
             );
         };
 
@@ -78,7 +78,7 @@ class ListItem extends React.Component
         return (
             <div>
                 <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1] + ":"}</h2>
-                <ul>
+                <div class="list">
                     {this.state.list.map(function(item, i){
                         switch(typeof item)
                         {
@@ -86,7 +86,7 @@ class ListItem extends React.Component
                                 if(Array.isArray(item))
                                 {
                                     return (
-                                        <div>
+                                        <div class="completelistitem">
                                             <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                             {removebutton(item)}
                                         </div>
@@ -95,7 +95,7 @@ class ListItem extends React.Component
                                 else
                                 {
                                     return (
-                                        <div>
+                                        <div class="completelistitem">
                                             <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                             {removebutton(item)}
                                         </div>
@@ -107,7 +107,7 @@ class ListItem extends React.Component
 
                             default:
                                 return (
-                                    <div>
+                                    <div class="completelistitem">
                                         <DefaultItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                         {removebutton(item)}
                                     </div>
@@ -115,9 +115,9 @@ class ListItem extends React.Component
                         }
                     })
                     }
-                    {this.props.addmore == "true" ? <div><input type="text" id={this.props.updatekey.replace("\.", "_")} class="listinput"></input>
-                    <span id="addelement" class="addelement" onClick={this.addElement}>+</span></div> : ""}
-                </ul>
+                    {this.props.addmore == "true" ? <div class="listinput"><input type="text" id={this.props.updatekey.replace("\.", "_")}></input>
+                    <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i></div> : ""}
+                </div>
             </div>
         );
     }
@@ -198,7 +198,7 @@ class BooleanItem extends React.Component
     render()
     {
         return (
-            <div>
+            <div class="defaultinputwrapper">
                 <div class="objectname">
                     {this.props.name ? this.props.name : ""}
                 </div>
@@ -239,7 +239,7 @@ class DefaultItem extends React.Component
     render()
     {
         return (
-            <div>
+            <div class="inputwrapper">
                 <div class="objectname">
                     {this.props.name ? this.props.name + ":" : ""}
                 </div>
@@ -379,7 +379,7 @@ class PluginConfig extends React.Component
                 {
                     this.state.selectedplugin.name === undefined ? 
                     
-                    <div>
+                    <div id="pluginsettings">
                         <div id="plugintitle">
                             <h1>Edit Network Settings</h1>
                         </div>

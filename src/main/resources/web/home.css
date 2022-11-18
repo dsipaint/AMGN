@@ -193,28 +193,67 @@ ul {
     list-style: none;
 }
 
-.listinput {
+#options {
+    height: 100%;
+}
+
+#options > div {
+    height: 100%;
+}
+
+h2{
+    clear: left;
+    margin: 0px;
+}
+
+input[type=text] {
     background-color: #4A4A4A;
     color: white;
     border: 1px solid white;
     border-radius: 5px;
     margin-right: 5px;
+    float: left;
+    clear: left;
+}
+
+.listinput {
+    float: left;
+    clear: left;
+}
+
+.completelistitem{
+    height: fit-content;
+    float: left;
+    clear: left;
+}
+
+#defaultinputwrapper {
+    width: fit-content;
 }
 
 .addelement {
     cursor: pointer;
-    font-size: large;
-    border-radius: 5px;
-    user-select: none;
+}
+
+.inputwrapper {
+    float: left;
+    clear: right;
+    margin-bottom: 5px;
 }
 
 .removeelement {
     cursor: pointer;
     color: rgb(252, 70, 70);
+    float: left;
 }
 
 .objectdisplay {
     margin-bottom: 10px;
+    width: 100%;
+}
+
+.objectdisplay > .inputwrapper {
+    width: 100%;
 }
 
 #savesettings {

@@ -47,6 +47,26 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 @SpringBootApplication
 public class AMGN
 {
+	/*
+	 * TODO:
+	 * 
+	 * 1. BASIC WEBPANEL
+	 * 	make client-side value updates more synchronous
+	 * 	add specific number value because currently numbers are parsed as strings on the frontend, and then subsequently returned as strings
+	 *  beautify frontend
+	 *  add support for more than just config.yml
+	 * 	show all guild data in frontend Network settings, even if not listed in network.yml
+	 *  bolster security to add operator checks
+	 * 
+	 * 2. NEW AMGN FEATURES INTEGRATED
+	 * 	add plugin blacklist/whitelisting feature
+	 * 	Add ability to save configs
+	 * 	Add "default config value" return value if config get method is used and no value is set
+	 * 	add support for global/guild-specific plugin configs
+	 * 	provide some support for tokens set as environment variables rather than in network.yml i.e. token: env could be valid network.yml syntax or something
+	 * 	add custom colours to network.yml
+	 * 	add support for role ids not just user ids in network.yml
+	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
