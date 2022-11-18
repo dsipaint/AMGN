@@ -339,6 +339,36 @@ public class WebpanelController
         // return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        //for now, any authorised user may use this but I may change it to just operators
+        //allows client to save network data
+        @PutMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
+        @ResponseBody
+        @SuppressWarnings("unchecked")
+        public JsonNode putPluginConfigInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+        {
+            // if(request.getCookies() == null)
+            // {
+            //     response.setStatus(403);
+            //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+            // }
+    
+            // for(Cookie c : request.getCookies())
+            // {
+            //     if(c.getName().equals("discord_token")
+            //         && TOKEN_CACHE.contains(c.getValue()))
+            //     {
+                        System.out.println(body.toString());
+
+                        response.setStatus(201);
+                        return new ObjectMapper().createObjectNode().put("success", "network data saved");
+        //         }
+        //     }
+        // }
+    
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
     @Bean
     public FileTemplateResolver secondaryTemplateResolver()
     {

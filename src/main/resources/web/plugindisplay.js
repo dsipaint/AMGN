@@ -155,7 +155,7 @@ class ObjectItem extends React.Component
                                 return;
 
                             case "boolean":
-                                return <BooleanItem name={key} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                return <BooleanItem name={key} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
 
                             default:
                                 return <DefaultItem item={item} name={key} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
@@ -172,6 +172,27 @@ class BooleanItem extends React.Component
     constructor(props)
     {
         super(props);
+        this.state = {
+            value: props.value,
+            id: givename()
+        }; 
+
+        this.onValueChange = this.onValueChange.bind(this);
+    }
+
+    componentDidMount()
+    {
+        $("#" + this.state.id).prop("checked", this.state.value);
+        $("#" + this.state.id).change(this.onValueChange);
+    }
+
+    onValueChange(event)
+    {
+        this.setState({
+            value: !this.state.value
+        });
+        
+        this.props.updatehook(this.props.updatekey, this.state.value);
     }
 
     render()
@@ -181,7 +202,7 @@ class BooleanItem extends React.Component
                 <div class="objectname">
                     {this.props.name ? this.props.name : ""}
                 </div>
-                <input type="checkbox"></input>
+                <input id={this.state.id} type="checkbox"></input>
             </div>
         );
     }
@@ -242,7 +263,7 @@ class PluginConfig extends React.Component
         this.getPluginNames = this.getPluginNames.bind(this);
         this.selectPlugin = this.selectPlugin.bind(this);
         this.setPluginInfoInState = this.setPluginInfoInState.bind(this);
-        // this.setPluginInfo = this.setPluginInfo.bind(this);
+        this.setPluginInfo = this.setPluginInfo.bind(this);
 
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
@@ -284,6 +305,15 @@ class PluginConfig extends React.Component
         });
     }
 
+    setPluginInfo()
+    {
+        $.ajax("/webpanel/api/plugininfo", {
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(this.state.selectedplugin.config)
+        });
+    }
+
     setNetworkInfoInState(data)
     {
         this.setState({
@@ -298,7 +328,7 @@ class PluginConfig extends React.Component
             contentType: "application/json",
             data: JSON.stringify({
                 operators: this.state.networkinfo.operators,
-                guild_data: this.state.networkinfo.guildinfo
+                guild_data: this.state.networkinfo.guild_data
             })
         });
     }
@@ -384,7 +414,7 @@ class PluginConfig extends React.Component
                                 <h2>Sorry! This plugin has no config</h2>
                             }
                         </div>
-                        <div id="savesettings"  onclick={this.setPluginInfo}>Save Settings</div>
+                        <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
                     </div>
                 }
             </div>
