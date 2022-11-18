@@ -1,6 +1,7 @@
 package com.github.dsipaint.AMGN.web;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,10 +202,15 @@ public class WebpanelController
                         obj.put("description", plugin.getDescription());
                         obj.put("picture", plugin.getImageUrl());
                         obj.put("version", plugin.getVersion());
-                        //TODO add config
-                        //grab config using AMGN
-                        //find way to convert YAML format to JSONNode (might be able to do it natively as snakeyaml and jackson both like Objects?)
-                        //send back the jsonnode
+                        try
+                        {
+                            JsonNode pluginconfig = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig("config.yml"))); //TODO: do this on all config files in config dir
+                            obj.set("config", pluginconfig);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
 
 
                         response.setStatus(201);
