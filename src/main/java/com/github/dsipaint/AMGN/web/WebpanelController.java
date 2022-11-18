@@ -1,9 +1,13 @@
 package com.github.dsipaint.AMGN.web;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -26,12 +30,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
+import org.yaml.snakeyaml.Yaml;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
+import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
@@ -300,34 +307,33 @@ public class WebpanelController
             //     if(c.getName().equals("discord_token")
             //         && TOKEN_CACHE.contains(c.getValue()))
             //     {
-                        System.out.println(body.toString());
-                        // ArrayNode ops = body.withArray("operators");
-                        // List<Long> new_ops = new ArrayList<Long>();
-                        // ops.forEach(op ->{
-                        //     new_ops.add(op.asLong());
-                        // });
-                        // GuildNetwork.operators = new_ops;
+                        ArrayNode ops = body.withArray("operators");
+                        List<Long> new_ops = new ArrayList<Long>();
+                        ops.forEach(op ->{
+                            new_ops.add(op.asLong());
+                        });
+                        GuildNetwork.operators = new_ops;
 
-                        // ArrayNode guild_data = body.withArray("guild_data");
-                        // Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
-                        // guild_data.forEach(guildnode ->{
-                        //     new_guild_data.put(guildnode.get("id").asLong(),
-                        //         new Guild(guildnode.get("id").asLong(),
-                        //                 guildnode.get("modlogs").asLong(),
-                        //                 guildnode.get("modrole").asLong(),
-                        //                 guildnode.get("prefix").asText()
-                        //     ));
-                        // });
-                        // GuildNetwork.guild_data = new_guild_data;
+                        ArrayNode guild_data = body.withArray("guild_data");
+                        Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
+                        guild_data.forEach(guildnode ->{
+                            new_guild_data.put(guildnode.get("id").asLong(),
+                                new Guild(guildnode.get("id").asLong(),
+                                        guildnode.get("modlogs").asLong(),
+                                        guildnode.get("modrole").asLong(),
+                                        guildnode.get("prefix").asText()
+                            ));
+                        });
+                        GuildNetwork.guild_data = new_guild_data;
 
-                        // try
-                        // {
-                        //     IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
-                        // }
-                        // catch(IOException e)
-                        // {
-                        //     e.printStackTrace();
-                        // }
+                        try
+                        {
+                            IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
 
                         response.setStatus(201);
                         return new ObjectMapper().createObjectNode().put("success", "network data saved");
@@ -340,17 +346,23 @@ public class WebpanelController
         }
 
         //for now, any authorised user may use this but I may change it to just operators
-        //allows client to save network data
+        //allows client to save plugin configs
         @PutMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
         @ResponseBody
         @SuppressWarnings("unchecked")
-        public JsonNode putPluginConfigInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+        public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
         {
             // if(request.getCookies() == null)
             // {
             //     response.setStatus(403);
             //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
             // }
+
+            if(name == null)
+            {
+                response.setStatus(401);
+                return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
+            }
     
             // for(Cookie c : request.getCookies())
             // {
@@ -358,6 +370,26 @@ public class WebpanelController
             //         && TOKEN_CACHE.contains(c.getValue()))
             //     {
                         System.out.println(body.toString());
+
+                        ObjectMapper mapper = new ObjectMapper();
+                        Map<String, Object> result = mapper.convertValue(body, new TypeReference<Map<String, Object>>(){});
+                        for(Plugin plugin : AMGN.plugin_listeners.keySet())
+                        {
+                            if(plugin.getName().equalsIgnoreCase(name))
+                            {
+                                try
+                                {
+                                    //TODO: add formal config-writing
+                                    Yaml yaml_out = new Yaml(IOHandler.dumperopts);
+                                    //TODO: make work for all files, not just config.yml
+                                    yaml_out.dump(result, new FileWriter(new File(plugin.getConfigPath() + "/config.yml")));
+                                }
+                                catch(IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
 
                         response.setStatus(201);
                         return new ObjectMapper().createObjectNode().put("success", "network data saved");

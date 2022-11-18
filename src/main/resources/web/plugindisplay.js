@@ -307,7 +307,7 @@ class PluginConfig extends React.Component
 
     setPluginInfo()
     {
-        $.ajax("/webpanel/api/plugininfo", {
+        $.ajax("/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name, {
             method: "PUT",
             contentType: "application/json",
             data: JSON.stringify(this.state.selectedplugin.config)

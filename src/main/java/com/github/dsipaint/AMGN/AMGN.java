@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
@@ -50,7 +52,6 @@ public class AMGN
 
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
-	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
 	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners;
 	public static void main(String[] args)
@@ -58,6 +59,10 @@ public class AMGN
 		//SETUP
 		logger.info("Commencing setup...");
 		String token = "";
+
+		IOHandler.dumperopts = new DumperOptions();
+		IOHandler.dumperopts.setIndent(2);
+		IOHandler.dumperopts.setDefaultFlowStyle(FlowStyle.BLOCK);
 
 		try
 		{

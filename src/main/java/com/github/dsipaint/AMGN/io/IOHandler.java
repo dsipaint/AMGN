@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.AMGN;
@@ -28,6 +29,7 @@ import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 public class IOHandler
 {
+	public static DumperOptions dumperopts;
 	
 	
 	/** 
@@ -104,7 +106,7 @@ public class IOHandler
 	//writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
 	public static final void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path) throws IOException
 	{
-		Yaml yaml_out = new Yaml();
+		Yaml yaml_out = new Yaml(dumperopts);
 		Map<String, Object> parse_objects = new HashMap<String, Object>();
 
 		//parse token first
