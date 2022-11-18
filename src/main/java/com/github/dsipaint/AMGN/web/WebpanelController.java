@@ -1,11 +1,8 @@
 package com.github.dsipaint.AMGN.web;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
-import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 @Controller
@@ -159,17 +156,61 @@ public class WebpanelController
                 ArrayNode plugin_data = mapper.createArrayNode();
                 AMGN.plugin_listeners.keySet().forEach(plugin ->
                 {
-                    ObjectNode plugin_obj = mapper.createObjectNode();
-                    plugin_obj.put("name", plugin.getName());
-                    plugin_obj.put("author", plugin.getAuthor());
-                    plugin_obj.put("description", plugin.getDescription());
-                    plugin_obj.put("picture", plugin.getImageUrl());
-                    plugin_obj.put("version", plugin.getVersion());
-                    plugin_data.add(plugin_obj);
+                    plugin_data.add(plugin.getName());
                 });
 
                 response.setStatus(201);
                 return plugin_data;
+        //     }
+        // }
+
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //returns a list of plugins that the bot currently has enabled
+    @GetMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode getPluginInfo(@RequestParam(name="name") String name, HttpServletRequest request, HttpServletResponse response)
+    {
+        // if(request.getCookies() == null)
+        // {
+        //     response.setStatus(403);
+        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // }
+
+        if(name == null)
+        {
+            response.setStatus(401);
+            return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
+        }
+
+        // for(Cookie c : request.getCookies())
+        // {
+        //     if(c.getName().equals("discord_token")
+        //         && TOKEN_CACHE.contains(c.getValue()))
+        //     {
+                ObjectMapper mapper = new ObjectMapper();
+                for(Plugin plugin : AMGN.plugin_listeners.keySet())
+                {
+                    if(plugin.getName().equalsIgnoreCase(name))
+                    {
+                        ObjectNode obj = mapper.createObjectNode();
+                        obj.put("name", plugin.getName());
+                        obj.put("author", plugin.getAuthor());
+                        obj.put("description", plugin.getDescription());
+                        obj.put("picture", plugin.getImageUrl());
+                        obj.put("version", plugin.getVersion());
+                        //TODO add config
+
+
+                        response.setStatus(201);
+                        return obj;
+                    }
+                }
+
+                response.setStatus(404);
+                return new ObjectMapper().createObjectNode().put("error", "plugin not found");  
         //     }
         // }
 

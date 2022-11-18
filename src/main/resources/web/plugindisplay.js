@@ -16,9 +16,9 @@ class Config extends React.Component
     render()
     {
         if(Array.isArray(this.props.item))
-            return <ListItem updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+            return <ListItem list={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
         else
-            return <ObjectItem updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+            return <ObjectItem object={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
             
     }
 }
@@ -241,8 +241,11 @@ class PluginConfig extends React.Component
 
         this.updatePluginNames = this.updatePluginNames.bind(this);
         this.selectPlugin = this.selectPlugin.bind(this);
+        this.setPluginInfoInState = this.setPluginInfoInState.bind(this);
+
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
+
         this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
         this.setProperty = this.setProperty.bind(this);
 
@@ -266,6 +269,13 @@ class PluginConfig extends React.Component
     {
         this.setState({
             networkinfo: data
+        });
+    }
+
+    setPluginInfoInState(data)
+    {
+        this.setState({
+            selectedplugin: data
         });
     }
 
@@ -309,16 +319,14 @@ class PluginConfig extends React.Component
         });
     }
 
-    selectPlugin(plugin)
+    async selectPlugin(name)
     {
-        this.setState({
-            selectedplugin: plugin
-        });
+        await $.get("/webpanel/api/plugininfo?name=" + name, this.setPluginInfoInState);
     }
 
     debugdisplaystate()
     {
-        console.log(this.state.networkinfo);
+        console.log(this.state);
     }
 
     render()
@@ -329,8 +337,8 @@ class PluginConfig extends React.Component
                     <div class="plugin" onClick={() => {this.selectPlugin({})}}>
                         Network Settings
                     </div>
-                    {this.state.plugins.map(({name, picture, description, version, author}) =>(
-                        <div class="plugin" onClick={() => {this.selectPlugin({name, picture, description, version, author})}}>
+                    {this.state.plugins.map((name) =>(
+                        <div class="plugin" onClick={() => {this.selectPlugin(name)}}>
                             {name}
                         </div>
                     ))}
@@ -368,7 +376,12 @@ class PluginConfig extends React.Component
                         </div>
                         <p>{this.state.selectedplugin.description}</p>
                         <div id="options">
-                            Options go here
+                            {
+                                this.state.selectedplugin.config ? 
+                                <Config item={this.state.selectedplugin.config} updatehook={this.setPropertiesForChildren} updatekey={"selectedplugin.config"}/>
+                                :
+                                <h2>Sorry! This plugin has no config</h2>
+                            }
                         </div>
                         <div id="savesettings"  onclick="">Save Settings</div>
                     </div>
