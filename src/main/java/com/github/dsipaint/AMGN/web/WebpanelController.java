@@ -202,6 +202,9 @@ public class WebpanelController
                         obj.put("picture", plugin.getImageUrl());
                         obj.put("version", plugin.getVersion());
                         //TODO add config
+                        //grab config using AMGN
+                        //find way to convert YAML format to JSONNode (might be able to do it natively as snakeyaml and jackson both like Objects?)
+                        //send back the jsonnode
 
 
                         response.setStatus(201);

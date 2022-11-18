@@ -321,6 +321,14 @@ class PluginConfig extends React.Component
 
     async selectPlugin(name)
     {
+        if(name == "")
+        {
+            this.setState({
+                selectedplugin: {}
+            });
+            return;
+        }
+
         await $.get("/webpanel/api/plugininfo?name=" + name, this.setPluginInfoInState);
     }
 
@@ -334,7 +342,7 @@ class PluginConfig extends React.Component
         return(
             <div>
                 <div id="pluginlist">
-                    <div class="plugin" onClick={() => {this.selectPlugin({})}}>
+                    <div class="plugin" onClick={() => {this.selectPlugin("")}}>
                         Network Settings
                     </div>
                     {this.state.plugins.map((name) =>(
