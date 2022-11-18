@@ -77,7 +77,7 @@ class ListItem extends React.Component
 
         return (
             <div>
-                <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1] + ":"}</h2>
+                <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1].replace(new RegExp("_", 'g'), " ") + ":"}</h2>
                 <div class="list">
                     {this.state.list.map(function(item, i){
                         switch(typeof item)
@@ -155,10 +155,10 @@ class ObjectItem extends React.Component
                                 return;
 
                             case "boolean":
-                                return <BooleanItem name={key} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                return <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
 
                             default:
-                                return <DefaultItem item={item} name={key} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
                         }
                     })
                 }
@@ -200,7 +200,7 @@ class BooleanItem extends React.Component
         return (
             <div class="defaultinputwrapper">
                 <div class="objectname">
-                    {this.props.name ? this.props.name : ""}
+                    {this.props.name ? this.props.name + ":" : ""}
                 </div>
                 <input id={this.state.id} type="checkbox"></input>
             </div>
