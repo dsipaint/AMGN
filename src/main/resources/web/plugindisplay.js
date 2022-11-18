@@ -77,6 +77,7 @@ class ListItem extends React.Component
 
         return (
             <div>
+                <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1] + ":"}</h2>
                 <ul>
                     {this.state.list.map(function(item, i){
                         switch(typeof item)
@@ -346,9 +347,7 @@ class PluginConfig extends React.Component
                             {
                                 this.state.networkinfo.operators === undefined ? "No network settings to show" :
                                 <div>
-                                    <h2>Operators:</h2>
                                     <ListItem list={this.state.networkinfo.operators} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
-                                    <h2>Guild Data:</h2>
                                     <ListItem list={this.state.networkinfo.guild_data} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
                                 </div>
                             }
