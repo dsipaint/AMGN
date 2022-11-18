@@ -250,33 +250,34 @@ public class WebpanelController
             //     if(c.getName().equals("discord_token")
             //         && TOKEN_CACHE.contains(c.getValue()))
             //     {
-                        ArrayNode ops = body.withArray("operators");
-                        List<Long> new_ops = new ArrayList<Long>();
-                        ops.forEach(op ->{
-                            new_ops.add(op.asLong());
-                        });
-                        GuildNetwork.operators = new_ops;
+                        System.out.println(body.toString());
+                        // ArrayNode ops = body.withArray("operators");
+                        // List<Long> new_ops = new ArrayList<Long>();
+                        // ops.forEach(op ->{
+                        //     new_ops.add(op.asLong());
+                        // });
+                        // GuildNetwork.operators = new_ops;
 
-                        ArrayNode guild_data = body.withArray("guild_data");
-                        Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
-                        guild_data.forEach(guildnode ->{
-                            new_guild_data.put(guildnode.get("id").asLong(),
-                                new Guild(guildnode.get("id").asLong(),
-                                        guildnode.get("modlogs").asLong(),
-                                        guildnode.get("modrole").asLong(),
-                                        guildnode.get("prefix").asText()
-                            ));
-                        });
-                        GuildNetwork.guild_data = new_guild_data;
+                        // ArrayNode guild_data = body.withArray("guild_data");
+                        // Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
+                        // guild_data.forEach(guildnode ->{
+                        //     new_guild_data.put(guildnode.get("id").asLong(),
+                        //         new Guild(guildnode.get("id").asLong(),
+                        //                 guildnode.get("modlogs").asLong(),
+                        //                 guildnode.get("modrole").asLong(),
+                        //                 guildnode.get("prefix").asText()
+                        //     ));
+                        // });
+                        // GuildNetwork.guild_data = new_guild_data;
 
-                        try
-                        {
-                            IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
-                        }
-                        catch(IOException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        // try
+                        // {
+                        //     IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+                        // }
+                        // catch(IOException e)
+                        // {
+                        //     e.printStackTrace();
+                        // }
 
                         response.setStatus(201);
                         return new ObjectMapper().createObjectNode().put("success", "network data saved");

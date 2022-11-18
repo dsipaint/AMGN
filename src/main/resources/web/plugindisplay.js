@@ -15,7 +15,7 @@ class Config extends React.Component
 
     render()
     {
-        if(Arrays.isArray(this.props.item))
+        if(Array.isArray(this.props.item))
             return <ListItem updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
         else
             return <ObjectItem updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
@@ -271,6 +271,16 @@ class PluginConfig extends React.Component
     setProperty(obj, path, value){
         const [head, ...rest] = path.split('.')
     
+        //if array, we want to send an edited version of the array back up, similar to the above but treating it like an array instead
+        if(Array.isArray(obj))
+        {
+            var newarr = [...obj]
+            newarr[head] = (rest.length ? this.setProperty(newarr[head], rest.join('.'), value)
+                : value);
+            return newarr;
+        }
+
+        //if object we return like this
         return {
             ...obj,
             [head]: rest.length
