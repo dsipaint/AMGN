@@ -239,29 +239,48 @@ class PluginConfig extends React.Component
             networkinfo: {}
         }
 
-        this.updatePluginNames = this.updatePluginNames.bind(this);
+        this.getPluginNames = this.getPluginNames.bind(this);
         this.selectPlugin = this.selectPlugin.bind(this);
         this.setPluginInfoInState = this.setPluginInfoInState.bind(this);
+        // this.setPluginInfo = this.setPluginInfo.bind(this);
 
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
 
         this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
         this.setProperty = this.setProperty.bind(this);
-
-        this.debugdisplaystate = this.debugdisplaystate.bind(this);
     }
 
     async componentDidMount()
     {
-        await $.get("/webpanel/api/plugins", this.updatePluginNames);
+        await $.get("/webpanel/api/plugins", this.getPluginNames);
         await $.get("/webpanel/api/networkinfo", this.setNetworkInfoInState)
     }
 
-    updatePluginNames(data)
+    getPluginNames(data)
     {
         this.setState({
             plugins: data
+        });
+    }
+
+    async selectPlugin(name)
+    {
+        if(name == "")
+        {
+            this.setState({
+                selectedplugin: {}
+            });
+            return;
+        }
+
+        await $.get("/webpanel/api/plugininfo?name=" + name, this.setPluginInfoInState);
+    }
+
+    setPluginInfoInState(data)
+    {
+        this.setState({
+            selectedplugin: data
         });
     }
 
@@ -272,11 +291,23 @@ class PluginConfig extends React.Component
         });
     }
 
-    setPluginInfoInState(data)
+    setNetworkInfo()
     {
-        this.setState({
-            selectedplugin: data
+        $.ajax("/webpanel/api/networkinfo", {
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify({
+                operators: this.state.networkinfo.operators,
+                guild_data: this.state.networkinfo.guildinfo
+            })
         });
+    }
+
+    setPropertiesForChildren(path, value)
+    {
+        var newstate = this.setProperty(this.state, path, value);
+
+        this.setState(newstate);
     }
 
     setProperty(obj, path, value){
@@ -298,43 +329,6 @@ class PluginConfig extends React.Component
                 ? this.setProperty(obj[head], rest.join('.'), value)
                 : value
         }
-    }
-
-    setPropertiesForChildren(path, value)
-    {
-        var newstate = this.setProperty(this.state, path, value);
-
-        this.setState(newstate);
-    }
-
-    setNetworkInfo(operators, guildinfo)
-    {
-        $.ajax("/webpanel/api/networkinfo", {
-            method: "PUT",
-            contentType: "application/json",
-            data: JSON.stringify({
-                operators: operators,
-                guild_data: guildinfo
-            })
-        });
-    }
-
-    async selectPlugin(name)
-    {
-        if(name == "")
-        {
-            this.setState({
-                selectedplugin: {}
-            });
-            return;
-        }
-
-        await $.get("/webpanel/api/plugininfo?name=" + name, this.setPluginInfoInState);
-    }
-
-    debugdisplaystate()
-    {
-        console.log(this.state);
     }
 
     render()
@@ -368,8 +362,7 @@ class PluginConfig extends React.Component
                                 </div>
                             }
                         </div>
-                        <div id="savesettings"  onClick={() => {this.setNetworkInfo(this.state.networkinfo.operators, this.state.networkinfo.guild_data)}}>Save Settings</div>
-                        <div onClick={this.debugdisplaystate}>DEBUG BUTTON</div>
+                        <div id="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
                     </div>
 
                     :
@@ -391,7 +384,7 @@ class PluginConfig extends React.Component
                                 <h2>Sorry! This plugin has no config</h2>
                             }
                         </div>
-                        <div id="savesettings"  onclick="">Save Settings</div>
+                        <div id="savesettings"  onclick={this.setPluginInfo}>Save Settings</div>
                     </div>
                 }
             </div>
