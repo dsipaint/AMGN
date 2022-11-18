@@ -216,7 +216,8 @@ public class WebpanelController
                         }
                         catch(IOException e)
                         {
-                            e.printStackTrace();
+                            response.setStatus(500);
+                            return new ObjectMapper().createObjectNode().put("error", "problem reading plugin info");
                         }
 
 
@@ -276,7 +277,8 @@ public class WebpanelController
                     }
                     catch(FileNotFoundException e)
                     {
-                        e.printStackTrace();
+                        response.setStatus(500);
+                        return new ObjectMapper().createObjectNode().put("error", "problem reading network data");
                     }
 
                     response.setStatus(201);
@@ -332,7 +334,8 @@ public class WebpanelController
                         }
                         catch(IOException e)
                         {
-                            e.printStackTrace();
+                            response.setStatus(500);
+                            return new ObjectMapper().createObjectNode().put("error", "problem writing network data");
                         }
 
                         response.setStatus(201);
@@ -386,13 +389,28 @@ public class WebpanelController
                                 }
                                 catch(IOException e)
                                 {
-                                    e.printStackTrace();
+                                    response.setStatus(500);
+                                    return new ObjectMapper().createObjectNode().put("error", "problem writing data");
                                 }
+
+                                //reload plugin
+                                plugin.onDisable(); //disable plugin
+                                AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
+                                AMGN.menucache.forEach(menu ->
+                                {
+                                    if(menu.getPlugin().equals(plugin))
+                                        menu.softDestroy();
+                                });
+                                AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
+                                plugin.onEnable(); //re-enable plugin
+
+                                response.setStatus(201);
+                                return new ObjectMapper().createObjectNode().put("success", "plugin config saved");
                             }
                         }
 
-                        response.setStatus(201);
-                        return new ObjectMapper().createObjectNode().put("success", "network data saved");
+                        response.setStatus(404);
+                        return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         //         }
         //     }
         // }
