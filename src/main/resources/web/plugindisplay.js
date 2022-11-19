@@ -105,6 +105,14 @@ class ListItem extends React.Component
                             case "undefined":
                                 return;
 
+                            case "number":
+                                return (
+                                    <div class="completelistitem">
+                                        <NumberItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                        {removebutton(item)}
+                                    </div>
+                                );                                
+
                             default:
                                 return (
                                     <div class="completelistitem">
@@ -156,6 +164,9 @@ class ObjectItem extends React.Component
 
                             case "boolean":
                                 return <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+
+                            case "number":
+                                return <NumberItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
 
                             default:
                                 return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
@@ -234,6 +245,51 @@ class DefaultItem extends React.Component
         });
 
         this.props.updatehook(this.props.updatekey, $("#" + this.state.id).val());
+    }
+
+    render()
+    {
+        return (
+            <div class="inputwrapper">
+                <div class="objectname">
+                    {this.props.name ? this.props.name + ":" : ""}
+                </div>
+                <input type="text" id={this.state.id} class="listinput"></input>
+            </div> 
+        );
+    }
+}
+
+class NumberItem extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            item: props.item,
+            id: givename()
+        }
+
+        this.onValueChange = this.onValueChange.bind(this);
+    }
+
+    componentDidMount()
+    {
+        $("#" + this.state.id).val(this.state.item);
+        $("#" + this.state.id).on("input", this.onValueChange);
+    }
+
+    onValueChange(event)
+    {
+        var val = $("#" + this.state.id).val();
+        if(val.match("-?\\d+"))
+            val = Number(val);
+
+        this.setState({
+            item: val
+        });
+
+        this.props.updatehook(this.props.updatekey, val);
     }
 
     render()
