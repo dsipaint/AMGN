@@ -166,7 +166,7 @@ class ObjectItem extends React.Component
                                 return <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
 
                             case "number":
-                                return <NumberItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                return <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
 
                             default:
                                 return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;

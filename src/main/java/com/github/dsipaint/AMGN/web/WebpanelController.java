@@ -264,13 +264,13 @@ public class WebpanelController
                         network_data.set("operators", operators);
 
                         ArrayNode guilds = mapper.createArrayNode();
-                        IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH).values().forEach(guild -> {
-                            ObjectNode obj = mapper.createObjectNode();
-                            obj.put("id", guild.getGuild_id());
-                            obj.put("modlogs", guild.getModlogs());
-                            obj.put("modrole", guild.getModrole());
-                            obj.put("prefix", guild.getPrefix());
 
+                        AMGN.bot.getGuilds().forEach(guild -> {
+                            ObjectNode obj = mapper.createObjectNode();
+                            obj.put("id", guild.getIdLong());
+                            obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
+                            obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
+                            obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
                             guilds.add(obj);
                         });
                         network_data.set("guild_data", guilds);
