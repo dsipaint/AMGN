@@ -269,19 +269,23 @@ public class WebpanelController
             ObjectNode network_data = mapper.createObjectNode();
             try
             {
-                
-                ArrayNode operators = mapper.createArrayNode();
-                ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
-                op_data.forEach(operators::add);
-                network_data.set("operators", operators);
+                GuildPermission authlevel = getAuthLevelFromToken(getTokenFromRequest(request));
+                if(authlevel == GuildPermission.OPERATOR)
+                {
+                    ArrayNode operators = mapper.createArrayNode();
+                    ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
+                    op_data.forEach(operators::add);
+                    network_data.set("operators", operators);
+                }
 
                 ArrayNode guilds = mapper.createArrayNode();
 
                 AMGN.bot.getGuilds().forEach(guild -> {
                     ObjectNode obj = mapper.createObjectNode();
                     obj.put("id", guild.getIdLong());
+                    if(authlevel == GuildPermission.OPERATOR)
+                        obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
                     obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
-                    obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
                     obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
                     guilds.add(obj);
                 });
@@ -316,12 +320,16 @@ public class WebpanelController
 
         if(isAuthenticatedRequest(request))
         {
-            ArrayNode ops = body.withArray("operators");
-            List<Long> new_ops = new ArrayList<Long>();
-            ops.forEach(op ->{
-                new_ops.add(op.asLong());
-            });
-            GuildNetwork.operators = new_ops;
+            GuildPermission authlevel = getAuthLevelFromToken(getTokenFromRequest(request));
+            if(authlevel == GuildPermission.OPERATOR)
+            {
+                ArrayNode ops = body.withArray("operators");
+                List<Long> new_ops = new ArrayList<Long>();
+                ops.forEach(op ->{
+                    new_ops.add(op.asLong());
+                });
+                GuildNetwork.operators = new_ops;
+            }
 
             ArrayNode guild_data = body.withArray("guild_data");
             Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
@@ -329,7 +337,9 @@ public class WebpanelController
                 new_guild_data.put(guildnode.get("id").asLong(),
                     new Guild(guildnode.get("id").asLong(),
                             guildnode.get("modlogs").asLong(),
-                            guildnode.get("modrole").asLong(),
+                            authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
+                                guildnode.get("modrole").asLong() :
+                                GuildNetwork.guild_data.get(guildnode.get("id").asLong()).getModrole(),
                             guildnode.get("prefix").asText()
                 ));
             });
@@ -445,6 +455,11 @@ public class WebpanelController
         return false;
     }
 
+    public static GuildPermission getAuthLevelFromToken(String token)
+    {
+        return getAuthLevelFromId(Long.parseLong(resolveIdFromToken(token)));
+    }
+
     public static GuildPermission getAuthLevelFromId(long id)
     {
         //is this user an operator
@@ -475,6 +490,16 @@ public class WebpanelController
         }
 
         return GuildPermission.ALL;
+    }
+
+    public static String getTokenFromRequest(HttpServletRequest request)
+    {
+        for(Cookie c : request.getCookies())
+        {
+            if(c.getName().equals("discord_token"))
+                return c.getValue();
+        }
+        return null;
     }
 
     @Bean

@@ -53,7 +53,7 @@ public class AMGN
 	 * 1. BASIC WEBPANEL
 	 * 	make client-side value updates more synchronous
 	 *  beautify frontend
-	 *  bolster security to add operator checks
+	 * 	make it so users (except operators) can only edit guild settings for a guild they are in
 	 * 	remove name and pfp from cookies and do on frontend
 	 * 
 	 * 2. NEW AMGN FEATURES INTEGRATED
