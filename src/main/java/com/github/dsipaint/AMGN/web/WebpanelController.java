@@ -3,6 +3,7 @@ package com.github.dsipaint.AMGN.web;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -211,8 +212,29 @@ public class WebpanelController
                         obj.put("version", plugin.getVersion());
                         try
                         {
-                            JsonNode pluginconfig = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig("config.yml"))); //TODO: do this on all config files in config dir
-                            obj.set("config", pluginconfig);
+                            //to send plugin configs, we send an array of all config files like this
+                            //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+
+                            //iterate through all files in the config directory that are yml files
+                            File configdir = new File(plugin.getConfigPath());
+                            File[] configfiles = configdir.listFiles((file, filename) -> {
+                                return filename.endsWith(".yml");
+                            });
+
+                            //add all of these files and their contents to an array in the above format
+                            ArrayNode confignode = mapper.createArrayNode();
+                            for(File f : configfiles)
+                            {
+                                ObjectNode configobj = mapper.createObjectNode();
+                                JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
+                                configobj.put("file", f.getName().replace(".yml", ""));
+                                configobj.set("data", configdata);
+
+                                confignode.add(configobj);
+                            }
+
+                            //this array is then our config data
+                            obj.set("config", confignode);
                         }
                         catch(IOException e)
                         {
@@ -372,20 +394,24 @@ public class WebpanelController
             //     if(c.getName().equals("discord_token")
             //         && TOKEN_CACHE.contains(c.getValue()))
             //     {
-                        System.out.println(body.toString());
 
                         ObjectMapper mapper = new ObjectMapper();
-                        Map<String, Object> result = mapper.convertValue(body, new TypeReference<Map<String, Object>>(){});
                         for(Plugin plugin : AMGN.plugin_listeners.keySet())
                         {
                             if(plugin.getName().equalsIgnoreCase(name))
                             {
                                 try
                                 {
+                                    //we go through the returned data in the following format (as is given to the user originally in the get method)
+                                    //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+                                    //then for each config file, we write the data
                                     //TODO: add formal config-writing
                                     Yaml yaml_out = new Yaml(IOHandler.dumperopts);
-                                    //TODO: make work for all files, not just config.yml
-                                    yaml_out.dump(result, new FileWriter(new File(plugin.getConfigPath() + "/config.yml")));
+                                    for(JsonNode config : body)
+                                    {
+                                        Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
+                                        yaml_out.dump(result, new FileWriter(new File(plugin.getConfigPath() + "/" + config.get("file").asText() + ".yml")));
+                                    }
                                 }
                                 catch(IOException e)
                                 {

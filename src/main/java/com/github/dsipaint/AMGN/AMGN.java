@@ -53,7 +53,6 @@ public class AMGN
 	 * 1. BASIC WEBPANEL
 	 * 	make client-side value updates more synchronous
 	 *  beautify frontend
-	 *  add support for more than just config.yml
 	 * 	show all guild data in frontend Network settings, even if not listed in network.yml
 	 *  bolster security to add operator checks
 	 * 
