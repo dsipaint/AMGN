@@ -10,6 +10,7 @@ class Config extends React.Component
 {
     constructor(props)
     {
+        console.log(props.item);
         super(props);
     }
 
@@ -343,13 +344,12 @@ class PluginConfig extends React.Component
 
     async selectPlugin(name)
     {
+        this.setState({
+            selectedplugin: {}
+        });
+
         if(name == "")
-        {
-            this.setState({
-                selectedplugin: {}
-            });
             return;
-        }
 
         await $.get("/webpanel/api/plugininfo?name=" + name, this.setPluginInfoInState);
     }
