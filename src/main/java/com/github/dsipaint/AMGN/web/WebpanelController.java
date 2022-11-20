@@ -3,7 +3,6 @@ package com.github.dsipaint.AMGN.web;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,34 +114,30 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotGuilds(HttpServletRequest request, HttpServletResponse response)
     {
-        // if(request.getCookies() == null)
-        // {
-        //     response.setStatus(403);
-        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-        // }
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
 
-        // for(Cookie c : request.getCookies())
-        // {
-        //     if(c.getName().equals("discord_token")
-        //         && TOKEN_CACHE.contains(c.getValue()))
-        //     {
-                ObjectMapper mapper = new ObjectMapper();
-                ArrayNode guild_data = mapper.createArrayNode();
-                AMGN.bot.getGuilds().forEach(guild -> {
-                    ObjectNode objectnode = mapper.createObjectNode();
-                    objectnode.put("id", guild.getId());
-                    objectnode.put("name", guild.getName());
-                    objectnode.put("picture", guild.getIconUrl());
-                    guild_data.add(objectnode);
-                });
+        if(isAuthenticatedRequest(request))
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayNode guild_data = mapper.createArrayNode();
+            AMGN.bot.getGuilds().forEach(guild -> {
+                ObjectNode objectnode = mapper.createObjectNode();
+                objectnode.put("id", guild.getId());
+                objectnode.put("name", guild.getName());
+                objectnode.put("picture", guild.getIconUrl());
+                guild_data.add(objectnode);
+            });
 
-                response.setStatus(201);
-                return guild_data;
-        //     }
-        // }
+            response.setStatus(201);
+            return guild_data;
+        }
 
-        // response.setStatus(403);
-        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
     //returns a list of plugins that the bot currently has enabled
@@ -150,31 +145,27 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotPlugins(HttpServletRequest request, HttpServletResponse response)
     {
-        // if(request.getCookies() == null)
-        // {
-        //     response.setStatus(403);
-        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-        // }
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
 
-        // for(Cookie c : request.getCookies())
-        // {
-        //     if(c.getName().equals("discord_token")
-        //         && TOKEN_CACHE.contains(c.getValue()))
-        //     {
-                ObjectMapper mapper = new ObjectMapper();
-                ArrayNode plugin_data = mapper.createArrayNode();
-                AMGN.plugin_listeners.keySet().forEach(plugin ->
-                {
-                    plugin_data.add(plugin.getName());
-                });
+        if(isAuthenticatedRequest(request))
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayNode plugin_data = mapper.createArrayNode();
+            AMGN.plugin_listeners.keySet().forEach(plugin ->
+            {
+                plugin_data.add(plugin.getName());
+            });
 
-                response.setStatus(201);
-                return plugin_data;
-        //     }
-        // }
+            response.setStatus(201);
+            return plugin_data;
+        }
 
-        // response.setStatus(403);
-        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
     //returns a list of plugins that the bot currently has enabled
@@ -182,11 +173,11 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getPluginInfo(@RequestParam(name="name") String name, HttpServletRequest request, HttpServletResponse response)
     {
-        // if(request.getCookies() == null)
-        // {
-        //     response.setStatus(403);
-        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-        // }
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
 
         if(name == null)
         {
@@ -194,67 +185,62 @@ public class WebpanelController
             return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
         }
 
-        // for(Cookie c : request.getCookies())
-        // {
-        //     if(c.getName().equals("discord_token")
-        //         && TOKEN_CACHE.contains(c.getValue()))
-        //     {
-                ObjectMapper mapper = new ObjectMapper();
-                for(Plugin plugin : AMGN.plugin_listeners.keySet())
+        if(isAuthenticatedRequest(request))
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            for(Plugin plugin : AMGN.plugin_listeners.keySet())
+            {
+                if(plugin.getName().equalsIgnoreCase(name))
                 {
-                    if(plugin.getName().equalsIgnoreCase(name))
+                    ObjectNode obj = mapper.createObjectNode();
+                    obj.put("name", plugin.getName());
+                    obj.put("author", plugin.getAuthor());
+                    obj.put("description", plugin.getDescription());
+                    obj.put("picture", plugin.getImageUrl());
+                    obj.put("version", plugin.getVersion());
+                    try
                     {
-                        ObjectNode obj = mapper.createObjectNode();
-                        obj.put("name", plugin.getName());
-                        obj.put("author", plugin.getAuthor());
-                        obj.put("description", plugin.getDescription());
-                        obj.put("picture", plugin.getImageUrl());
-                        obj.put("version", plugin.getVersion());
-                        try
+                        //to send plugin configs, we send an array of all config files like this
+                        //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+
+                        //iterate through all files in the config directory that are yml files
+                        File configdir = new File(plugin.getConfigPath());
+                        File[] configfiles = configdir.listFiles((file, filename) -> {
+                            return filename.endsWith(".yml");
+                        });
+
+                        //add all of these files and their contents to an array in the above format
+                        ArrayNode confignode = mapper.createArrayNode();
+                        for(File f : configfiles)
                         {
-                            //to send plugin configs, we send an array of all config files like this
-                            //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+                            ObjectNode configobj = mapper.createObjectNode();
+                            JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
+                            configobj.put("file", f.getName().replace(".yml", ""));
+                            configobj.set("data", configdata);
 
-                            //iterate through all files in the config directory that are yml files
-                            File configdir = new File(plugin.getConfigPath());
-                            File[] configfiles = configdir.listFiles((file, filename) -> {
-                                return filename.endsWith(".yml");
-                            });
-
-                            //add all of these files and their contents to an array in the above format
-                            ArrayNode confignode = mapper.createArrayNode();
-                            for(File f : configfiles)
-                            {
-                                ObjectNode configobj = mapper.createObjectNode();
-                                JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
-                                configobj.put("file", f.getName().replace(".yml", ""));
-                                configobj.set("data", configdata);
-
-                                confignode.add(configobj);
-                            }
-
-                            //this array is then our config data
-                            obj.set("config", confignode);
-                        }
-                        catch(IOException e)
-                        {
-                            response.setStatus(500);
-                            return new ObjectMapper().createObjectNode().put("error", "problem reading plugin info");
+                            confignode.add(configobj);
                         }
 
-
-                        response.setStatus(201);
-                        return obj;
+                        //this array is then our config data
+                        obj.set("config", confignode);
                     }
+                    catch(IOException e)
+                    {
+                        response.setStatus(500);
+                        return new ObjectMapper().createObjectNode().put("error", "problem reading plugin info");
+                    }
+
+                    response.setStatus(201);
+                    return obj;
                 }
+            }
 
-                response.setStatus(404);
-                return new ObjectMapper().createObjectNode().put("error", "plugin not found");  
-        //     }
-        // }
+            response.setStatus(404);
+            return new ObjectMapper().createObjectNode().put("error", "plugin not found");  
+        }
 
-        // response.setStatus(403);
-        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
     //returns the network info for the network
@@ -264,186 +250,193 @@ public class WebpanelController
     @SuppressWarnings("unchecked")
     public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
     {
-        // if(request.getCookies() == null)
-        // {
-        //     response.setStatus(403);
-        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-        // }
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
 
-        // for(Cookie c : request.getCookies())
-        // {
-        //     if(c.getName().equals("discord_token")
-        //         && TOKEN_CACHE.contains(c.getValue()))
-        //     {
-                    ObjectMapper mapper = new ObjectMapper();
-                    ObjectNode network_data = mapper.createObjectNode();
-                    try
-                    {
-                        
-                        ArrayNode operators = mapper.createArrayNode();
-                        ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
-                        op_data.forEach(operators::add);
-                        network_data.set("operators", operators);
+        if(isAuthenticatedRequest(request))
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode network_data = mapper.createObjectNode();
+            try
+            {
+                
+                ArrayNode operators = mapper.createArrayNode();
+                ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
+                op_data.forEach(operators::add);
+                network_data.set("operators", operators);
 
-                        ArrayNode guilds = mapper.createArrayNode();
+                ArrayNode guilds = mapper.createArrayNode();
 
-                        AMGN.bot.getGuilds().forEach(guild -> {
-                            ObjectNode obj = mapper.createObjectNode();
-                            obj.put("id", guild.getIdLong());
-                            obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
-                            obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
-                            obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
-                            guilds.add(obj);
-                        });
-                        network_data.set("guild_data", guilds);
-                    }
-                    catch(FileNotFoundException e)
-                    {
-                        response.setStatus(500);
-                        return new ObjectMapper().createObjectNode().put("error", "problem reading network data");
-                    }
+                AMGN.bot.getGuilds().forEach(guild -> {
+                    ObjectNode obj = mapper.createObjectNode();
+                    obj.put("id", guild.getIdLong());
+                    obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
+                    obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
+                    obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
+                    guilds.add(obj);
+                });
+                network_data.set("guild_data", guilds);
+            }
+            catch(FileNotFoundException e)
+            {
+                response.setStatus(500);
+                return new ObjectMapper().createObjectNode().put("error", "problem reading network data");
+            }
 
-                    response.setStatus(201);
-                    return network_data;
-    //            }
-    //     }
-    // }
+            response.setStatus(201);
+            return network_data;
+        }
 
-    // response.setStatus(403);
-    // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
-        //for now, any authorised user may use this but I may change it to just operators
-        //allows client to save network data
-        @PutMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @SuppressWarnings("unchecked")
-        public JsonNode putNetworkInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+    //for now, any authorised user may use this but I may change it to just operators
+    //allows client to save network data
+    @PutMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @SuppressWarnings("unchecked")
+    public JsonNode putNetworkInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
         {
-            // if(request.getCookies() == null)
-            // {
-            //     response.setStatus(403);
-            //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-            // }
-    
-            // for(Cookie c : request.getCookies())
-            // {
-            //     if(c.getName().equals("discord_token")
-            //         && TOKEN_CACHE.contains(c.getValue()))
-            //     {
-                        ArrayNode ops = body.withArray("operators");
-                        List<Long> new_ops = new ArrayList<Long>();
-                        ops.forEach(op ->{
-                            new_ops.add(op.asLong());
-                        });
-                        GuildNetwork.operators = new_ops;
-
-                        ArrayNode guild_data = body.withArray("guild_data");
-                        Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
-                        guild_data.forEach(guildnode ->{
-                            new_guild_data.put(guildnode.get("id").asLong(),
-                                new Guild(guildnode.get("id").asLong(),
-                                        guildnode.get("modlogs").asLong(),
-                                        guildnode.get("modrole").asLong(),
-                                        guildnode.get("prefix").asText()
-                            ));
-                        });
-                        GuildNetwork.guild_data = new_guild_data;
-
-                        try
-                        {
-                            IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
-                        }
-                        catch(IOException e)
-                        {
-                            response.setStatus(500);
-                            return new ObjectMapper().createObjectNode().put("error", "problem writing network data");
-                        }
-
-                        response.setStatus(201);
-                        return new ObjectMapper().createObjectNode().put("success", "network data saved");
-        //         }
-        //     }
-        // }
-    
-        // response.setStatus(403);
-        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
-        //for now, any authorised user may use this but I may change it to just operators
-        //allows client to save plugin configs
-        @PutMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
-        @ResponseBody
-        @SuppressWarnings("unchecked")
-        public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+        if(isAuthenticatedRequest(request))
         {
-            // if(request.getCookies() == null)
-            // {
-            //     response.setStatus(403);
-            //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
-            // }
+            ArrayNode ops = body.withArray("operators");
+            List<Long> new_ops = new ArrayList<Long>();
+            ops.forEach(op ->{
+                new_ops.add(op.asLong());
+            });
+            GuildNetwork.operators = new_ops;
 
-            if(name == null)
+            ArrayNode guild_data = body.withArray("guild_data");
+            Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
+            guild_data.forEach(guildnode ->{
+                new_guild_data.put(guildnode.get("id").asLong(),
+                    new Guild(guildnode.get("id").asLong(),
+                            guildnode.get("modlogs").asLong(),
+                            guildnode.get("modrole").asLong(),
+                            guildnode.get("prefix").asText()
+                ));
+            });
+            GuildNetwork.guild_data = new_guild_data;
+
+            try
             {
-                response.setStatus(401);
-                return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
+                IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
             }
-    
-            // for(Cookie c : request.getCookies())
-            // {
-            //     if(c.getName().equals("discord_token")
-            //         && TOKEN_CACHE.contains(c.getValue()))
-            //     {
+            catch(IOException e)
+            {
+                response.setStatus(500);
+                return new ObjectMapper().createObjectNode().put("error", "problem writing network data");
+            }
 
-                        ObjectMapper mapper = new ObjectMapper();
-                        for(Plugin plugin : AMGN.plugin_listeners.keySet())
-                        {
-                            if(plugin.getName().equalsIgnoreCase(name))
-                            {
-                                try
-                                {
-                                    //we go through the returned data in the following format (as is given to the user originally in the get method)
-                                    //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
-                                    //then for each config file, we write the data
-                                    //TODO: add formal config-writing
-                                    Yaml yaml_out = new Yaml(IOHandler.dumperopts);
-                                    for(JsonNode config : body)
-                                    {
-                                        Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
-                                        yaml_out.dump(result, new FileWriter(new File(plugin.getConfigPath() + "/" + config.get("file").asText() + ".yml")));
-                                    }
-                                }
-                                catch(IOException e)
-                                {
-                                    response.setStatus(500);
-                                    return new ObjectMapper().createObjectNode().put("error", "problem writing data");
-                                }
-
-                                //reload plugin
-                                plugin.onDisable(); //disable plugin
-                                AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
-                                AMGN.menucache.forEach(menu ->
-                                {
-                                    if(menu.getPlugin().equals(plugin))
-                                        menu.softDestroy();
-                                });
-                                AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
-                                plugin.onEnable(); //re-enable plugin
-
-                                response.setStatus(201);
-                                return new ObjectMapper().createObjectNode().put("success", "plugin config saved");
-                            }
-                        }
-
-                        response.setStatus(404);
-                        return new ObjectMapper().createObjectNode().put("error", "plugin not found");
-        //         }
-        //     }
-        // }
-    
-        // response.setStatus(403);
-        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+            response.setStatus(201);
+            return new ObjectMapper().createObjectNode().put("success", "network data saved");
         }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //for now, any authorised user may use this but I may change it to just operators
+    //allows client to save plugin configs
+    @PutMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @SuppressWarnings("unchecked")
+    public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(name == null)
+        {
+            response.setStatus(401);
+            return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            for(Plugin plugin : AMGN.plugin_listeners.keySet())
+            {
+                if(plugin.getName().equalsIgnoreCase(name))
+                {
+                    try
+                    {
+                        //we go through the returned data in the following format (as is given to the user originally in the get method)
+                        //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+                        //then for each config file, we write the data
+                        //TODO: add formal config-writing
+                        Yaml yaml_out = new Yaml(IOHandler.dumperopts);
+                        for(JsonNode config : body)
+                        {
+                            Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
+                            yaml_out.dump(result, new FileWriter(new File(plugin.getConfigPath() + "/" + config.get("file").asText() + ".yml")));
+                        }
+                    }
+                    catch(IOException e)
+                    {
+                        response.setStatus(500);
+                        return new ObjectMapper().createObjectNode().put("error", "problem writing data");
+                    }
+
+                    //reload plugin
+                    plugin.onDisable(); //disable plugin
+                    AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
+                    AMGN.menucache.forEach(menu ->
+                    {
+                        if(menu.getPlugin().equals(plugin))
+                            menu.softDestroy();
+                    });
+                    AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
+                    plugin.onEnable(); //re-enable plugin
+
+                    response.setStatus(201);
+                    return new ObjectMapper().createObjectNode().put("success", "plugin config saved");
+                }
+            }
+
+            response.setStatus(404);
+            return new ObjectMapper().createObjectNode().put("error", "plugin not found");
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    public static String resolveIdFromToken(String token)
+    {
+        RestTemplate template = new RestTemplate();
+        HttpHeaders userinfoheaders = new HttpHeaders();
+        userinfoheaders.set("Authorization", "Bearer " + token);
+        ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
+        return userinfo.getBody().get("id").asText();
+    }
+
+    //will look at a request and see if this is a user who is authorised to view the webpanel
+    public boolean isAuthenticatedRequest(HttpServletRequest request)
+    {
+        //check to see if we have a discord_token cookie, and if the value of it matches
+        //a token we have already deemed as authenticated in TOKEN_CACHE
+        for(Cookie c : request.getCookies())
+        {
+            if(c.getName().equals("discord_token")
+                && TOKEN_CACHE.contains(c.getValue()))
+                return true;
+        }
+        return false;
+    }
 
     @Bean
     public FileTemplateResolver secondaryTemplateResolver()
