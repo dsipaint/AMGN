@@ -40,8 +40,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
+
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
 @Controller
 public class WebpanelController
@@ -82,13 +87,15 @@ public class WebpanelController
         ResponseEntity<JsonNode> tokenresp = template.postForEntity(TOKEN_URL, authentity, JsonNode.class);
         String usertoken = tokenresp.getBody().get("access_token").asText();
 
-        if(!TOKEN_CACHE.contains(usertoken))
-            TOKEN_CACHE.add(usertoken);
-
         //for username and pfp try GETting /users/me
         HttpHeaders userinfoheaders = new HttpHeaders();
         userinfoheaders.set("Authorization", "Bearer " + usertoken);
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
+
+        //if this is a valid authorised user and we don't know this user already:
+        if(getAuthLevelFromId(userinfo.getBody().get("id").asLong()) != GuildPermission.ALL &&
+            !TOKEN_CACHE.contains(usertoken))
+            TOKEN_CACHE.add(usertoken);
 
 
         Cookie token = new Cookie("discord_token", usertoken);
@@ -425,7 +432,7 @@ public class WebpanelController
     }
 
     //will look at a request and see if this is a user who is authorised to view the webpanel
-    public boolean isAuthenticatedRequest(HttpServletRequest request)
+    public static boolean isAuthenticatedRequest(HttpServletRequest request)
     {
         //check to see if we have a discord_token cookie, and if the value of it matches
         //a token we have already deemed as authenticated in TOKEN_CACHE
@@ -436,6 +443,38 @@ public class WebpanelController
                 return true;
         }
         return false;
+    }
+
+    public static GuildPermission getAuthLevelFromId(long id)
+    {
+        //is this user an operator
+        if(GuildNetwork.operators.contains(id))
+            return GuildPermission.OPERATOR;
+        
+        //check every guild the bot is in
+        for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
+        {
+            //if the member is an admin in any guild, return this
+            Member member = guild.getMemberById(id);
+            if(member != null && member.hasPermission(Permission.ADMINISTRATOR))
+                return GuildPermission.ADMIN;
+        }
+
+        for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
+        {
+            Member member = guild.getMemberById(id);
+            if(member != null)
+            {
+                //check every role of every guild the member is in to see if they have a modrole anywhere
+                for(Role role : member.getRoles())
+                {
+                    if(role.getIdLong() == GuildNetwork.guild_data.get(guild.getIdLong()).getModrole())
+                        return GuildPermission.STAFF;
+                }
+            }
+        }
+
+        return GuildPermission.ALL;
     }
 
     @Bean
