@@ -419,6 +419,7 @@ class PluginConfig extends React.Component
 
     render()
     {
+        var updatehookref = this.setPropertiesForChildren;
         return(
             <div>
                 <div id="pluginlist">
@@ -441,9 +442,9 @@ class PluginConfig extends React.Component
                         </div>
                         <div id="options">
                             {
-                                this.state.networkinfo.operators === undefined ? "No network settings to show" :
+                                this.state.networkinfo.guild_data === undefined ? "No network settings to show" :
                                 <div>
-                                    <ListItem list={this.state.networkinfo.operators} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/>
+                                    {this.state.networkinfo.operators !== undefined ? <ListItem list={this.state.networkinfo.operators} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/> : ""}
                                     <ListItem list={this.state.networkinfo.guild_data} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
                                 </div>
                             }
@@ -464,8 +465,10 @@ class PluginConfig extends React.Component
                         <p>{this.state.selectedplugin.description}</p>
                         <div id="options">
                             {
-                                this.state.selectedplugin.config ? 
-                                <Config item={this.state.selectedplugin.config} updatehook={this.setPropertiesForChildren} updatekey={"selectedplugin.config"}/>
+                                this.state.selectedplugin.config ?
+                                this.state.selectedplugin.config.map(function(config, i){
+                                    return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
+                                })
                                 :
                                 <h2>Sorry! This plugin has no config</h2>
                             }
