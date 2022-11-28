@@ -131,12 +131,17 @@ public class WebpanelController
         {
             ObjectMapper mapper = new ObjectMapper();
             ArrayNode guild_data = mapper.createArrayNode();
+            GuildPermission authlevel = getAuthLevelFromToken(getTokenFromRequest(request));
+
             AMGN.bot.getGuilds().forEach(guild -> {
-                ObjectNode objectnode = mapper.createObjectNode();
-                objectnode.put("id", guild.getId());
-                objectnode.put("name", guild.getName());
-                objectnode.put("picture", guild.getIconUrl());
-                guild_data.add(objectnode);
+                if(authlevel == GuildPermission.OPERATOR || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                {
+                    ObjectNode objectnode = mapper.createObjectNode();
+                    objectnode.put("id", guild.getId());
+                    objectnode.put("name", guild.getName());
+                    objectnode.put("picture", guild.getIconUrl());
+                    guild_data.add(objectnode);   
+                }
             });
 
             response.setStatus(201);
@@ -281,13 +286,17 @@ public class WebpanelController
                 ArrayNode guilds = mapper.createArrayNode();
 
                 AMGN.bot.getGuilds().forEach(guild -> {
-                    ObjectNode obj = mapper.createObjectNode();
-                    obj.put("id", guild.getIdLong());
-                    if(authlevel == GuildPermission.OPERATOR)
-                        obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
-                    obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
-                    obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
-                    guilds.add(obj);
+                    //if they are an operator or if they are in the guild, then they can have this guild
+                    if(authlevel == GuildPermission.OPERATOR || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                    {
+                        ObjectNode obj = mapper.createObjectNode();
+                        obj.put("id", guild.getIdLong());
+                        if(authlevel == GuildPermission.OPERATOR)
+                            obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
+                        obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
+                        obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
+                        guilds.add(obj);
+                    }
                 });
                 network_data.set("guild_data", guilds);
             }
@@ -309,7 +318,6 @@ public class WebpanelController
     //allows client to save network data
     @PutMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @SuppressWarnings("unchecked")
     public JsonNode putNetworkInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
     {
         if(request.getCookies() == null)
@@ -334,14 +342,19 @@ public class WebpanelController
             ArrayNode guild_data = body.withArray("guild_data");
             Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
             guild_data.forEach(guildnode ->{
-                new_guild_data.put(guildnode.get("id").asLong(),
-                    new Guild(guildnode.get("id").asLong(),
-                            guildnode.get("modlogs").asLong(),
-                            authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
-                                guildnode.get("modrole").asLong() :
-                                GuildNetwork.guild_data.get(guildnode.get("id").asLong()).getModrole(),
-                            guildnode.get("prefix").asText()
-                ));
+                //if they are an operator or if they are in the guild, then they can have this guild
+                if(authlevel == GuildPermission.OPERATOR || AMGN.bot.getGuildById(guildnode.get("id").asLong())
+                    .getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                {
+                    new_guild_data.put(guildnode.get("id").asLong(),
+                        new Guild(guildnode.get("id").asLong(),
+                                guildnode.get("modlogs").asLong(),
+                                authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
+                                    guildnode.get("modrole").asLong() :
+                                    GuildNetwork.guild_data.get(guildnode.get("id").asLong()).getModrole(),
+                                guildnode.get("prefix").asText()
+                    ));
+                }
             });
             GuildNetwork.guild_data = new_guild_data;
 
@@ -367,7 +380,6 @@ public class WebpanelController
     //allows client to save plugin configs
     @PutMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @SuppressWarnings("unchecked")
     public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
     {
         if(request.getCookies() == null)
@@ -444,8 +456,8 @@ public class WebpanelController
     //will look at a request and see if this is a user who is authorised to view the webpanel
     public static boolean isAuthenticatedRequest(HttpServletRequest request)
     {
-        //check to see if we have a discord_token cookie, and if the value of it matches
-        //a token we have already deemed as authenticated in TOKEN_CACHE
+        // check to see if we have a discord_token cookie, and if the value of it matches
+        // a token we have already deemed as authenticated in TOKEN_CACHE
         for(Cookie c : request.getCookies())
         {
             if(c.getName().equals("discord_token")
@@ -462,7 +474,7 @@ public class WebpanelController
 
     public static GuildPermission getAuthLevelFromId(long id)
     {
-        //is this user an operator
+        // //is this user an operator
         if(GuildNetwork.operators.contains(id))
             return GuildPermission.OPERATOR;
         
