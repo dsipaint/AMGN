@@ -53,7 +53,6 @@ public class AMGN
 	 * 1. BASIC WEBPANEL
 	 * 	make client-side value updates more synchronous
 	 *  beautify frontend
-	 * 	remove name and pfp from cookies and do on frontend
 	 * 
 	 * 2. NEW AMGN FEATURES INTEGRATED
 	 * 	add plugin blacklist/whitelisting feature

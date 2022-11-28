@@ -7,14 +7,17 @@ function toggleLoginVisibility()
         var cookie = cookies[i].split("=");
         if(cookie[0] == "discord_token")
         {
-            for(var j = 0; j < cookies.length; j++)
-            {
-                var cookie2 = cookies[j].split("=");
-                if(cookie2[0] == "discord_username")
-                    $("#username").text(cookie2[1]);
-                else if(cookie2[0] == "discord_pfp")
-                    $("#userpfp").attr("src", cookie2[1]);
-            }
+            $.ajax({
+                url: "https://discord.com/api/v10/users/@me",
+                headers: {
+                    "Authorization": "Bearer " + cookie[1]
+                },
+                success: function(data) {
+                    console.log(data);
+                    $("#username").text("username");
+                    $("#userpfp").attr("src", "");
+                }
+            });
 
             $(".token").show();
             return;

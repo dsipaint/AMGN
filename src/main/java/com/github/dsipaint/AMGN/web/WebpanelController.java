@@ -52,8 +52,7 @@ import net.dv8tion.jda.api.entities.Role;
 public class WebpanelController
 {
     static final String TOKEN_URL="https://discord.com/api/oauth2/token",
-        API_URL = "https://discord.com/api/v10",
-        IMAGE_URL = "https://cdn.discordapp.com/avatars/userid/hash.png";
+        API_URL = "https://discord.com/api/v10";
 
     static List<String> TOKEN_CACHE = new ArrayList<String>(); //yes, this is a bad idea: change this in the future
 
@@ -101,16 +100,6 @@ public class WebpanelController
         Cookie token = new Cookie("discord_token", usertoken);
         token.setPath("/webpanel");
         response.addCookie(token);
-
-        Cookie username = new Cookie("discord_username", userinfo.getBody().get("username").asText());
-        username.setPath("/webpanel");
-        response.addCookie(username);
-
-        Cookie pfp = new Cookie("discord_pfp",
-            IMAGE_URL.replace("userid", userinfo.getBody().get("id").asText())
-            .replace("hash", userinfo.getBody().get("avatar").asText()));
-        pfp.setPath("/webpanel");
-        response.addCookie(pfp);
 
         //return a redirect page
         return "redirect";
