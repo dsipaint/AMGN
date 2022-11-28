@@ -13,9 +13,8 @@ function toggleLoginVisibility()
                     "Authorization": "Bearer " + cookie[1]
                 },
                 success: function(data) {
-                    console.log(data);
-                    $("#username").text("username");
-                    $("#userpfp").attr("src", "");
+                    $("#username").text(data.username);
+                    $("#userpfp").attr("src", "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png");
                 }
             });
 
