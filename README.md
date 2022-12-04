@@ -61,6 +61,21 @@ Each `guild_data` object of the array represents a single guild and the metadata
 
 `network.yml` must be in the same directory as the network jar, have the correct name (network.yml) and contain the required fields, in the above format, or the network will close. Otherwise, you are now able to run the network by simply running the jar file as normal.
 
+The variables `token`, `clientid`, `clientsecret` and `redirecturi` can also not be set, in which case AMGN will attempt to use environment variables for these values rather than setting the values in `network.yml`. The corresponding environment variables if you choose this method are as follows:
+
+| Network.yml | Environment Variable |
+| ----------- | -------------------- |
+| token | AMGN_TOKEN |
+| clientid | AMGN_CLIENTID |
+| clientsecret | AMGN_CLIENTSECRET |
+| redirecturi | AMGN_REDIRECT |
+
+i.e. if in `network.yml`, you write the following:
+```yaml
+token: "env"
+```
+then for example in linux, you need to have run `export AMGN_TOKEN=thisismytoken`.
+
 ## Plugins:
 Included in this API are intrinsic plugins, adding quality-of-life commands and features that a plugin outside of this library may struggle to facilitate for. This includes handling external plugins and the network metadata. For more info, use the help command in a guild with your network's bot in, when you launch the network with no external plugins.
 

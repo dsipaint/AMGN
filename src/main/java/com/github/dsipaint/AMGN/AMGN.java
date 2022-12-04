@@ -58,7 +58,6 @@ public class AMGN
 	 * 	Add ability to save configs
 	 * 	Add "default config value" return value if config get method is used and no value is set
 	 * 	add support for global/guild-specific plugin configs
-	 * 	provide some support for tokens set as environment variables rather than in network.yml i.e. token: env could be valid network.yml syntax or something
 	 * 	add support for role ids not just user ids in network.yml
 	 */
 	public static JDA bot;
@@ -96,6 +95,8 @@ public class AMGN
 		{
 			logger.info("Reading token from network settings...");
 			token = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "token");//read token from network.yml
+			if(token == null)
+				token = System.getenv("AMGN_TOKEN");
 		}
 		catch (IOException e)
 		{
@@ -137,8 +138,16 @@ public class AMGN
 		{
 			logger.info("Reading webpanel settings from network settings- clientid and redirect uri");
 			GuildNetwork.clientid = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "clientid");
+			if(GuildNetwork.clientid == null)
+				GuildNetwork.clientid = System.getenv("AMGN_CLIENTID");
+
 			GuildNetwork.clientsecret = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "clientsecret");
+			if(GuildNetwork.clientsecret == null)
+				GuildNetwork.clientsecret = System.getenv("AMGN_CLIENTSECRET");
+
 			GuildNetwork.redirecturi = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "redirecturi");
+			if(GuildNetwork.redirecturi == null)
+				GuildNetwork.redirecturi = System.getenv("AMGN_REDIRECT");
 		}
 		catch(IOException e)
 		{
