@@ -2,9 +2,7 @@
 + Add webpanel!!
 + Generate network.yml automatically if one is not found
 + Add a program exits if network settings cannot be read
-TODO
-add guild-specific plugin configs
-add plugin whitelists/blacklists
++ Add a new default embed colour, and add custom colours for each guild as an option
 
 ## alpha-1.4.1
 ~ Actually made optional plugin.yml parameters optional, in line with the documentation

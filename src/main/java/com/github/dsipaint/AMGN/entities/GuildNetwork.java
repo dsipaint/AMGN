@@ -22,7 +22,6 @@ public class GuildNetwork
 	public static List<Long> operators;
 	public static String clientid, clientsecret, redirecturi;
 	
-	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
 	public static final String WEB_PATH = "./web"; //path for all web assets
@@ -88,6 +87,33 @@ public class GuildNetwork
 	public static final long getModlogs(long guild_id)
 	{
 		return guild_data.get(guild_id) == null ? Guild.DEFAULT_ID : guild_data.get(guild_id).getModlogs();
+	}
+
+	/** 
+	 * @param guild_id guild to find modlogs id for
+	 * @return int accept colour set for the guild
+	 */
+	public static final int getAccept_col(long guild_id)
+	{
+		return guild_data.getOrDefault(guild_id, new Guild(guild_id)).getAccept_col();
+	}
+
+	/** 
+	 * @param guild_id guild to find modlogs id for
+	 * @return int decline colour set for the guild
+	 */
+	public static final int getDecline_col(long guild_id)
+	{
+		return guild_data.getOrDefault(guild_id, new Guild(guild_id)).getDecline_col();
+	}
+
+	/** 
+	 * @param guild_id guild to find modlogs id for
+	 * @return int unique colour set for the guild
+	 */
+	public static final int getUnique_col(long guild_id)
+	{
+		return guild_data.getOrDefault(guild_id, new Guild(guild_id)).getUnique_col();
 	}
 	
 	
@@ -184,7 +210,7 @@ public class GuildNetwork
 		
 		AMGN.bot.getTextChannelById(modlogs).sendMessageEmbeds(new EmbedBuilder()
 				.setTitle("AMGN")
-				.setColor(GREEN_EMBED_COLOUR)
+				.setColor(guild_data.get(guild_id).getAccept_col())
 				.setDescription(msg)
 				.setTimestamp(Instant.now())
 				.build()).queue();

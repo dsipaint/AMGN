@@ -24,7 +24,7 @@ public final class RunningListener extends ListenerAdapter
 		{
 			EmbedBuilder eb = new EmbedBuilder()
 					.setTitle("Active plugins: ")
-					.setColor(GuildNetwork.GREEN_EMBED_COLOUR);
+					.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col());
 			
 			AMGN.plugin_listeners.forEach((plugin, listeners) ->
 			{

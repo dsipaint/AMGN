@@ -59,7 +59,6 @@ public class AMGN
 	 * 	Add "default config value" return value if config get method is used and no value is set
 	 * 	add support for global/guild-specific plugin configs
 	 * 	provide some support for tokens set as environment variables rather than in network.yml i.e. token: env could be valid network.yml syntax or something
-	 * 	add custom colours to network.yml
 	 * 	add support for role ids not just user ids in network.yml
 	 */
 	public static JDA bot;

@@ -28,15 +28,19 @@ guild_data:
   - guild_id: 12345
     prefix: "^"
     modlogs: 12345
+	accept_col: "##4287f5"
   
   - guild_id: 634667687233978388
     prefix: "&"
     modlogs: 634667687233978390
+	decline_col: "#eb4034"
     
   - guild_id: 123456789
     prefix: ":"
     modlogs: 23456455
     modrole: 12343545
+	unique_col: "#32a852"
+	
 ```
 | Variable | Required | Type |Default | Description |
 | -------- | -------- | ---- | ------ | ----------- |
@@ -44,9 +48,13 @@ guild_data:
 | operators | no | list of strings | N/A | user ids of operators of your network |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
-| prefix | no | "^" | string | prefix for commands in the aforementioned guild |
+| prefix | no | string | "^" | prefix for commands in the aforementioned guild |
 | modlogs | no | long | GuildNetwork.DEFAULT_ID (-1) | channel id for modlogs to be theoretically sent to by AMGN and its plugins |
 | modrole | no | long | GuildNetwork.DEFAULT_ID (-1) | role id for the role you wish to be treated with "staff" permissions in the guild |
+| accept_col | no | string of hex | GuildNetwork.GREEN_EMBED_COLOUR (65280) | colour that will be used in this guild for "accepted"-coloured embeds e.g. a successful log |
+| decline_col | no | string of hex | GuildNetwork.RED_EMBED_COLOUR (16073282) | colour that will be used in this guild for "declined"-coloured embeds e.g. an UNsuccessful log |
+| unique_col | no | string of hex | GuildNetwork.PURPLE_EMBED_COLOUR (11023006) | colour that will be used in this guild for unique-event embeds e.g. something unexpected or special |
+
 
 An `operator` has full access to all commands and permissions on the network.
 Each `guild_data` object of the array represents a single guild and the metadata associated with it.

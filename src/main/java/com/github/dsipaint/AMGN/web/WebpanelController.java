@@ -284,6 +284,9 @@ public class WebpanelController
                             obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
                         obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
                         obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
+                        obj.put("accept_col", Guild.formatHexString(GuildNetwork.getAccept_col(guild.getIdLong())));
+                        obj.put("decline_col", Guild.formatHexString(GuildNetwork.getDecline_col(guild.getIdLong())));
+                        obj.put("unique_col", Guild.formatHexString(GuildNetwork.getUnique_col(guild.getIdLong())));
                         guilds.add(obj);
                     }
                 });
@@ -341,7 +344,10 @@ public class WebpanelController
                                 authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
                                     guildnode.get("modrole").asLong() :
                                     GuildNetwork.guild_data.get(guildnode.get("id").asLong()).getModrole(),
-                                guildnode.get("prefix").asText()
+                                guildnode.get("prefix").asText(),
+                                Integer.parseInt(guildnode.get("accept_col").asText().replace("#", ""), 16),
+                                Integer.parseInt(guildnode.get("decline_col").asText().replace("#", ""), 16),
+                                Integer.parseInt(guildnode.get("unique_col").asText().replace("#", ""), 16)
                     ));
                 }
             });

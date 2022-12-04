@@ -3,10 +3,10 @@ package com.github.dsipaint.AMGN.entities.plugins;
 import java.io.InputStreamReader;
 import java.util.Map;
 
-import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.io.Config;
-
 import org.yaml.snakeyaml.Yaml;
+
+import com.github.dsipaint.AMGN.entities.Guild;
+import com.github.dsipaint.AMGN.io.Config;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -118,7 +118,7 @@ public abstract class Plugin
 	{
 		EmbedBuilder eb = new EmbedBuilder()
 				.setTitle(this.getName() + " " + (this.getVersion() == null ? "" : this.getVersion()))
-				.setColor(GuildNetwork.GREEN_EMBED_COLOUR);
+				.setColor(Guild.DEFAULT_ACCEPT_COL);
 
 		if(this.getAuthor() != null && !this.getAuthor().isEmpty())
 			eb.setAuthor("Author: " + this.getAuthor(), this.getUrl(), null);

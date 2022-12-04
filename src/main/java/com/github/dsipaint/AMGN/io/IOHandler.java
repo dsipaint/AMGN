@@ -55,12 +55,21 @@ public class IOHandler
 			  	in practice, all IDs should be longs and this crash should not occur- if you are getting a crash related to
 			  	converting ints to longs, look at this code
 			*/
-			
+
+			//if colour is not there, use default
+			//if it is, parse as string and do the stuff
+			int accept_col = !guild.containsKey("accept_col") ? Guild.DEFAULT_ACCEPT_COL : Integer.parseInt(((String) guild.get("accept_col")).replace("#", ""), 16);
+			int decline_col = !guild.containsKey("decline_col") ? Guild.DEFAULT_DECLINE_COL : Integer.parseInt(((String) guild.get("decline_col")).replace("#", ""), 16);
+			int unique_col = !guild.containsKey("unique_col") ? Guild.DEFAULT_UNIQUE_COL : Integer.parseInt(((String) guild.get("unique_col")).replace("#", ""), 16);
+
 			Guild parsed_guild_obj = new Guild(
 				(long) (guild.getOrDefault("guild_id", Guild.DEFAULT_ID)),
 				(long) guild.getOrDefault("modlogs", Guild.DEFAULT_ID),
 				(long) guild.getOrDefault("modrole", Guild.DEFAULT_ID),
-				(String) guild.getOrDefault("prefix", Guild.DEFAULT_PREFIX)
+				(String) guild.getOrDefault("prefix", Guild.DEFAULT_PREFIX),
+				accept_col,
+				decline_col,
+				unique_col
 				);
 			guilds_out.put(parsed_guild_obj.getGuild_id(), parsed_guild_obj);
 
@@ -129,6 +138,10 @@ public class IOHandler
 				guild_list_obj.put("modlogs", guild.getModlogs());
 			if(guild.getModrole() != Guild.DEFAULT_ID)
 				guild_list_obj.put("modrole", guild.getModrole());
+
+			guild_list_obj.put("accept_col", Guild.formatHexString(guild.getAccept_col()));
+			guild_list_obj.put("decline_col", Guild.formatHexString(guild.getDecline_col()));
+			guild_list_obj.put("unique_col", Guild.formatHexString(guild.getUnique_col()));
 
 			guild_list_obj.put("prefix", guild.getPrefix());
 

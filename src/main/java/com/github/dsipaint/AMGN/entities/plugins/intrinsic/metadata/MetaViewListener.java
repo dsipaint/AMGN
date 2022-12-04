@@ -1,5 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata;
 
+import java.util.Collections;
+
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 
@@ -21,7 +23,8 @@ public final class MetaViewListener extends ListenerAdapter
 		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(id) + "viewmetainfo"))
 		{
 			e.getChannel().sendMessageEmbeds(GuildNetwork.guild_data.getOrDefault(id, new Guild(id))
-					.asEmbed()).queue();
+					.asEmbed())
+					.allowedMentions(Collections.EMPTY_SET).queue();
 			
 			return;
 		}
