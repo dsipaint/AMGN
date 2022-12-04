@@ -10,14 +10,13 @@ class Config extends React.Component
 {
     constructor(props)
     {
-        console.log(props.item);
         super(props);
     }
 
     render()
     {
         if(Array.isArray(this.props.item))
-            return <ListItem list={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+            return <ListItem list={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey} addmore="true" removemore="true"/>
         else
             return <ObjectItem object={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
             
@@ -77,7 +76,7 @@ class ListItem extends React.Component
         var updatekeyref = this.props.updatekey;
 
         return (
-            <div>
+            <div class="listwrapper">
                 <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1].replace(new RegExp("_", 'g'), " ") + ":"}</h2>
                 <div class="list">
                     {this.state.list.map(function(item, i){
@@ -88,7 +87,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
-                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore="true" removemore="true"/>
                                             {removebutton(item)}
                                         </div>
                                     );
@@ -156,7 +155,7 @@ class ObjectItem extends React.Component
                         {
                             case "object":
                                 if(Array.isArray(item))
-                                    return <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                    return <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
                                 else
                                     return <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
                                     
@@ -210,7 +209,7 @@ class BooleanItem extends React.Component
     render()
     {
         return (
-            <div class="defaultinputwrapper">
+            <div class="inputwrapper">
                 <div class="objectname">
                     {this.props.name ? this.props.name + ":" : ""}
                 </div>

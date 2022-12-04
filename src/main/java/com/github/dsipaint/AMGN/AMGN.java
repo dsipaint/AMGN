@@ -51,8 +51,7 @@ public class AMGN
 	 * TODO:
 	 * 
 	 * 1. BASIC WEBPANEL
-	 * 	make client-side value updates more synchronous
-	 *  beautify frontend
+	 * 	make client-side value updates more synchronous (still a problem?)
 	 * 
 	 * 2. NEW AMGN FEATURES INTEGRATED
 	 * 	add plugin blacklist/whitelisting feature

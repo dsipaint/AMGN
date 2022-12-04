@@ -81,7 +81,6 @@ html {
     margin: 0px;
     padding: 0px;
     width: 100%;
-    height: 100%;
 }
 
 #selectedguild{
@@ -139,21 +138,22 @@ html {
 }
 
 #content {
-    height: 100%;
     width: 100%;
     margin: 0px;
 }
 
 #content > div {
-    height: 100%;
     width: 100%;
     margin: 0px;
     padding: 0px;
 }
 
+.maxheight {
+    height: 100%;
+}
+
 #pluginlist {
     width: 20%;
-    height: 100%;
     float: left;
     clear: left;
     border-right: 2px solid #4A4A4A;
@@ -161,20 +161,18 @@ html {
 
 #pluginsettings {
     float: left;
-    height: 100%;
     width: 76%;
     margin: 0px;
     padding-left: 10px;
 }
 
 #plugintitle {
-    height: 10%;
+    height: 100px;
 }
 
 #plugintitletxt {
     margin: 0px;
     padding: 0px;
-    height: 100%;
     float: left;
 }
 
@@ -189,16 +187,14 @@ html {
     float: left;
 }
 
+#pluginsettings > p {
+    margin: 0px;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
 ul {
     list-style: none;
-}
-
-#options {
-    height: 100%;
-}
-
-#options > div {
-    height: 100%;
 }
 
 h2{
@@ -221,14 +217,17 @@ input[type=text] {
     clear: left;
 }
 
+.listinput:has(#addelement) {
+    margin-bottom: 20px;
+}
+
 .completelistitem{
-    height: fit-content;
     float: left;
     clear: left;
 }
 
-#defaultinputwrapper {
-    width: fit-content;
+.completelistitem:has(.objectdisplay) {
+    margin-bottom: 20px;
 }
 
 .addelement {
@@ -238,7 +237,7 @@ input[type=text] {
 .inputwrapper {
     float: left;
     clear: right;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .removeelement {
@@ -248,8 +247,8 @@ input[type=text] {
 }
 
 .objectdisplay {
-    margin-bottom: 10px;
     width: 100%;
+    margin-bottom: 30px;
 }
 
 .objectdisplay > .inputwrapper {
