@@ -59,7 +59,6 @@ public class AMGN
 	 * 	Add ability to save configs
 	 * 	Add "default config value" return value if config get method is used and no value is set
 	 * 	add support for global/guild-specific plugin configs
-	 * 	add support for role ids not just user ids in network.yml
 	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
