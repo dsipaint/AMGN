@@ -26,6 +26,7 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseLis
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModroleListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.OperatorListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ReloadListener;
@@ -202,6 +203,7 @@ public class AMGN
 		bot.addEventListener(new ModlogsListener());
 		bot.addEventListener(new ModroleListener());
 		bot.addEventListener(new MenuDeleteListener());
+		bot.addEventListener(new OperatorListener());
 		
 		//operators plugin
 		bot.addEventListener(new OpAddListener());

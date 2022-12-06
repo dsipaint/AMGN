@@ -45,7 +45,7 @@ guild_data:
 | Variable | Required | Type |Default | Description |
 | -------- | -------- | ---- | ------ | ----------- |
 | token | yes | string | N/A | your bot's token |
-| operators | no | list of strings | N/A | user ids of operators of your network |
+| operators | no | list of strings | N/A | user or role ids of operators of your network |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
 | prefix | no | string | "^" | prefix for commands in the aforementioned guild |
@@ -56,7 +56,7 @@ guild_data:
 | unique_col | no | string of hex | GuildNetwork.PURPLE_EMBED_COLOUR (11023006) | colour that will be used in this guild for unique-event embeds e.g. something unexpected or special |
 
 
-An `operator` has full access to all commands and permissions on the network.
+An `operator` has full access to all commands and permissions on the network. This can either be a user or a discord role to be given to users.
 Each `guild_data` object of the array represents a single guild and the metadata associated with it.
 
 `network.yml` must be in the same directory as the network jar, have the correct name (network.yml) and contain the required fields, in the above format, or the network will close. Otherwise, you are now able to run the network by simply running the jar file as normal.

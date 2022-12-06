@@ -4,6 +4,7 @@
 + Add a program exits if network settings cannot be read
 + Add a new default embed colour, and add custom colours for each guild as an option
 + Add support for environment variable usage for the `token`, `clientid`, `clientsecret` and `redirecturi` network.yml variables
++ Operators can now include roles as well as users
 
 ## alpha-1.4.1
 ~ Actually made optional plugin.yml parameters optional, in line with the documentation

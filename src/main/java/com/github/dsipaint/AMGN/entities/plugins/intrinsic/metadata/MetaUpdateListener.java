@@ -63,7 +63,7 @@ public final class MetaUpdateListener extends ListenerAdapter
 			if(args[1].equalsIgnoreCase("modlogs"))
 			{
 				//if valid id format
-				if(args[2].matches("\\d{18}"))
+				if(args[2].matches(GuildNetwork.ID_REGEX))
 				{
 					for(TextChannel tc : e.getGuild().getTextChannels())
 					{
@@ -97,7 +97,7 @@ public final class MetaUpdateListener extends ListenerAdapter
 			if(args[1].equalsIgnoreCase("modrole"))
 			{
 				//if valid id format
-				if(args[2].matches("\\d{18}"))
+				if(args[2].matches(GuildNetwork.ID_REGEX))
 				{
 					for(Role r : e.getGuild().getRoles())
 					{

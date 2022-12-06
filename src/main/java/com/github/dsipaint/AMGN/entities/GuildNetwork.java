@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildNetwork
@@ -25,6 +26,8 @@ public class GuildNetwork
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
 	public static final String WEB_PATH = "./web"; //path for all web assets
+
+	public static final String ID_REGEX = "\\d{17,19}";
 	
 	
 	/** 
@@ -55,6 +58,32 @@ public class GuildNetwork
 				return true;
 		}
 		
+		return false;
+	}
+
+	/** 
+	 * @param m member to check operator status of
+	 * @return boolean true if member is an operator, false otherwise
+	 */
+	public static final boolean isOperator(User u)
+	{
+		for(long id : operators)
+		{
+			if(AMGN.bot.getUserById(id) != null)
+			{
+				if(AMGN.bot.getUserById(id).equals(u))
+					return true;
+				continue;
+			}
+			
+			if(AMGN.bot.getRoleById(id) != null)
+			{
+				Member m = AMGN.bot.getRoleById(id).getGuild().getMember(u);
+				if(m != null && m.getRoles().contains(AMGN.bot.getRoleById(id)))
+					return true;
+			}
+		}
+
 		return false;
 	}
 	
