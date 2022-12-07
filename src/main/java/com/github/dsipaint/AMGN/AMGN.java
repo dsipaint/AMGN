@@ -56,8 +56,6 @@ public class AMGN
 	 * 
 	 * 2. NEW AMGN FEATURES INTEGRATED
 	 * 	add plugin blacklist/whitelisting feature
-	 * 	Add ability to save configs
-	 * 	Add "default config value" return value if config get method is used and no value is set
 	 * 	add support for global/guild-specific plugin configs
 	 */
 	public static JDA bot;

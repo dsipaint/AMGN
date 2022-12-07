@@ -3,6 +3,7 @@ package com.github.dsipaint.AMGN.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -14,11 +15,11 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.yaml.snakeyaml.Yaml;
+
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-
-import org.yaml.snakeyaml.Yaml;
 
 public class Config
 {
@@ -27,7 +28,7 @@ public class Config
         It is designed to make recalling config data more easily, setting and getting config data.
     */
     private Plugin plugin;
-    private Yaml yaml = new Yaml();
+    private Yaml yaml = new Yaml(IOHandler.dumperopts);
 
     public Config(Plugin plugin)
     {
@@ -36,7 +37,6 @@ public class Config
 
     //TODO: add method: public boolean exists(String filename)
     //TODO: add setting methods for setting/writing config data
-    //TODO: use tidier yaml dump settings (see customcommands)
 
     //can generate files that are stored in the jar- will most commonly be used for template config.ymls
     public final void generateResource(String filename)
@@ -99,6 +99,12 @@ public class Config
 		}
     }
 
+    //save a config to a specific place
+    public final void save(Map<String, Object> config, String path) throws IOException
+    {
+        yaml.dump(config, new FileWriter(new File(path)));
+    }
+
     //parse maps of yaml files given the filename
     public final Map<String, Object> getConfig(String filename) throws FileNotFoundException
     {
@@ -110,6 +116,16 @@ public class Config
     {
         Map<String, Object> config = getConfig(filename);
         return getValueFromMap(config, key);
+    }
+
+    public final Map<String, Object> getDefaultConfig(String filename)
+    {
+        return yaml.load(this.getClass().getResourceAsStream(filename));
+    }
+
+    public final Object getDefaultValue(String path, String key)
+    {
+        return getValueFromMap(yaml.load(this.getClass().getResourceAsStream(path)), key);
     }
 
     //recursively get a value set inside a Map, checking if it is contained in any maps within this map

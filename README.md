@@ -325,6 +325,9 @@ This method returns a castable Object, the first parameter is the path to the co
 ```
 where the filename is relative as before. For easily accessing values, or even nested values from within these returned Maps, there is the `getValueFromMap`, which accepts the Map and the String key to search for respectively as parameters.
 
+Config files can be saved by calling the `save` method. This requires passing in the file path and the object to be written itself though.
+Default config values are values that come from the plugin jar's internal immutable config file, and can be retrieved by calling `getDefaultConfig` and `getDefaultValue` for specific values. If no value is found, these methods return `null`.
+
 Finally, it is possible a config file does not exist for a plugin yet. Developers should account for this themselves by catching `FileNotFoundException`s and not assuming the plugin has a generated config. You may find yourself writing this a lot in your plugins:
 ```java
 		//generate the default config if there is no config present
