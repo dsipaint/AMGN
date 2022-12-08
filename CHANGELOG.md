@@ -7,6 +7,7 @@
 + Operators can now include roles as well as users
 + Config files can now be updated programmatically
 + Add the ability to retrieve default values from configs
++ Add global config settings and guild-specific config settings
 
 ## alpha-1.4.1
 ~ Actually made optional plugin.yml parameters optional, in line with the documentation

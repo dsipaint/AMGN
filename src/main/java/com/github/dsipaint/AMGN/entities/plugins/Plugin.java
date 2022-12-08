@@ -106,11 +106,19 @@ public abstract class Plugin
 	/** 
 	 * @return String config path of the plugin i.e. ./plugins/name/
 	 */
-	public final String getConfigPath()
+	public final String getGlobalConfigPath()
 	{
 		return this.config_path;
 	}
 	
+	/** 
+	 * @return String guild-specific config path of the plugin i.e. ./plugins/name/guild_id/
+	 */
+	public final String getGuildConfigPath(net.dv8tion.jda.api.entities.Guild g)
+	{
+		return this.config_path + "/" + g.getId();
+	}
+
 	/** 
 	 * @return MessageEmbed embed displaying all info of the plugin
 	 */

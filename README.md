@@ -313,11 +313,16 @@ Developers may wish to allow some form of storage/customisation for their plugin
 ```java
 	Config config = this.getConfig();
 ```
+There are two types of config. Plugins can have global configs, and guild-specific configs. Global config files are found in the plugin's root directory i.e. `/plugins/pluginname/`. Guild-specific config files are found in `/plugins/pluginname/guildid/`. Either config can be accesssed with convenience methods. Plugins should prefer to use guild-specific configs first, before attempting to use a global config. If a guild-specific config file does not exist (either by being manually deleted or by being set in the webpanel), the global config file will be used instead. In this way config settings can be easily shared across multiple guilds, or made different from each other.
 
 You can then retrieve values from an existing config file like this:
 ```java
-	String myvalue = (String) config.getValueFromConfig("config_file.yml", "value name");
+	String myglobalvalue = (String) config.getValueFromGlobalConfig("config_file.yml", "value name");
+	String myguildvalue = (String) config.getValueFromGuildConfig("config_file.yml", "value name", guild);
+	String myvalue = (String) config.getValue("config_file.yml", "value name");
 ```
+
+Note `config.getValue` will first attempt to get a value from a guild config. If this does not exist, it will try to go to the global config. Failing this, the default config value, set inside the jar, will be used.
 
 This method returns a castable Object, the first parameter is the path to the config file relative to the plugin config path (which can also be referenced easily in code with `plugin.getConfigPath()`), and the second parameter is the name of the value you wish to retrieve. The eventually-cast string will be the value associated with this name in the yml file. There is also a method to retrieve a `Map` containing all key-value pairs in the yaml file (including nested ones). this is called like so:
 ```java

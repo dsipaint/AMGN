@@ -172,7 +172,7 @@ public class WebpanelController
     //returns a list of plugins that the bot currently has enabled
     @GetMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonNode getPluginInfo(@RequestParam(name="name") String name, HttpServletRequest request, HttpServletResponse response)
+    public JsonNode getPluginInfo(@RequestParam(name="name") String name, @RequestParam(name="guild", defaultValue="global") String guild, HttpServletRequest request, HttpServletResponse response)
     {
         if(request.getCookies() == null)
         {
@@ -205,7 +205,12 @@ public class WebpanelController
                         //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
 
                         //iterate through all files in the config directory that are yml files
-                        File configdir = new File(plugin.getConfigPath());
+                        File configdir;
+                        if(guild.equalsIgnoreCase("global")) 
+                            configdir = new File(plugin.getGlobalConfigPath());
+                        else
+                            configdir = new File(plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild)));
+
                         File[] configfiles = configdir.listFiles((file, filename) -> {
                             return filename.endsWith(".yml");
                         });
@@ -375,7 +380,7 @@ public class WebpanelController
     //allows client to save plugin configs
     @PutMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+    public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestParam(defaultValue = "global") String guild, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
     {
         if(request.getCookies() == null)
         {
@@ -406,7 +411,7 @@ public class WebpanelController
                         for(JsonNode config : body)
                         {
                             Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
-                            yaml_out.dump(result, new FileWriter(new File(plugin.getConfigPath() + "/" + config.get("file").asText() + ".yml")));
+                            yaml_out.dump(result, new FileWriter(new File((guild.equalsIgnoreCase("global") ? plugin.getGlobalConfigPath() : plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild))) + "/" + config.get("file").asText() + ".yml")));
                         }
                     }
                     catch(IOException e)
