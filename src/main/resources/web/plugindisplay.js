@@ -8,7 +8,7 @@ function givename()
 
 function getSelectedGuild()
 {
-    return $(".nodiplay").text;
+    return $(".nodisplay").text();
 }
 
 class Config extends React.Component
@@ -354,6 +354,8 @@ class PluginConfig extends React.Component
 
         if(name == "")
             return;
+
+        console.log(getSelectedGuild());
 
         await $.get("/webpanel/api/plugininfo?name=" + name + "&guild=" + getSelectedGuild(), this.setPluginInfoInState);
     }
