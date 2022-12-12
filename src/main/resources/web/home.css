@@ -274,3 +274,7 @@ p > a {
 .token, .notoken {
     display: none;
 }
+
+.nodisplay {
+    display: none;
+}

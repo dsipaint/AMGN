@@ -6,6 +6,11 @@ function givename()
     return "nested-item" + id;
 }
 
+function getSelectedGuild()
+{
+    return $(".nodiplay").text;
+}
+
 class Config extends React.Component
 {
     constructor(props)
@@ -350,7 +355,7 @@ class PluginConfig extends React.Component
         if(name == "")
             return;
 
-        await $.get("/webpanel/api/plugininfo?name=" + name, this.setPluginInfoInState);
+        await $.get("/webpanel/api/plugininfo?name=" + name + "&guild=" + getSelectedGuild(), this.setPluginInfoInState);
     }
 
     setPluginInfoInState(data)
@@ -362,7 +367,7 @@ class PluginConfig extends React.Component
 
     setPluginInfo()
     {
-        $.ajax("/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name, {
+        $.ajax("/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name + "&guild=" + getSelectedGuild(), {
             method: "PUT",
             contentType: "application/json",
             data: JSON.stringify(this.state.selectedplugin.config)
@@ -422,9 +427,13 @@ class PluginConfig extends React.Component
         return(
             <div>
                 <div id="pluginlist">
-                    <div class="plugin" onClick={() => {this.selectPlugin("")}}>
-                        Network Settings
-                    </div>
+                    {getSelectedGuild() == "global" ? 
+                        <div class="plugin" onClick={() => {this.selectPlugin("")}}>
+                            Network Settings
+                        </div>
+                        :
+                        ""
+                    }
                     {this.state.plugins.map((name) =>(
                         <div class="plugin" onClick={() => {this.selectPlugin(name)}}>
                             {name}
@@ -433,7 +442,7 @@ class PluginConfig extends React.Component
                 </div>
 
                 {
-                    this.state.selectedplugin.name === undefined ? 
+                    this.state.selectedplugin.name === undefined && getSelectedGuild() == "global" ? 
                     
                     <div id="pluginsettings">
                         <div id="plugintitle">
