@@ -332,6 +332,8 @@ class PluginConfig extends React.Component
         this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
         this.setProperty = this.setProperty.bind(this);
 
+        this.addConfigForPlugin = this.addConfigForPlugin.bind(this);
+
         this.refreshConfig = this.refreshConfig.bind(this);
 
         //and use a jquery listener to detect a change to the selected guild
@@ -413,6 +415,11 @@ class PluginConfig extends React.Component
                 guild_data: this.state.networkinfo.guild_data
             })
         });
+    }
+
+    addConfigForPlugin()
+    {
+        console.log("add a local config for this guild and this plugin");
     }
 
     setPropertiesForChildren(path, value)
@@ -500,7 +507,11 @@ class PluginConfig extends React.Component
                                     return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
                                 }) + <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
                                 :
-                                <h2>Sorry! This plugin has no config</h2>
+                                <div>
+                                    <h2>Sorry! This plugin has no config</h2>
+                                    <p>The selected guild has no config for this plugin. This means either this guild is using the Global Settings for this plugin, or this plugin has no config to edit. Either edit the Global Settings for this plugin, or add a local config for this guild using the button below.</p>
+                                    <div id="savesettings" onClick={this.addConfigForPlugin}>Add Local Config</div>
+                                </div>
                             }
                         </div>
                     </div>

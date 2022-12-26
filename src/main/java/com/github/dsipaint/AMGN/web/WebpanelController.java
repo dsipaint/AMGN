@@ -215,26 +215,24 @@ public class WebpanelController
                             return filename.endsWith(".yml");
                         });
 
-                        if(configfiles == null)
+                        if(configfiles != null)
                         {
-                            response.setStatus(404);
-                            return new ObjectMapper().createObjectNode().put("error", "config not found"); 
+                            //add all of these files and their contents to an array in the above format
+                            ArrayNode confignode = mapper.createArrayNode();
+
+                            for(File f : configfiles)
+                            {
+                                ObjectNode configobj = mapper.createObjectNode();
+                                JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
+                                configobj.put("file", f.getName().replace(".yml", ""));
+                                configobj.set("data", configdata);
+    
+                                confignode.add(configobj);
+                            }
+                            
+                            //this array is then our config data
+                            obj.set("config", confignode);
                         }
-
-                        //add all of these files and their contents to an array in the above format
-                        ArrayNode confignode = mapper.createArrayNode();
-                        for(File f : configfiles)
-                        {
-                            ObjectNode configobj = mapper.createObjectNode();
-                            JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
-                            configobj.put("file", f.getName().replace(".yml", ""));
-                            configobj.set("data", configdata);
-
-                            confignode.add(configobj);
-                        }
-
-                        //this array is then our config data
-                        obj.set("config", confignode);
                     }
                     catch(IOException e)
                     {
