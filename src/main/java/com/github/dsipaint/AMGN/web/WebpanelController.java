@@ -215,6 +215,12 @@ public class WebpanelController
                             return filename.endsWith(".yml");
                         });
 
+                        if(configfiles == null)
+                        {
+                            response.setStatus(404);
+                            return new ObjectMapper().createObjectNode().put("error", "config not found"); 
+                        }
+
                         //add all of these files and their contents to an array in the above format
                         ArrayNode confignode = mapper.createArrayNode();
                         for(File f : configfiles)

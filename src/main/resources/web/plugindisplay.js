@@ -370,7 +370,14 @@ class PluginConfig extends React.Component
 
         console.log(getSelectedGuild());
 
-        await $.get("/webpanel/api/plugininfo?name=" + name + "&guild=" + getSelectedGuild(), this.setPluginInfoInState);
+        await $.ajax({
+            url: "/webpanel/api/plugininfo?name=" + name + "&guild=" + getSelectedGuild(),
+            type: "GET",
+            success: this.setPluginInfoInState,
+            error: function(data) {
+                console.log(data.responseJSON);
+            }
+        });
     }
 
     setPluginInfoInState(data)
