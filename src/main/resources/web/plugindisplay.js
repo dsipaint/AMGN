@@ -345,10 +345,11 @@ class PluginConfig extends React.Component
         await $.get("/webpanel/api/networkinfo", this.setNetworkInfoInState)
     }
 
-    refreshConfig(event)
+    async refreshConfig(event)
     {
         // event.stopPropagation();
         this.forceUpdate();
+        $.get("/webpanel/api/plugins", (data) => {this.selectPlugin(getSelectedGuild() == "global" ? "" : data[0])});
     }
 
     getPluginNames(data)
@@ -490,12 +491,11 @@ class PluginConfig extends React.Component
                                 this.state.selectedplugin.config ?
                                 this.state.selectedplugin.config.map(function(config, i){
                                     return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
-                                })
+                                }) + <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
                                 :
                                 <h2>Sorry! This plugin has no config</h2>
                             }
                         </div>
-                        <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
                     </div>
                 }
             </div>
