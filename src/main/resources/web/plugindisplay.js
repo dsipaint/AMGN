@@ -331,12 +331,24 @@ class PluginConfig extends React.Component
 
         this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
         this.setProperty = this.setProperty.bind(this);
+
+        this.refreshConfig = this.refreshConfig.bind(this);
+
+        //and use a jquery listener to detect a change to the selected guild
+        //then have this listener trigger a re-render, all from within the plugindisplay class
+        $("div").on("click", ".guild", this.refreshConfig);
     }
 
     async componentDidMount()
     {
         await $.get("/webpanel/api/plugins", this.getPluginNames);
         await $.get("/webpanel/api/networkinfo", this.setNetworkInfoInState)
+    }
+
+    refreshConfig(event)
+    {
+        // event.stopPropagation();
+        this.forceUpdate();
     }
 
     getPluginNames(data)
