@@ -24,6 +24,11 @@ token: 1234567890afdlfjfkadadsfnkfasd
 operators:
   - 475859944101380106
 
+use_webpanel: false
+clientid: 127348349832489324
+clientsecret: 127348349832489324
+redirecturi: "https://localhost/redirect"
+
 guild_data:
   - guild_id: 12345
     prefix: "^"
@@ -46,6 +51,10 @@ guild_data:
 | -------- | -------- | ---- | ------ | ----------- |
 | token | yes | string | N/A | your bot's token |
 | operators | no | list of strings | N/A | user or role ids of operators of your network |
+| use_webpanel | no | boolean | true | If this is set to `false`, the webpanel will not be activated for your installation of AMGN. If this is true, the webpanel will be used. |
+| clientid | no | string | | The client ID for your application if you wish to use the webpanel |
+| clientsecret | no | string | | The client secret for your application if you wish to use the webpanel |
+| redirecturi | no | string | | The redirect URI for your application if you wish to use the webpanel |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
 | prefix | no | string | "^" | prefix for commands in the aforementioned guild |

@@ -1,5 +1,6 @@
 package com.github.dsipaint.AMGN;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -280,7 +281,18 @@ public class AMGN
 			e.printStackTrace();
 		}
 
-		SpringApplication.run(AMGN.class, args);
+		Boolean use_web = true;
+		try
+		{
+			use_web = (Boolean) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "use_webpanel");
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+		if(use_web == null || use_web)
+			SpringApplication.run(AMGN.class, args);
 		
 		logger.info("Finished setup.");
 		//END SETUP

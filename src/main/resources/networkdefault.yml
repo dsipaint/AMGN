@@ -1,5 +1,6 @@
 token: 1234567890afdlfjfkadadsfnkfasd
 
+use_webpanel: false
 clientid: 127348349832489324
 clientsecret: 127348349832489324
 redirecturi: "https://localhost/redirect"
