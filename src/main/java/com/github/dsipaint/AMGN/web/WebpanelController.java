@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -533,7 +534,15 @@ public class WebpanelController
                     File configdir = new File(plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild)));
                     if(configdir.exists())
                     {
-                        configdir.delete();
+                        try
+                        {
+                            FileUtils.deleteDirectory(configdir);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        
                         response.setStatus(200);
                         return new ObjectMapper().createObjectNode().put("success", "local config deleted");
                     }
