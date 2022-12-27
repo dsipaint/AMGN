@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -437,6 +438,70 @@ public class WebpanelController
 
                     response.setStatus(201);
                     return new ObjectMapper().createObjectNode().put("success", "plugin config saved");
+                }
+            }
+
+            response.setStatus(404);
+            return new ObjectMapper().createObjectNode().put("error", "plugin not found");
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //use this API endpoint to request a local config for a plugin that doesn't have one
+    //needs a plugin name and a guild
+    @PostMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode requestLocalConfig(@RequestParam(name="name") String name, @RequestParam(name="guild") String guild, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            //check to see if there is a config for this plugin
+            for(Plugin plugin : AMGN.plugin_listeners.keySet())
+            {
+                if(plugin.getName().equalsIgnoreCase(name))
+                {
+                    //make a local one if it's possible
+                    //just copy from global settings (we could fish them out of the jar, may come back to do this, but for now this is easier)
+                    File globalconfigdir = new File(plugin.getGlobalConfigPath());
+                    File[] configfiles = globalconfigdir.listFiles((file, filename) -> {
+                        return filename.endsWith(".yml");
+                    });
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    ArrayNode confignode = mapper.createArrayNode();
+                    if(configfiles != null)
+                    {
+                        for(File file : configfiles)
+                            plugin.getConfig().generateLocalResource(file.getName(), AMGN.bot.getGuildById(guild));
+
+                        //return this config
+                        try
+                        {
+                            for(File f : configfiles)
+                            {
+                                ObjectNode configobj = mapper.createObjectNode();
+                                JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
+                                configobj.put("file", f.getName().replace(".yml", ""));
+                                configobj.set("data", configdata);
+    
+                                confignode.add(configobj);
+                            }
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    return confignode;
                 }
             }
 

@@ -419,7 +419,17 @@ class PluginConfig extends React.Component
 
     addConfigForPlugin()
     {
-        console.log("add a local config for this guild and this plugin");
+        $.ajax("/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name + "&guild=" + getSelectedGuild(), {
+            method: "POST",
+            success: (data) => {
+                this.setState({
+                    selectedplugin: {
+                        ...this.state.selectedplugin,
+                        config: data
+                    }
+                });
+            }
+        });
     }
 
     setPropertiesForChildren(path, value)
@@ -503,9 +513,12 @@ class PluginConfig extends React.Component
                         <div id="options">
                             {
                                 this.state.selectedplugin.config ?
-                                this.state.selectedplugin.config.map(function(config, i){
-                                    return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
-                                }) + <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
+                                <div>
+                                    {this.state.selectedplugin.config.map(function(config, i){
+                                        return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
+                                    })}
+                                    <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
+                                </div>
                                 :
                                 <div>
                                     <h2>Sorry! This plugin has no config</h2>
