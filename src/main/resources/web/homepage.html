@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="${botname} + '- powered by AMGN'"></title>
+        <script src="https://kit.fontawesome.com/a041bf1af6.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" type="text/css" href="home.css"/>
+        <link rel="icon" type="image/x-icon" th:href="${botpfp}">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="cleanup.js"></script>
+        <script src="plugindisplay.js" type="text/babel"></script>
+        <script src="guilddisplay.js" type="text/babel"></script>
+    </head>
+
+    <body onload="toggleLoginVisibility()">
+        <div id="topbanner">
+            <img class="topleft" th:src="${botpfp}", alt="bot image" width="70" height="70">
+            <div class="topleft">
+                <h1 th:text="${botname}"></h1>
+                <em>powered by AMGN</em>
+            </div>
+
+            <div class="topright notoken" id="signin">
+                <a th:href="@{https://discord.com/oauth2/authorize(response_type='code',client_id=${clientid},scope='identify guilds',redirect_uri=${redirecturi},prompt='none')}">Sign in with Discord</a>
+            </div>
+            <div class="topright token" id="accountinfo">
+                <div class="topright" id="signout" onclick="clearcookies()">
+                    Sign out
+                </div>
+                <div id="username" class="topright">{Username}</div>
+                <img id="userpfp" src="" alt="profile picture" width="30" height="30">
+            </div>
+            <div class="topright token" id="guildselector"></div>
+        </div>
+        <div id="content" class="token"></div>
+
+        <div id="nocontent" class="notoken">
+            <h1>Hey there!</h1>
+            <p>
+                Welcome to the webpanel for ${botname}. If you want to configure the bot for one or more servers, make sure you sign in <a th:href="@{https://discord.com/oauth2/authorize(response_type='code',client_id=${clientid},scope='identify guilds',redirect_uri=${redirecturi},prompt='none')}">here</a>.
+                <br><br><b>TODO: al (guy who made this), add more promotional content here!</b>
+            </p>
+        </div>
+    </body>
+</html>

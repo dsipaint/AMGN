@@ -24,34 +24,68 @@ token: 1234567890afdlfjfkadadsfnkfasd
 operators:
   - 475859944101380106
 
+use_webpanel: false
+clientid: 127348349832489324
+clientsecret: 127348349832489324
+redirecturi: "https://localhost/redirect"
+port: 9999
+
 guild_data:
   - guild_id: 12345
     prefix: "^"
-	modlogs: 12345
+    modlogs: 12345
+	accept_col: "##4287f5"
   
   - guild_id: 634667687233978388
     prefix: "&"
-	modlogs: 634667687233978390
-	
+    modlogs: 634667687233978390
+	decline_col: "#eb4034"
+    
   - guild_id: 123456789
     prefix: ":"
-	modlogs: 23456455
-	modrole: 12343545
+    modlogs: 23456455
+    modrole: 12343545
+	unique_col: "#32a852"
+	
 ```
 | Variable | Required | Type |Default | Description |
 | -------- | -------- | ---- | ------ | ----------- |
-| token | yes | N/A | string | your bot's token |
-| operators | no | N/A | list of strings | user ids of operators of your network |
-| guild_data | no | N/A | list of objects (fields follow ) | metadata for a guild on the network |
+| token | yes | string | N/A | your bot's token |
+| operators | no | list of strings | N/A | user or role ids of operators of your network |
+| use_webpanel | no | boolean | true | If this is set to `false`, the webpanel will not be activated for your installation of AMGN. If this is true, the webpanel will be used. |
+| clientid | no | string | | The client ID for your application if you wish to use the webpanel |
+| clientsecret | no | string | | The client secret for your application if you wish to use the webpanel |
+| redirecturi | no | string | | The redirect URI for your application if you wish to use the webpanel |
+| port | no | int | 8080 | The desired port to host your webpanel on |
+| guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
-| prefix | no | "^" | string | prefix for commands in the aforementioned guild |
+| prefix | no | string | "^" | prefix for commands in the aforementioned guild |
 | modlogs | no | long | GuildNetwork.DEFAULT_ID (-1) | channel id for modlogs to be theoretically sent to by AMGN and its plugins |
 | modrole | no | long | GuildNetwork.DEFAULT_ID (-1) | role id for the role you wish to be treated with "staff" permissions in the guild |
+| accept_col | no | string of hex | GuildNetwork.GREEN_EMBED_COLOUR (65280) | colour that will be used in this guild for "accepted"-coloured embeds e.g. a successful log |
+| decline_col | no | string of hex | GuildNetwork.RED_EMBED_COLOUR (16073282) | colour that will be used in this guild for "declined"-coloured embeds e.g. an UNsuccessful log |
+| unique_col | no | string of hex | GuildNetwork.PURPLE_EMBED_COLOUR (11023006) | colour that will be used in this guild for unique-event embeds e.g. something unexpected or special |
 
-An `operator` has full access to all commands and permissions on the network.
+
+An `operator` has full access to all commands and permissions on the network. This can either be a user or a discord role to be given to users.
 Each `guild_data` object of the array represents a single guild and the metadata associated with it.
 
 `network.yml` must be in the same directory as the network jar, have the correct name (network.yml) and contain the required fields, in the above format, or the network will close. Otherwise, you are now able to run the network by simply running the jar file as normal.
+
+The variables `token`, `clientid`, `clientsecret` and `redirecturi` can also not be set, in which case AMGN will attempt to use environment variables for these values rather than setting the values in `network.yml`. The corresponding environment variables if you choose this method are as follows:
+
+| Network.yml | Environment Variable |
+| ----------- | -------------------- |
+| token | AMGN_TOKEN |
+| clientid | AMGN_CLIENTID |
+| clientsecret | AMGN_CLIENTSECRET |
+| redirecturi | AMGN_REDIRECT |
+
+i.e. if in `network.yml`, you write the following:
+```yaml
+token: "env"
+```
+then for example in linux, you need to have run `export AMGN_TOKEN=thisismytoken`.
 
 ## Plugins:
 Included in this API are intrinsic plugins, adding quality-of-life commands and features that a plugin outside of this library may struggle to facilitate for. This includes handling external plugins and the network metadata. For more info, use the help command in a guild with your network's bot in, when you launch the network with no external plugins.
@@ -82,13 +116,13 @@ plugins:
   version: "0.0.1"
   commands:
     - label: "updatemetainfo"
-	  description: "Use to update your guild's metadata for the network"
-	  usageinfo: "^usageinfo {prefix/modlogs/modrole} {new value}"
-	  permission: "admin"
-	
-	- label: "viewmetainfo"
-	  usageinfo: "Use to view a guild's metadata"
-	  permission: "staff"
+      description: "Use to update your guild's metadata for the network"
+      usageinfo: "^usageinfo {prefix/modlogs/modrole} {new value}"
+      permission: "admin"
+    
+    - label: "viewmetainfo"
+      usageinfo: "Use to view a guild's metadata"
+      permission: "staff"
 ```
 
 | Variable | Required | Type | Description |
@@ -290,17 +324,25 @@ Developers may wish to allow some form of storage/customisation for their plugin
 ```java
 	Config config = this.getConfig();
 ```
+There are two types of config. Plugins can have global configs, and guild-specific configs. Global config files are found in the plugin's root directory i.e. `/plugins/pluginname/`. Guild-specific config files are found in `/plugins/pluginname/guildid/`. Either config can be accesssed with convenience methods. Plugins should prefer to use guild-specific configs first, before attempting to use a global config. If a guild-specific config file does not exist (either by being manually deleted or by being set in the webpanel), the global config file will be used instead. In this way config settings can be easily shared across multiple guilds, or made different from each other.
 
 You can then retrieve values from an existing config file like this:
 ```java
-	String myvalue = (String) config.getValueFromConfig("config_file.yml", "value name");
+	String myglobalvalue = (String) config.getValueFromGlobalConfig("config_file.yml", "value name");
+	String myguildvalue = (String) config.getValueFromGuildConfig("config_file.yml", "value name", guild);
+	String myvalue = (String) config.getValue("config_file.yml", "value name");
 ```
+
+Note `config.getValue` will first attempt to get a value from a guild config. If this does not exist, it will try to go to the global config. Failing this, the default config value, set inside the jar, will be used.
 
 This method returns a castable Object, the first parameter is the path to the config file relative to the plugin config path (which can also be referenced easily in code with `plugin.getConfigPath()`), and the second parameter is the name of the value you wish to retrieve. The eventually-cast string will be the value associated with this name in the yml file. There is also a method to retrieve a `Map` containing all key-value pairs in the yaml file (including nested ones). this is called like so:
 ```java
 	Map<String, Object> wholeconfigmap = config.getConfig("filename");
 ```
 where the filename is relative as before. For easily accessing values, or even nested values from within these returned Maps, there is the `getValueFromMap`, which accepts the Map and the String key to search for respectively as parameters.
+
+Config files can be saved by calling the `save` method. This requires passing in the file path and the object to be written itself though.
+Default config values are values that come from the plugin jar's internal immutable config file, and can be retrieved by calling `getDefaultConfig` and `getDefaultValue` for specific values. If no value is found, these methods return `null`.
 
 Finally, it is possible a config file does not exist for a plugin yet. Developers should account for this themselves by catching `FileNotFoundException`s and not assuming the plugin has a generated config. You may find yourself writing this a lot in your plugins:
 ```java
@@ -310,5 +352,13 @@ Finally, it is possible a config file does not exist for a plugin yet. Developer
             this.getConfig().generateResource("config.yml");
 ```
 Here we can see that AMGN provides a way to generate a config file that doesn't exist. Just call the `Config.generateResource` method, passing the name of the file you need to generate. How does AMGN know how to generate this file? In the `resources` folder, where you defined the `plugin.yml` file, you create the file here with the same name you wish to generate. Then in the file, write a default config you wish to exist when the file is generated by the plugin. When you call the generateResource method, AMGN will copy your template in `resources` inside the compiled jar, to the config filepath for your plugin. You can then normally use the methods to call and use values from this config. As of now, AMGN cannot write new values to existing configs.
+
+## The webpanel
+The purpose of AMGN is to simplify being a bot developer- if you are a bot developer there's a good chance you'd want to include a webpanel for users to configure your bot for their server or network. This is why AMGN comes pre-packaged with an auto-generated webpanel. The website is hosted on the address the bot is run on, on port 8080. You can see this by running the jar locally and visiting `localhost:8080/webpanel`. There are a number of options you will see here.
+In order to use the webpanel and be able to login to your network, the application needs to use Discord's OAuth2 methods. This means your network needs to know your application's id and secret in order to log users into your app. You can find this in the developer portal, similar to how you get the token for your bot. Add this to your `network.yml` as a variable called `clientid` and `clientsecret`. Similarly, discord's authentication needs to know the redirect uri. This is where discord will redirect the user after they have signed in with discord. You should add the address you wish to redirect the user to in the developer portal for your bot (this can be found in the oauth2 tab -> "add redirect"), and then add the same address to `network.yml` under the name `redirecturi`. This redirect must take the form of your server's public address/url, followed with `/webpanel/redirect`. After this, AMGN and discord should have enough information to sign users into your webpanel.
+
+Plugin developers make config files for their plugin. These are used to let the user customise their plugin install. This can be done in 2 ways. 1: the user manually edits the YAML file that is either present or created or 2: the user uses the webpanel to remotely change the YAML config file. The webpanel code will do its best to interpret your default config files and diplay them in a sensible way to the user on the webpanel. Please note that to interpret how to display the data, AMGN uses a tiered system. First it will check the type of value in the pre-packaged config file that the plugin jar was developed with. This is why it's important to provide default values, amongst other reasons. Then, it will use `null`. Please also note that though nested types are supported, lists/arrays of just booleans are not supported, because it was deemed weird.
+
+The webpanel also makes use of your preconfigured permissions in the `network.yml` file. Any discord user can attempt to login to your webpanel, however only users specified as staff, people with admin permissions in a server where the bot lives, or operators will be able to login successfully. Operators can configure every setting from the console, however every other authenticated user will *not* be able to configure the `operators` setting, or a guild's `modrole` from the webpanel, as these are considered operator-settings. You can only modify permissions of a guild that you are in, unless you are an operator, in which case you can edit settings for guilds you are not necessarily in.
 
 These are the basics of using AMGN. For more help, please contact the author on discord (al~#1819) or look at the javadocs- have fun, and get coding!!

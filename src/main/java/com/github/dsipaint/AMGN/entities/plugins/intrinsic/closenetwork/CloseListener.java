@@ -1,10 +1,10 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

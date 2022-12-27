@@ -76,11 +76,8 @@ public abstract class Command extends ListenerAdapter
 	public final boolean hasPermission(Member m)
 	{
 		//operators always have permission
-		for(long op : GuildNetwork.operators)
-		{
-			if(op == m.getIdLong())
-				return true;
-		}
+		if(GuildNetwork.isOperator(m.getUser()))
+			return true;
 		
 		switch(this.perm)
 		{
@@ -124,11 +121,8 @@ public abstract class Command extends ListenerAdapter
 	public static final boolean hasPermission(Member m, GuildPermission permission)
 	{
 		//operators always have permission
-		for(long op : GuildNetwork.operators)
-		{
-			if(op == m.getIdLong())
-				return true;
-		}
+		if(GuildNetwork.isOperator(m.getUser()))
+			return true;
 		
 		switch(permission)
 		{

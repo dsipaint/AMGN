@@ -7,7 +7,7 @@ public enum DefaultCommand
 	//originally from the intrinsic plugins, now are just hard-coded commands, this is where their metadata is stored
 	
 	HELP("help", "^help, or ^help {command/plugin}", "Returns information on one or all commands of the network", GuildPermission.ALL),
-	METAUPDATE("updatemetainfo", "^updatemetainfo {prefix/modlogs/modrole} {new value}", "Update the metainfo of the network, for example a guild's prefix", GuildPermission.ADMIN),
+	METAUPDATE("updatemetainfo", "^updatemetainfo {prefix/modlogs/modrole/acceptcol/declinecol/uniquecol} {new value}", "Update the metainfo of the network, for example a guild's prefix", GuildPermission.ADMIN),
 	METAVIEW("viewmetainfo", "^viewmetainfo {prefix/modlogs/modrole}", "View the metainfo of the network, for example a guild's prefix", GuildPermission.STAFF),
 	OPADD("setoperator", "^setoperator {user id}", "Add a user as an operator of the network", GuildPermission.OPERATOR),
 	OPREMOVE("removeoperator", "^removeoperator {user id}", "Remove a user as an operator of the network", GuildPermission.OPERATOR),

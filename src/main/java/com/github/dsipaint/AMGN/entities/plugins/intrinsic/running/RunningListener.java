@@ -1,9 +1,9 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.running;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -24,7 +24,7 @@ public final class RunningListener extends ListenerAdapter
 		{
 			EmbedBuilder eb = new EmbedBuilder()
 					.setTitle("Active plugins: ")
-					.setColor(GuildNetwork.GREEN_EMBED_COLOUR);
+					.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col());
 			
 			AMGN.plugin_listeners.forEach((plugin, listeners) ->
 			{

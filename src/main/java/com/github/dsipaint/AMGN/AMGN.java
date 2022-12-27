@@ -1,14 +1,23 @@
-package com.github.dsipaint.AMGN.main;
+package com.github.dsipaint.AMGN;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.security.auth.login.LoginException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
@@ -18,6 +27,7 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseLis
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModroleListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.OperatorListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ReloadListener;
@@ -36,13 +46,23 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
+@SpringBootApplication
 public class AMGN
 {
+	/*
+	 * TODO:
+	 * 
+	 * 1. BASIC WEBPANEL
+	 * 	make client-side value updates more synchronous (still a problem?)
+	 * 
+	 * 2. NEW AMGN FEATURES INTEGRATED
+	 * 	add plugin blacklist/whitelisting feature
+	 * 	add support for global/guild-specific plugin configs
+	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
-	
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
 	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners;
@@ -51,15 +71,37 @@ public class AMGN
 		//SETUP
 		logger.info("Commencing setup...");
 		String token = "";
+
+		IOHandler.dumperopts = new DumperOptions();
+		IOHandler.dumperopts.setIndent(2);
+		IOHandler.dumperopts.setDefaultFlowStyle(FlowStyle.BLOCK);
+
+		try
+		{
+			//by default we use ./web/ for web assets
+			if(IOHandler.copyFileToExternalPath("networkdefault.yml", GuildNetwork.NETWORKINFO_PATH))
+			{
+				logger.info("network.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				System.exit(0);
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+
 		try
 		{
 			logger.info("Reading token from network settings...");
-			token = IOHandler.readToken(GuildNetwork.NETWORKINFO_PATH); //read token from network.yml
+			token = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "token");//read token from network.yml
+			if(token == null)
+				token = System.getenv("AMGN_TOKEN");
 		}
 		catch (IOException e)
 		{
 			logger.error("Couldn't read network settings");
 			e.printStackTrace();
+			System.exit(1); //exit if not able to read network settings
 		}
 		
 		logger.info("Initialising bot account...");
@@ -93,9 +135,29 @@ public class AMGN
 
 		try
 		{
+			logger.info("Reading webpanel settings from network settings- clientid and redirect uri");
+			GuildNetwork.clientid = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "clientid");
+			if(GuildNetwork.clientid == null)
+				GuildNetwork.clientid = System.getenv("AMGN_CLIENTID");
+
+			GuildNetwork.clientsecret = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "clientsecret");
+			if(GuildNetwork.clientsecret == null)
+				GuildNetwork.clientsecret = System.getenv("AMGN_CLIENTSECRET");
+
+			GuildNetwork.redirecturi = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "redirecturi");
+			if(GuildNetwork.redirecturi == null)
+				GuildNetwork.redirecturi = System.getenv("AMGN_REDIRECT");
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		try
+		{
 			logger.info("Reading operators and guild data from network settings...");
 			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.yml
-			GuildNetwork.operators = IOHandler.readOperators(GuildNetwork.NETWORKINFO_PATH); //read operators from network.yml
+			GuildNetwork.operators = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
 		}
 		catch(IOException e)
 		{
@@ -139,6 +201,7 @@ public class AMGN
 		bot.addEventListener(new ModlogsListener());
 		bot.addEventListener(new ModroleListener());
 		bot.addEventListener(new MenuDeleteListener());
+		bot.addEventListener(new OperatorListener());
 		
 		//operators plugin
 		bot.addEventListener(new OpAddListener());
@@ -163,19 +226,26 @@ public class AMGN
 				//loop through these jars
 				for(File file : plugins_directory)
 				{
-					//look for the actual plugin class here (if it exists)
-					Plugin p = IOHandler.getPluginObjectFromJar(file);
-					
-					//plugins must have a name and name must have no whitespace
-					if(p.getName() == null || p.getName().matches(".*\\s.*"))
+					try
 					{
-						logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
-						continue;
+						//look for the actual plugin class here (if it exists)
+						Plugin p = IOHandler.getPluginObjectFromJar(file);
+						
+						//plugins must have a name and name must have no whitespace
+						if(p.getName() == null || p.getName().matches(".*\\s.*"))
+						{
+							logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
+							continue;
+						}
+						
+						//enable these classes/plugins with GuildNetwork.enablePlugin
+						if(GuildNetwork.enablePlugin(p))
+							logger.info("Enabled " + p.getName() + " " + p.getVersion());
 					}
-					
-					//enable these classes/plugins with GuildNetwork.enablePlugin
-					if(GuildNetwork.enablePlugin(p))
-						logger.info("Enabled " + p.getName() + " " + p.getVersion());
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
 				}
 			}
 			else
@@ -185,6 +255,51 @@ public class AMGN
 		{
 			e.printStackTrace();
 		}
+
+		logger.info("Setting up webpanel...");
+
+		try
+		{
+			File webdir = new File(GuildNetwork.WEB_PATH);
+			if(!webdir.exists())
+				webdir.mkdir();
+
+			//extract any missing web assets to external location
+			File jarfile = new File(new AMGN().getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+			JarFile jarinstance = new JarFile(jarfile);
+			Enumeration<JarEntry> entries = jarinstance.entries();
+			while(entries.hasMoreElements())
+			{
+				JarEntry entry = entries.nextElement();
+				//extract internal resources held in web/ directory
+				if(entry.getName().startsWith("web/") && !entry.getName().equals("web/"))
+				{
+					//copy these if they are missing, to ./web/
+					String plainfilename = entry.getName().replace("web/", "");
+					if(IOHandler.copyFileToExternalPath(entry.getName(), GuildNetwork.WEB_PATH + "/" + plainfilename))
+						logger.info(plainfilename + " did not exist- copied to " + GuildNetwork.WEB_PATH);
+				}
+			}
+
+			jarinstance.close();
+		}
+		catch(IOException | URISyntaxException e)
+		{
+			e.printStackTrace();
+		}
+
+		Boolean use_web = true;
+		try
+		{
+			use_web = (Boolean) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "use_webpanel");
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+		if(use_web == null || use_web)
+			SpringApplication.run(AMGN.class, args);
 		
 		logger.info("Finished setup.");
 		//END SETUP

@@ -1,5 +1,17 @@
+## beta-1.0
++ Add webpanel!!
++ Generate network.yml automatically if one is not found
++ Add program exits if network settings cannot be read
++ Add a new default embed colour, and add custom colours for each guild as an option
++ Add support for environment variable usage for the `token`, `clientid`, `clientsecret` and `redirecturi` network.yml variables
++ Operators can now include roles as well as users
++ Config files can now be updated programmatically
++ Add the ability to retrieve default values from configs
++ Add global config settings and guild-specific config settings
++ one plugin crashing is no longer fatal on startup
+
 ## alpha-1.4.1
-Actually made optional plugin.yml parameters optional, in line with the documentation
+~ Actually made optional plugin.yml parameters optional, in line with the documentation
 
 ## alpha-1.4
 + Added Menu native support and implementation

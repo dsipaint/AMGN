@@ -4,10 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -16,15 +19,17 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.AMGN;
-
-import org.yaml.snakeyaml.Yaml;
 
 public class IOHandler
 {
+	public static DumperOptions dumperopts;
 	
 	
 	/** 
@@ -36,9 +41,7 @@ public class IOHandler
 	@SuppressWarnings("unchecked")
 	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException
 	{
-		Yaml yaml_in = new Yaml();
-		Map<String, Object> network_data = yaml_in.load(new FileReader(new File(path)));
-		ArrayList<Object> guilds_data = (ArrayList<Object>) network_data.get("guild_data");
+		ArrayList<Object> guilds_data = (ArrayList<Object>) readYamlData(GuildNetwork.NETWORKINFO_PATH, "guild_data");
 		HashMap<Long, Guild> guilds_out = new HashMap<Long, Guild>();
 
 		guilds_data.forEach(obj ->
@@ -52,12 +55,21 @@ public class IOHandler
 			  	in practice, all IDs should be longs and this crash should not occur- if you are getting a crash related to
 			  	converting ints to longs, look at this code
 			*/
-			
+
+			//if colour is not there, use default
+			//if it is, parse as string and do the stuff
+			int accept_col = !guild.containsKey("accept_col") ? Guild.DEFAULT_ACCEPT_COL : Integer.parseInt(((String) guild.get("accept_col")).replace("#", ""), 16);
+			int decline_col = !guild.containsKey("decline_col") ? Guild.DEFAULT_DECLINE_COL : Integer.parseInt(((String) guild.get("decline_col")).replace("#", ""), 16);
+			int unique_col = !guild.containsKey("unique_col") ? Guild.DEFAULT_UNIQUE_COL : Integer.parseInt(((String) guild.get("unique_col")).replace("#", ""), 16);
+
 			Guild parsed_guild_obj = new Guild(
 				(long) (guild.getOrDefault("guild_id", Guild.DEFAULT_ID)),
 				(long) guild.getOrDefault("modlogs", Guild.DEFAULT_ID),
 				(long) guild.getOrDefault("modrole", Guild.DEFAULT_ID),
-				(String) guild.getOrDefault("prefix", Guild.DEFAULT_PREFIX)
+				(String) guild.getOrDefault("prefix", Guild.DEFAULT_PREFIX),
+				accept_col,
+				decline_col,
+				unique_col
 				);
 			guilds_out.put(parsed_guild_obj.getGuild_id(), parsed_guild_obj);
 
@@ -85,30 +97,13 @@ public class IOHandler
 	
 	/** 
 	 * @param path
-	 * @return List<Long>
-	 * @throws FileNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	public static final List<Long> readOperators(String path) throws FileNotFoundException
-	{
-		List<Long> ops_in = (List<Long>) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("operators");
-		List<Long> ops_out = new ArrayList<Long>();
-
-		ops_in.forEach(op_id ->{ops_out.add((long) op_id);});
-		
-		return ops_out;
-	}
-	
-	
-	/** 
-	 * @param path
 	 * @return String
 	 * @throws FileNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public static final String readToken(String path) throws FileNotFoundException
+	public static final Object readYamlData(String path, String value) throws FileNotFoundException
 	{
-		return (String) ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get("token");
+		return ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get(value);
 	}
 	
 	
@@ -120,7 +115,7 @@ public class IOHandler
 	//writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
 	public static final void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path) throws IOException
 	{
-		Yaml yaml_out = new Yaml();
+		Yaml yaml_out = new Yaml(dumperopts);
 		Map<String, Object> parse_objects = new HashMap<String, Object>();
 
 		//parse token first
@@ -143,6 +138,10 @@ public class IOHandler
 				guild_list_obj.put("modlogs", guild.getModlogs());
 			if(guild.getModrole() != Guild.DEFAULT_ID)
 				guild_list_obj.put("modrole", guild.getModrole());
+
+			guild_list_obj.put("accept_col", Guild.formatHexString(guild.getAccept_col()));
+			guild_list_obj.put("decline_col", Guild.formatHexString(guild.getDecline_col()));
+			guild_list_obj.put("unique_col", Guild.formatHexString(guild.getUnique_col()));
 
 			guild_list_obj.put("prefix", guild.getPrefix());
 
@@ -273,5 +272,27 @@ public class IOHandler
 		
 		jar.close();
 		return null;
+	}
+
+	//copy a file from inside the jar, to a path outside the jar
+	//returns false if file already exists and was not copied
+	//returns true if file was copied
+	public static final boolean copyFileToExternalPath(String internalpath, String externalpath) throws IOException
+	{
+		ClassLoader cl = new IOHandler().getClass().getClassLoader();
+		InputStream inputstream = cl.getResourceAsStream(internalpath);
+
+		File copyFile = new File(externalpath);
+
+		try
+		{
+			Files.copy(inputstream, copyFile.toPath());
+		}
+		catch(FileAlreadyExistsException e)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }

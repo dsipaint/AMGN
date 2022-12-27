@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildNetwork
@@ -20,10 +21,13 @@ public class GuildNetwork
 	
 	public static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
 	public static List<Long> operators;
+	public static String clientid, clientsecret, redirecturi;
 	
-	public static final int GREEN_EMBED_COLOUR = 65280, RED_EMBED_COLOUR = 16073282; //Embed colours
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
+	public static final String WEB_PATH = "./web"; //path for all web assets
+
+	public static final String ID_REGEX = "\\d{17,19}";
 	
 	
 	/** 
@@ -56,6 +60,32 @@ public class GuildNetwork
 		
 		return false;
 	}
+
+	/** 
+	 * @param m member to check operator status of
+	 * @return boolean true if member is an operator, false otherwise
+	 */
+	public static final boolean isOperator(User u)
+	{
+		for(long id : operators)
+		{
+			if(AMGN.bot.getUserById(id) != null)
+			{
+				if(AMGN.bot.getUserById(id).equals(u))
+					return true;
+				continue;
+			}
+			
+			if(AMGN.bot.getRoleById(id) != null)
+			{
+				Member m = AMGN.bot.getRoleById(id).getGuild().getMember(u);
+				if(m != null && m.getRoles().contains(AMGN.bot.getRoleById(id)))
+					return true;
+			}
+		}
+
+		return false;
+	}
 	
 	//ease-of-access methods for retrieving guild data
 	
@@ -86,6 +116,33 @@ public class GuildNetwork
 	public static final long getModlogs(long guild_id)
 	{
 		return guild_data.get(guild_id) == null ? Guild.DEFAULT_ID : guild_data.get(guild_id).getModlogs();
+	}
+
+	/** 
+	 * @param guild_id guild to find modlogs id for
+	 * @return int accept colour set for the guild
+	 */
+	public static final int getAccept_col(long guild_id)
+	{
+		return guild_data.getOrDefault(guild_id, new Guild(guild_id)).getAccept_col();
+	}
+
+	/** 
+	 * @param guild_id guild to find modlogs id for
+	 * @return int decline colour set for the guild
+	 */
+	public static final int getDecline_col(long guild_id)
+	{
+		return guild_data.getOrDefault(guild_id, new Guild(guild_id)).getDecline_col();
+	}
+
+	/** 
+	 * @param guild_id guild to find modlogs id for
+	 * @return int unique colour set for the guild
+	 */
+	public static final int getUnique_col(long guild_id)
+	{
+		return guild_data.getOrDefault(guild_id, new Guild(guild_id)).getUnique_col();
 	}
 	
 	
@@ -182,7 +239,7 @@ public class GuildNetwork
 		
 		AMGN.bot.getTextChannelById(modlogs).sendMessageEmbeds(new EmbedBuilder()
 				.setTitle("AMGN")
-				.setColor(GREEN_EMBED_COLOUR)
+				.setColor(guild_data.get(guild_id).getAccept_col())
 				.setDescription(msg)
 				.setTimestamp(Instant.now())
 				.build()).queue();

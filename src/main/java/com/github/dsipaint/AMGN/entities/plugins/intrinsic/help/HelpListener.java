@@ -1,9 +1,9 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.help;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
-import com.github.dsipaint.AMGN.main.AMGN;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -52,7 +52,7 @@ public final class HelpListener extends ListenerAdapter
 				});
 				
 				//produce the formatted list of embeds and display them
-				for(MessageEmbed embed : returnFormattedEmbedList(commandlist.toString()))
+				for(MessageEmbed embed : returnFormattedEmbedList(commandlist.toString(), e.getGuild().getIdLong()))
 					e.getChannel().sendMessageEmbeds(embed).queue();
 				
 				return;
@@ -68,7 +68,7 @@ public final class HelpListener extends ListenerAdapter
 				{
 					EmbedBuilder eb = new EmbedBuilder()
 							.setTitle(prefix + command.getLabel())
-							.setColor(GuildNetwork.GREEN_EMBED_COLOUR)
+							.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col())
 							.setDescription("**Usage: **" + command.getUsage() + "\n**Description: **" + command.getDesc());
 						
 						eb = eb.addField("Author:", "al~", true);
@@ -96,7 +96,7 @@ public final class HelpListener extends ListenerAdapter
 					});
 					
 					
-					for(MessageEmbed embed : returnFormattedEmbedList(plugin_commands.toString()))
+					for(MessageEmbed embed : returnFormattedEmbedList(plugin_commands.toString(), e.getGuild().getIdLong()))
 						e.getChannel().sendMessageEmbeds(embed).queue();
 					
 					return;
@@ -111,7 +111,7 @@ public final class HelpListener extends ListenerAdapter
 					{
 						EmbedBuilder eb = new EmbedBuilder()
 							.setTitle(prefix + ((Command) listener).getLabel())
-							.setColor(GuildNetwork.GREEN_EMBED_COLOUR)
+							.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col())
 							.setDescription("**Usage: **" + ((Command) listener).getUsage() + "\n**Description: **" + ((Command) listener).getDesc());
 						
 						eb = eb.addField("Author:", plugin.getAuthor(), true);
@@ -125,7 +125,7 @@ public final class HelpListener extends ListenerAdapter
 		}
 	}
 
-	private MessageEmbed[] returnFormattedEmbedList(String desc)
+	private MessageEmbed[] returnFormattedEmbedList(String desc, long guildid)
 	{
 		int embednum = (desc.length()/MessageEmbed.TEXT_MAX_LENGTH) + 1; //how many embeds are needed, simple maths to find out
 		MessageEmbed[] embedlist = new MessageEmbed[embednum]; //2+2 = 4 -1 = 3
@@ -137,7 +137,7 @@ public final class HelpListener extends ListenerAdapter
 		{
 			EmbedBuilder eb = new EmbedBuilder()
 					.setTitle("Commands:")
-					.setColor(GuildNetwork.GREEN_EMBED_COLOUR);
+					.setColor(GuildNetwork.guild_data.get(guildid).getAccept_col());
 			
 			//find out how many lines can fit into the embed and add them
 			int chartotal = 0;

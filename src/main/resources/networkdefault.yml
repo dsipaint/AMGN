@@ -1,0 +1,15 @@
+token: 1234567890afdlfjfkadadsfnkfasd
+
+use_webpanel: false
+clientid: 127348349832489324
+clientsecret: 127348349832489324
+redirecturi: "https://localhost/redirect"
+
+operators:
+  - 475859944101380106
+
+guild_data:
+  - guild_id: 634667687233978388
+    prefix: ":"
+    modlogs: 781378908267913798
+    modrole: 918374890193749092

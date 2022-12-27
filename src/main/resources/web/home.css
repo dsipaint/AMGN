@@ -1,0 +1,288 @@
+body {
+    background-color: #555;
+    color: white;
+    font-family:Arial, Helvetica, sans-serif;
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+}
+
+html {
+    height: 100%;
+}
+
+#topbanner {
+    margin: 0px;
+    padding-left: 20px;
+    padding-top: 20px;
+    height: 10%;
+    border-bottom: 2px solid #92C5D6;
+}
+
+#topbanner > img {
+    margin-right: 20px;
+    border-radius: 35px;
+}
+
+.topleft {
+    float: left;
+}
+
+.topleft > h1 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.topright {
+    float: right;
+    margin-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#signin {
+    cursor: pointer;
+    background-color: 	#7289da;
+    border-radius: 5px;
+}
+
+#signin > a {
+    text-decoration: none;
+    color: white;
+}
+
+#accountinfo > * {
+    float: right;
+    margin-right: 5px;
+}
+
+#accountinfo > img {
+    border-radius: 15px;
+}
+
+#signout {
+    color: rgb(252, 70, 70);
+    border: 2px solid #4A4A4A;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#guildselector {
+    border: 2px solid #4A4A4A;
+    border-radius: 5px;
+    padding: 0px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+#guildselector > div {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+#selectedguild{
+    margin: 0px;
+    padding: 0px;
+}
+
+#selectedguild > div {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
+}
+
+#selectedguildimg {
+    border-radius: 15px;
+    float: left;
+}
+
+.guild {
+    margin: 0px;
+    margin-top: 5px;
+    height: 35px;
+    background-color: #555;
+    transition: background-color 0.3s;
+    display: none;
+}
+
+.guild:hover {
+    background-color: #4A4A4A;
+}
+
+.guild > div {
+    margin: 0px;
+    float: left;
+}
+
+.guild > img {
+    float: left;
+    border-radius: 15px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.plugin{
+    cursor: pointer;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    transition: background-color 0.3s;
+    padding-top: 35px;
+}
+
+.plugin:hover {
+    background-color: #4A4A4A;
+}
+
+#content {
+    width: 100%;
+    margin: 0px;
+}
+
+#content > div {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.maxheight {
+    height: 100%;
+}
+
+#pluginlist {
+    width: 20%;
+    float: left;
+    clear: left;
+    border-right: 2px solid #4A4A4A;
+}
+
+#pluginsettings {
+    float: left;
+    width: 76%;
+    margin: 0px;
+    padding-left: 10px;
+}
+
+#plugintitle {
+    height: 100px;
+}
+
+#plugintitletxt {
+    margin: 0px;
+    padding: 0px;
+    float: left;
+}
+
+#plugintitletxt > h1 {
+    width: fit-content;
+    margin: 0px;
+}
+
+#plugintitle > img {
+    margin-right: 20px;
+    border-radius: 35px;
+    float: left;
+}
+
+#pluginsettings > p {
+    margin: 0px;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+ul {
+    list-style: none;
+}
+
+h2{
+    clear: left;
+    margin: 0px;
+}
+
+input[type=text] {
+    background-color: #4A4A4A;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    margin-right: 5px;
+    float: left;
+    clear: left;
+}
+
+.listinput {
+    float: left;
+    clear: left;
+}
+
+.listinput:has(#addelement) {
+    margin-bottom: 20px;
+}
+
+.completelistitem{
+    float: left;
+    clear: left;
+}
+
+.completelistitem:has(.objectdisplay) {
+    margin-bottom: 20px;
+}
+
+.addelement {
+    cursor: pointer;
+}
+
+.inputwrapper {
+    float: left;
+    clear: right;
+    margin-bottom: 10px;
+}
+
+.removeelement {
+    cursor: pointer;
+    color: rgb(252, 70, 70);
+    float: left;
+}
+
+.objectdisplay {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.objectdisplay > .inputwrapper {
+    width: 100%;
+}
+
+#savesettings {
+    float: right;
+    background-color: rgb(19, 140, 19);
+    padding: 10px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+#removesettings {
+    float: right;
+    background-color:rgb(252, 70, 70);
+    padding: 10px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+#nocontent {
+    padding-left: 20px;
+}
+
+p > a {
+    color: white;
+}
+
+.token, .notoken {
+    display: none;
+}
+
+.nodisplay {
+    display: none;
+}

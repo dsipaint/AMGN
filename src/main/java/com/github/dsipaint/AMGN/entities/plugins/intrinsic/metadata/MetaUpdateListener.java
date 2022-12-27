@@ -63,7 +63,7 @@ public final class MetaUpdateListener extends ListenerAdapter
 			if(args[1].equalsIgnoreCase("modlogs"))
 			{
 				//if valid id format
-				if(args[2].matches("\\d{18}"))
+				if(args[2].matches(GuildNetwork.ID_REGEX))
 				{
 					for(TextChannel tc : e.getGuild().getTextChannels())
 					{
@@ -97,7 +97,7 @@ public final class MetaUpdateListener extends ListenerAdapter
 			if(args[1].equalsIgnoreCase("modrole"))
 			{
 				//if valid id format
-				if(args[2].matches("\\d{18}"))
+				if(args[2].matches(GuildNetwork.ID_REGEX))
 				{
 					for(Role r : e.getGuild().getRoles())
 					{
@@ -124,6 +124,78 @@ public final class MetaUpdateListener extends ListenerAdapter
 				}
 				
 				return;
+			}
+
+			//^updatemetainfo acceptcol {hex code}
+			if(args[1].equalsIgnoreCase("acceptcol"))
+			{
+				if(args[2].matches("#([a-fA-F0-9]){6}"))
+				{
+					int newcol = Integer.parseInt(args[2].replace("#", ""), 16);
+					Guild guild = GuildNetwork.guild_data.getOrDefault(guild_id, new Guild(guild_id));
+					guild.setAccept_col(newcol);
+					GuildNetwork.guild_data.put(e.getGuild().getIdLong(), guild); //*overwrites* if data was already there, or *sets* if data was not
+					try
+					{
+						IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to network.yml
+					}
+					catch(IOException e1)
+					{
+						e1.printStackTrace();
+					}
+					e.getChannel().sendMessage("Accept colour updated to " + args[2]).queue();
+					GuildNetwork.sendToModlogs(guild_id, "Accept colour updated to " + args[2]
+							+ " by " + e.getAuthor().getAsTag());
+					return;
+				}
+			}
+
+			//^updatemetainfo declinecol {hex code}
+			if(args[1].equalsIgnoreCase("declinecol"))
+			{
+				if(args[2].matches("#([a-fA-F0-9]){6}"))
+				{
+					int newcol = Integer.parseInt(args[2].replace("#", ""), 16);
+					Guild guild = GuildNetwork.guild_data.getOrDefault(guild_id, new Guild(guild_id));
+					guild.setDecline_col(newcol);
+					GuildNetwork.guild_data.put(e.getGuild().getIdLong(), guild); //*overwrites* if data was already there, or *sets* if data was not
+					try
+					{
+						IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to network.yml
+					}
+					catch(IOException e1)
+					{
+						e1.printStackTrace();
+					}
+					e.getChannel().sendMessage("Decline colour updated to " + args[2]).queue();
+					GuildNetwork.sendToModlogs(guild_id, "Decline colour updated to " + args[2]
+							+ " by " + e.getAuthor().getAsTag());
+					return;
+				}
+			}
+
+			//^updatemetainfo uniquecol {hex code}
+			if(args[1].equalsIgnoreCase("uniquecol"))
+			{
+				if(args[2].matches("#([a-fA-F0-9]){6}"))
+				{
+					int newcol = Integer.parseInt(args[2].replace("#", ""), 16);
+					Guild guild = GuildNetwork.guild_data.getOrDefault(guild_id, new Guild(guild_id));
+					guild.setUnique_col(newcol);
+					GuildNetwork.guild_data.put(e.getGuild().getIdLong(), guild); //*overwrites* if data was already there, or *sets* if data was not
+					try
+					{
+						IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH); //write this to network.yml
+					}
+					catch(IOException e1)
+					{
+						e1.printStackTrace();
+					}
+					e.getChannel().sendMessage("Unique colour updated to " + args[2]).queue();
+					GuildNetwork.sendToModlogs(guild_id, "Unique colour updated to " + args[2]
+							+ " by " + e.getAuthor().getAsTag());
+					return;
+				}
 			}
 		}
 	}
