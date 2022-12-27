@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,10 +45,6 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
-
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 
 @Controller
 public class WebpanelController
@@ -502,6 +499,49 @@ public class WebpanelController
                     }
 
                     return confignode;
+                }
+            }
+
+            response.setStatus(404);
+            return new ObjectMapper().createObjectNode().put("error", "plugin not found");
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+        //use this API endpoint to request a local config for a plugin that doesn't have one
+    //needs a plugin name and a guild
+    @DeleteMapping(value="/webpanel/api/plugininfo", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode deleteLocalConfig(@RequestParam(name="name") String name, @RequestParam(name="guild") String guild, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            //check to see if there is a config for this plugin
+            for(Plugin plugin : AMGN.plugin_listeners.keySet())
+            {
+                if(plugin.getName().equalsIgnoreCase(name))
+                {
+                    //delete any local config that may exist
+                    File configdir = new File(plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild)));
+                    if(configdir.exists())
+                    {
+                        configdir.delete();
+                        response.setStatus(200);
+                        return new ObjectMapper().createObjectNode().put("success", "local config deleted");
+                    }
+                    else
+                    {
+                        response.setStatus(201);
+                        return new ObjectMapper().createObjectNode().put("success", "local config already deleted");
+                    }
                 }
             }
 
