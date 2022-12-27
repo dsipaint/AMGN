@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -647,5 +650,27 @@ public class WebpanelController
         templateResolver.setCharacterEncoding("UTF-8");
                 
         return templateResolver;
+    }
+
+    @Configuration
+    public class CustomContainer implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>
+    {
+        public void customize(ConfigurableServletWebServerFactory factory)
+        {
+            Integer port = 8080;
+            try
+            {
+                port = (Integer) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "port");
+            }
+            catch(FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+
+            if(port == null)
+                factory.setPort(8080);
+            else
+                factory.setPort(port);
+        }
     }
 }

@@ -28,6 +28,7 @@ use_webpanel: false
 clientid: 127348349832489324
 clientsecret: 127348349832489324
 redirecturi: "https://localhost/redirect"
+port: 9999
 
 guild_data:
   - guild_id: 12345
@@ -55,6 +56,7 @@ guild_data:
 | clientid | no | string | | The client ID for your application if you wish to use the webpanel |
 | clientsecret | no | string | | The client secret for your application if you wish to use the webpanel |
 | redirecturi | no | string | | The redirect URI for your application if you wish to use the webpanel |
+| port | no | int | 8080 | The desired port to host your webpanel on |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
 | prefix | no | string | "^" | prefix for commands in the aforementioned guild |
