@@ -263,6 +263,14 @@ input[type=text] {
     cursor: pointer;
 }
 
+#removesettings {
+    float: right;
+    background-color:rgb(252, 70, 70);
+    padding: 10px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
 #nocontent {
     padding-left: 20px;
 }

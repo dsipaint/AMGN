@@ -333,6 +333,7 @@ class PluginConfig extends React.Component
         this.setProperty = this.setProperty.bind(this);
 
         this.addConfigForPlugin = this.addConfigForPlugin.bind(this);
+        this.deleteLocalConfig = this.deleteLocalConfig.bind(this);
 
         this.refreshConfig = this.refreshConfig.bind(this);
 
@@ -432,6 +433,21 @@ class PluginConfig extends React.Component
         });
     }
 
+    deleteLocalConfig()
+    {
+        $.ajax("/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name + "&guild=" + getSelectedGuild(), {
+            method: "DELETE",
+            success: (data) => {
+                this.setState({
+                    selectedplugin: {
+                        ...this.state.selectedplugin,
+                        config: undefined
+                    }
+                });
+            }
+        });
+    }
+
     setPropertiesForChildren(path, value)
     {
         var newstate = this.setProperty(this.state, path, value);
@@ -518,6 +534,9 @@ class PluginConfig extends React.Component
                                         return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
                                     })}
                                     <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
+                                    {getSelectedGuild() == "global" ? "" :
+                                        <div id="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
+                                    }
                                 </div>
                                 :
                                 <div>
