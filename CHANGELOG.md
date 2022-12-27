@@ -1,7 +1,7 @@
 ## beta-1.0
 + Add webpanel!!
 + Generate network.yml automatically if one is not found
-+ Add a program exits if network settings cannot be read
++ Add program exits if network settings cannot be read
 + Add a new default embed colour, and add custom colours for each guild as an option
 + Add support for environment variable usage for the `token`, `clientid`, `clientsecret` and `redirecturi` network.yml variables
 + Operators can now include roles as well as users
