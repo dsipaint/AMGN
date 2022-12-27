@@ -226,19 +226,26 @@ public class AMGN
 				//loop through these jars
 				for(File file : plugins_directory)
 				{
-					//look for the actual plugin class here (if it exists)
-					Plugin p = IOHandler.getPluginObjectFromJar(file);
-					
-					//plugins must have a name and name must have no whitespace
-					if(p.getName() == null || p.getName().matches(".*\\s.*"))
+					try
 					{
-						logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
-						continue;
+						//look for the actual plugin class here (if it exists)
+						Plugin p = IOHandler.getPluginObjectFromJar(file);
+						
+						//plugins must have a name and name must have no whitespace
+						if(p.getName() == null || p.getName().matches(".*\\s.*"))
+						{
+							logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
+							continue;
+						}
+						
+						//enable these classes/plugins with GuildNetwork.enablePlugin
+						if(GuildNetwork.enablePlugin(p))
+							logger.info("Enabled " + p.getName() + " " + p.getVersion());
 					}
-					
-					//enable these classes/plugins with GuildNetwork.enablePlugin
-					if(GuildNetwork.enablePlugin(p))
-						logger.info("Enabled " + p.getName() + " " + p.getVersion());
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
 				}
 			}
 			else

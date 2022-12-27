@@ -8,6 +8,7 @@
 + Config files can now be updated programmatically
 + Add the ability to retrieve default values from configs
 + Add global config settings and guild-specific config settings
++ one plugin crashing is no longer fatal on startup
 
 ## alpha-1.4.1
 ~ Actually made optional plugin.yml parameters optional, in line with the documentation
