@@ -50,6 +50,10 @@ import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+
 @Controller
 public class WebpanelController
 {
@@ -567,13 +571,11 @@ public class WebpanelController
 
     public static String resolveIdFromToken(String token)
     {
-        // RestTemplate template = new RestTemplate();
-        // HttpHeaders userinfoheaders = new HttpHeaders();
-        // userinfoheaders.set("Authorization", "Bearer " + token);
-        // ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
-        // return userinfo.getBody().get("id").asText();
-
-        return "475859944101380106";
+        RestTemplate template = new RestTemplate();
+        HttpHeaders userinfoheaders = new HttpHeaders();
+        userinfoheaders.set("Authorization", "Bearer " + token);
+        ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
+        return userinfo.getBody().get("id").asText();
     }
 
     //will look at a request and see if this is a user who is authorised to view the webpanel
@@ -581,53 +583,50 @@ public class WebpanelController
     {
         // check to see if we have a discord_token cookie, and if the value of it matches
         // a token we have already deemed as authenticated in TOKEN_CACHE
-        // for(Cookie c : request.getCookies())
-        // {
-        //     if(c.getName().equals("discord_token")
-        //         && TOKEN_CACHE.contains(c.getValue()))
-        //         return true;
-        // }
-        // return false;
-        return true;
+        for(Cookie c : request.getCookies())
+        {
+            if(c.getName().equals("discord_token")
+                && TOKEN_CACHE.contains(c.getValue()))
+                return true;
+        }
+        return false;
     }
 
     public static GuildPermission getAuthLevelFromToken(String token)
     {
-        // return getAuthLevelFromId(Long.parseLong(resolveIdFromToken(token)));
-        return GuildPermission.OPERATOR;
+        return getAuthLevelFromId(Long.parseLong(resolveIdFromToken(token)));
     }
 
     public static GuildPermission getAuthLevelFromId(long id)
     {
-        // //is this user an operator
-        // if(GuildNetwork.isOperator(AMGN.bot.getUserById(id)))
-        //     return GuildPermission.OPERATOR;
+        //is this user an operator
+        if(GuildNetwork.isOperator(AMGN.bot.getUserById(id)))
+            return GuildPermission.OPERATOR;
         
-        // //check every guild the bot is in
-        // for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
-        // {
-        //     //if the member is an admin in any guild, return this
-        //     Member member = guild.getMemberById(id);
-        //     if(member != null && member.hasPermission(Permission.ADMINISTRATOR))
-        //         return GuildPermission.ADMIN;
-        // }
+        //check every guild the bot is in
+        for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
+        {
+            //if the member is an admin in any guild, return this
+            Member member = guild.getMemberById(id);
+            if(member != null && member.hasPermission(Permission.ADMINISTRATOR))
+                return GuildPermission.ADMIN;
+        }
 
-        // for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
-        // {
-        //     Member member = guild.getMemberById(id);
-        //     if(member != null)
-        //     {
-        //         //check every role of every guild the member is in to see if they have a modrole anywhere
-        //         for(Role role : member.getRoles())
-        //         {
-        //             if(role.getIdLong() == GuildNetwork.guild_data.get(guild.getIdLong()).getModrole())
-        //                 return GuildPermission.STAFF;
-        //         }
-        //     }
-        // }
+        for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
+        {
+            Member member = guild.getMemberById(id);
+            if(member != null)
+            {
+                //check every role of every guild the member is in to see if they have a modrole anywhere
+                for(Role role : member.getRoles())
+                {
+                    if(role.getIdLong() == GuildNetwork.guild_data.get(guild.getIdLong()).getModrole())
+                        return GuildPermission.STAFF;
+                }
+            }
+        }
 
-        // return GuildPermission.ALL;
-        return GuildPermission.OPERATOR;
+        return GuildPermission.ALL;
     }
 
     public static String getTokenFromRequest(HttpServletRequest request)
