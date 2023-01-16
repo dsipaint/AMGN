@@ -148,6 +148,16 @@ public class IOHandler
 			parse_guilds.add(guild_list_obj);
 		});
 		parse_objects.put("guild_data", parse_guilds);
+
+		//rewrite this property (we never pull it out into a runtime variable)
+		parse_objects.put("use_webpanel", (Boolean) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "use_webpanel"));
+		if(GuildNetwork.clientid != null)
+			parse_objects.put("clientid", GuildNetwork.clientid);
+		if(GuildNetwork.clientsecret != null)
+			parse_objects.put("clientsecret", GuildNetwork.clientsecret);
+		if(GuildNetwork.redirecturi != null)
+			parse_objects.put("redirecturi", GuildNetwork.redirecturi);
+
 		//TODO: use tidier yaml dump settings (see customcommands)
 		yaml_out.dump(parse_objects, new FileWriter(new File(path)));
 	}
