@@ -353,12 +353,12 @@ public class WebpanelController
                 if(authlevel == GuildPermission.OPERATOR || AMGN.bot.getGuildById(guildnode.get("id").asLong())
                     .getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
                 {
-                    new_guild_data.put(Long.parseLong(guildnode.get("guild_id").asText()),
-                        new Guild(Long.parseLong(guildnode.get("id").asText()),
-                                Long.parseLong(guildnode.get("modlogs").asText()),
+                    new_guild_data.put(guildnode.get("guild_id").asLong(),
+                        new Guild(guildnode.get("guild_id").asLong(),
+                                guildnode.get("modlogs").asLong(),
                                 authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
-                                    Long.parseLong(guildnode.get("modrole").asText()) :
-                                    GuildNetwork.guild_data.get(Long.parseLong(guildnode.get("guild_id").asText())).getModrole(),
+                                    guildnode.get("modrole").asLong() :
+                                    GuildNetwork.guild_data.get(guildnode.get("guild_id").asLong()).getModrole(),
                                 guildnode.get("prefix").asText(),
                                 Integer.parseInt(guildnode.get("accept_col").asText().replace("#", ""), 16),
                                 Integer.parseInt(guildnode.get("decline_col").asText().replace("#", ""), 16),
