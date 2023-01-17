@@ -283,7 +283,7 @@ public class WebpanelController
                 {
                     ArrayNode operators = mapper.createArrayNode();
                     ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
-                    op_data.forEach(operators::add);
+                    op_data.forEach(operator ->{operators.add(Long.toString(operator));});
                     network_data.set("operators", operators);
                 }
 
@@ -294,10 +294,10 @@ public class WebpanelController
                     if(authlevel == GuildPermission.OPERATOR || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
                     {
                         ObjectNode obj = mapper.createObjectNode();
-                        obj.put("id", guild.getIdLong());
+                        obj.put("guild_id", guild.getId());
                         if(authlevel == GuildPermission.OPERATOR)
-                            obj.put("modrole", GuildNetwork.getModrole(guild.getIdLong()));
-                        obj.put("modlogs", GuildNetwork.getModlogs(guild.getIdLong()));
+                            obj.put("modrole", Long.toString(GuildNetwork.getModrole(guild.getIdLong())));
+                        obj.put("modlogs", Long.toString(GuildNetwork.getModlogs(guild.getIdLong())));
                         obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
                         obj.put("accept_col", Guild.formatHexString(GuildNetwork.getAccept_col(guild.getIdLong())));
                         obj.put("decline_col", Guild.formatHexString(GuildNetwork.getDecline_col(guild.getIdLong())));
@@ -353,12 +353,12 @@ public class WebpanelController
                 if(authlevel == GuildPermission.OPERATOR || AMGN.bot.getGuildById(guildnode.get("id").asLong())
                     .getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
                 {
-                    new_guild_data.put(guildnode.get("id").asLong(),
-                        new Guild(guildnode.get("id").asLong(),
+                    new_guild_data.put(guildnode.get("guild_id").asLong(),
+                        new Guild(guildnode.get("guild_id").asLong(),
                                 guildnode.get("modlogs").asLong(),
                                 authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
                                     guildnode.get("modrole").asLong() :
-                                    GuildNetwork.guild_data.get(guildnode.get("id").asLong()).getModrole(),
+                                    GuildNetwork.guild_data.get(guildnode.get("guild_id").asLong()).getModrole(),
                                 guildnode.get("prefix").asText(),
                                 Integer.parseInt(guildnode.get("accept_col").asText().replace("#", ""), 16),
                                 Integer.parseInt(guildnode.get("decline_col").asText().replace("#", ""), 16),

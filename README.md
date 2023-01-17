@@ -361,4 +361,8 @@ Plugin developers make config files for their plugin. These are used to let the 
 
 The webpanel also makes use of your preconfigured permissions in the `network.yml` file. Any discord user can attempt to login to your webpanel, however only users specified as staff, people with admin permissions in a server where the bot lives, or operators will be able to login successfully. Operators can configure every setting from the console, however every other authenticated user will *not* be able to configure the `operators` setting, or a guild's `modrole` from the webpanel, as these are considered operator-settings. You can only modify permissions of a guild that you are in, unless you are an operator, in which case you can edit settings for guilds you are not necessarily in.
 
+#### Please note
+as a form of best-practice when developing AMGN plugins, it is adviced to represent any IDs (e.g. role ids, channel ids, etc) as `strings` rather than `longs`. This is due to a limitation in [ECMA's long storage](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Number/toPrecision):
+> ECMA-262 only requires a precision of up to 21 significant digits. Other implementations may not support precisions higher than required by the standard.
+
 These are the basics of using AMGN. For more help, please contact the author on discord (al~#1819) or look at the javadocs- have fun, and get coding!!
