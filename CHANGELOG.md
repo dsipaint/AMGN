@@ -1,6 +1,7 @@
 ## beta-1.0.1
 ~ Fix issue where webpanel settings are not saved to network.yml when network settings are updated
 ~ Fix bug where saving network settings via the webpanel would not remember which guild had which settings
+~ Fix bug with webpanel network settings, where IDs are stated and saved incorrectly
 
 
 ## beta-1.0
