@@ -362,10 +362,12 @@ Edit whitelist.yml and add guilds/plugins to the whitelists and blacklists as ne
 ### use pwhitelist and pblacklist commands
 A new intrinsic plugin has been added for whitelisting and blacklisting- running this command in the guild you want to specify will whitelist or blacklist the plugin you specify. Use the help command for more details
 
-## use the webpanel
+### use the webpanel
 This method is similar to editing whitelist.yml, except doing it via the webpanel.
 
 > note that whitelist is applied first, and then the blacklist. So in the case that a guild/plugin is present in both lists, it'll first be whitelisted and then be blacklisted- effectively the same as if it was just written in the blacklist.
+
+> also note that guild/plugin whitelisting/blacklisting can only work for listeners/features that occur inside a guild. Therefore events like private channel messages being sent cannot be whitelisted or blacklisted. This may be considered more in the future.
 
 ## The webpanel
 The purpose of AMGN is to simplify being a bot developer- if you are a bot developer there's a good chance you'd want to include a webpanel for users to configure your bot for their server or network. This is why AMGN comes pre-packaged with an auto-generated webpanel. The website is hosted on the address the bot is run on, on port 8080. You can see this by running the jar locally and visiting `localhost:8080/webpanel`. There are a number of options you will see here.
