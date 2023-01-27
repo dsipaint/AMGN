@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
+import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,7 +14,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildNetwork
 {
@@ -22,6 +22,7 @@ public class GuildNetwork
 	public static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
 	public static List<Long> operators;
 	public static String clientid, clientsecret, redirecturi;
+	public static Map<String, List<Long>> whitelist, blacklist;
 	
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
@@ -150,7 +151,7 @@ public class GuildNetwork
 	 * @param listener ListenerAdapter to formally be loaded by AMGN
 	 * @param plugin Plugin to associate the listener with
 	 */
-	public static final void registerListener(ListenerAdapter listener, Plugin plugin)
+	public static final void registerListener(Listener listener, Plugin plugin)
 	{
 		AMGN.bot.addEventListener(listener);
 		AMGN.plugin_listeners.get(plugin).add(listener); //add the listener listed under this name
@@ -161,7 +162,7 @@ public class GuildNetwork
 	 * @param listener ListenerAdapter to formally be unloaded by AMGN
 	 * @param plugin Plugin to find the listener with
 	 */
-	public static final void unregisterListener(ListenerAdapter listener, Plugin plugin)
+	public static final void unregisterListener(Listener listener, Plugin plugin)
 	{
 		AMGN.bot.removeEventListener(listener);
 		AMGN.plugin_listeners.get(plugin).remove(listener); //remove listener from hashmap and from jda
@@ -189,7 +190,7 @@ public class GuildNetwork
 		//if plugin is not already enabled
 		if(AMGN.plugin_listeners.get(plugin) == null)
 		{
-			AMGN.plugin_listeners.put(plugin, new ArrayList<ListenerAdapter>()); //add this plugin with an empty list of listeners
+			AMGN.plugin_listeners.put(plugin, new ArrayList<Listener>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
 			plugin.onEnable(); //run plugin's enable method
 			return true;

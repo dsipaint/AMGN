@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -21,6 +22,7 @@ import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
@@ -41,7 +43,6 @@ import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -51,13 +52,10 @@ public class AMGN
 {
 	/*
 	 * TODO:
-	 * 
-	 * 1. BASIC WEBPANEL
-	 * 	make client-side value updates more synchronous (still a problem?)
-	 * 
-	 * 2. NEW AMGN FEATURES INTEGRATED
-	 * 	add plugin blacklist/whitelisting feature
-	 * 	add support for global/guild-specific plugin configs
+	 * 	1.1:
+	 * 		update showplugins command to show only plugins available in a guild
+	 * 		add whitelist, blacklist and showallplugins commands
+	 * 	make client-side webpanel value updates more synchronous
 	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
@@ -65,7 +63,7 @@ public class AMGN
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
-	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners;
+	public static HashMap<Plugin, ArrayList<Listener>> plugin_listeners;
 	public static void main(String[] args)
 	{
 		//SETUP
@@ -81,7 +79,13 @@ public class AMGN
 			//by default we use ./web/ for web assets
 			if(IOHandler.copyFileToExternalPath("networkdefault.yml", GuildNetwork.NETWORKINFO_PATH))
 			{
-				logger.info("network.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				logger.warn("network.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				System.exit(0);
+			}
+
+			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.NETWORKINFO_PATH))
+			{
+				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
 				System.exit(0);
 			}
 		}
@@ -209,7 +213,7 @@ public class AMGN
 		
 		
 		logger.info("initialising listener cache...");
-		plugin_listeners = new HashMap<Plugin, ArrayList<ListenerAdapter>>();
+		plugin_listeners = new HashMap<Plugin, ArrayList<Listener>>();
 		
 		logger.info("Enabling plugins...");
 		
@@ -252,6 +256,17 @@ public class AMGN
 				logger.info("No plugins folder found. Created a plugins folder.");
 		}
 		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		logger.info("applying whitelist...");
+		try
+		{
+			GuildNetwork.whitelist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "whitelist");
+			GuildNetwork.blacklist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "blacklist");
+		}
+		catch(FileNotFoundException e)
 		{
 			e.printStackTrace();
 		}
