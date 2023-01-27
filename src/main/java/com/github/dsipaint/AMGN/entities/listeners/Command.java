@@ -64,8 +64,6 @@ public abstract class Command extends Listener
 			});
 	}
 	
-	public void onMessageReceived(MessageReceivedEvent e){}
-	
 	public abstract void onCommand(CommandEvent e); //must inherit and implement this method for it to be a command
 	
 	/** 
