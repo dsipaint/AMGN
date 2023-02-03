@@ -79,7 +79,7 @@ public class AMGN
 				System.exit(0);
 			}
 
-			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.NETWORKINFO_PATH))
+			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.WHITELIST_PATH))
 			{
 				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
 				System.exit(0);

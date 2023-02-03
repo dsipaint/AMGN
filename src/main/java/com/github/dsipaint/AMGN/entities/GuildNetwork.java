@@ -26,6 +26,7 @@ public class GuildNetwork
 	
 	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
+	public static final String WHITELIST_PATH = "./whiteslist.yml"; //whitelist file path
 	public static final String WEB_PATH = "./web"; //path for all web assets
 
 	public static final String ID_REGEX = "\\d{17,19}";

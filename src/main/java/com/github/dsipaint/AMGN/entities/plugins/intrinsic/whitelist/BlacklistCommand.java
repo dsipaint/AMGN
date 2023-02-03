@@ -1,5 +1,6 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -36,7 +38,17 @@ public class BlacklistCommand extends ListenerAdapter
 					{
 						List<Long> blacklistforplugin = GuildNetwork.blacklist.getOrDefault(plugin.getName(), new ArrayList<Long>());
 						if(!blacklistforplugin.contains(e.getGuild().getIdLong()))
+						{
 							blacklistforplugin.add(e.getGuild().getIdLong());
+							try
+							{
+								IOHandler.writeWhitelistBlacklist();
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
+						}
 
 						e.getChannel().sendMessage("Added " + e.getGuild().getName() + " to this plugin's blacklist").queue();
 						return;
@@ -55,7 +67,18 @@ public class BlacklistCommand extends ListenerAdapter
 					{
 						List<Long> blacklistforplugin = GuildNetwork.blacklist.getOrDefault(plugin.getName(), new ArrayList<Long>());
 						if(!blacklistforplugin.contains(e.getGuild().getIdLong()))
+						{
 							blacklistforplugin.remove(e.getGuild().getIdLong());
+							
+							try
+							{
+								IOHandler.writeWhitelistBlacklist();
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
+						}
 
 						e.getChannel().sendMessage("Removed " + e.getGuild().getName() + " from this plugin's blacklist").queue();
 						return;

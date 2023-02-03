@@ -158,8 +158,16 @@ public class IOHandler
 		if(GuildNetwork.redirecturi != null)
 			parse_objects.put("redirecturi", GuildNetwork.redirecturi);
 
-		//TODO: use tidier yaml dump settings (see customcommands)
 		yaml_out.dump(parse_objects, new FileWriter(new File(path)));
+	}
+
+	public static final void writeWhitelistBlacklist() throws IOException
+	{
+		Yaml yaml_out = new Yaml(dumperopts);
+		Map<String, Object> data_out = new HashMap<String, Object>();
+		data_out.put("whitelist", GuildNetwork.whitelist);
+		data_out.put("blacklist", GuildNetwork.blacklist);
+		yaml_out.dump(data_out, new FileWriter(new File(GuildNetwork.WHITELIST_PATH)));
 	}
 	
 	
