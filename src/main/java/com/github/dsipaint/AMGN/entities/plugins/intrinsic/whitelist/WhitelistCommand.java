@@ -1,0 +1,70 @@
+package com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.dsipaint.AMGN.AMGN;
+import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.Command;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
+import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+public class WhitelistCommand extends ListenerAdapter
+{
+    public void onMessageReceived(MessageReceivedEvent e)
+	{
+		if(!e.isFromGuild())
+			return;
+			
+		String msg = e.getMessage().getContentRaw();
+		String[] args = msg.split(" ");
+		
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.WHITELIST.getLabel())
+			&& Command.hasPermission(e.getMember(), DefaultCommand.WHITELIST.getGuildPermission()))
+		{
+			if(args.length < 3)
+				return;
+
+			if(args[1].equalsIgnoreCase("add"))
+			{
+				for(Plugin plugin : AMGN.plugin_listeners.keySet())
+				{
+					if(plugin.getName().equalsIgnoreCase(args[2]))
+					{
+						List<Long> whitelistforplugin = GuildNetwork.whitelist.getOrDefault(plugin.getName(), new ArrayList<Long>());
+						if(!whitelistforplugin.contains(e.getGuild().getIdLong()))
+							whitelistforplugin.add(e.getGuild().getIdLong());
+
+						e.getChannel().sendMessage("Added " + e.getGuild().getName() + " to this plugin's whitelist").queue();
+						return;
+					}
+				}
+
+				e.getChannel().sendMessage("No plugin found with this name").queue();
+				return;				
+			}
+
+			if(args[1].equalsIgnoreCase("remove"))
+			{
+				for(Plugin plugin : AMGN.plugin_listeners.keySet())
+				{
+					if(plugin.getName().equalsIgnoreCase(args[2]))
+					{
+						List<Long> whitelistforplugin = GuildNetwork.whitelist.getOrDefault(plugin.getName(), new ArrayList<Long>());
+						if(!whitelistforplugin.contains(e.getGuild().getIdLong()))
+							whitelistforplugin.remove(e.getGuild().getIdLong());
+
+						e.getChannel().sendMessage("Removed " + e.getGuild().getName() + " from this plugin's whitelist").queue();
+						return;
+					}
+				}
+
+				e.getChannel().sendMessage("No plugin found with this name").queue();
+				return;		
+			}
+        }
+    }
+}

@@ -4,15 +4,14 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
+import org.yaml.snakeyaml.Yaml;
+
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
-import org.yaml.snakeyaml.Yaml;
-
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class Command extends Listener
 {

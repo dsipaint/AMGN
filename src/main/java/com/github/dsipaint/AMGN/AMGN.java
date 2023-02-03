@@ -38,7 +38,10 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaUpdateLi
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaViewListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpAddListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpRemoveListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningAllListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.BlacklistCommand;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.WhitelistCommand;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.JDA;
@@ -50,13 +53,6 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 @SpringBootApplication
 public class AMGN
 {
-	/*
-	 * TODO:
-	 * 	1.1:
-	 * 		update showplugins command to show only plugins available in a guild
-	 * 		add whitelist, blacklist and showallplugins commands
-	 * 	make client-side webpanel value updates more synchronous
-	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
@@ -200,6 +196,7 @@ public class AMGN
 		
 		//isrunning plugin
 		bot.addEventListener(new RunningListener());
+		bot.addEventListener(new RunningAllListener());
 		
 		//consistency plugin
 		bot.addEventListener(new ModlogsListener());
@@ -210,6 +207,10 @@ public class AMGN
 		//operators plugin
 		bot.addEventListener(new OpAddListener());
 		bot.addEventListener(new OpRemoveListener());
+
+		//whitelist plugin
+		bot.addEventListener(new BlacklistCommand());
+		bot.addEventListener(new WhitelistCommand());
 		
 		
 		logger.info("initialising listener cache...");

@@ -1,6 +1,9 @@
 ## beta-1.1
 + Add plugin whitelisting and blacklisting feature
 + Add wrapper-classes for Listeners and Commands
++ chang showplugins command to only show plugins running in the given guild
++ add showallplugins command to replace old showplugins functionality
++ add whitelist and blacklist commands
 
 ## beta-1.0.1
 ~ Fix issue where webpanel settings are not saved to network.yml when network settings are updated
