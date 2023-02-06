@@ -1,9 +1,13 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.help;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
+import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -38,16 +42,23 @@ public final class HelpListener extends ListenerAdapter
 					if(Command.hasPermission(e.getMember(), command.getGuildPermission()))
 						commandlist.append("**" + prefix + command.getLabel() + ":** " + command.getDesc() + "\n");
 				}
-				
-				//go through every plugin
+
+				//go through every allowed plugin
+				HashMap<String, List<Long>> allowedplugins = ListenerWrapper.applyWhitelistBlacklist(e.getGuild());
 				AMGN.plugin_listeners.forEach((plugin, list) ->
 				{
-					//and every listener
-					list.forEach(listener ->
+					allowedplugins.keySet().forEach(pluginname ->
 					{
-						//if this is a command and the user has permission for this command
-						if(listener instanceof Command && ((Command) listener).hasPermission(e.getMember()))
-							commandlist.append("**" + prefix + ((Command) listener).getLabel() + ":** " + ((Command) listener).getDesc() + "\n");
+						if(pluginname.equals(plugin.getName()))
+						{
+							//and every listener
+							list.forEach(listener ->
+							{
+								//if this is a command and the user has permission for this command
+								if(listener instanceof Command && ((Command) listener).hasPermission(e.getMember()))
+									commandlist.append("**" + prefix + ((Command) listener).getLabel() + ":** " + ((Command) listener).getDesc() + "\n");
+							});
+						}
 					});
 				});
 				
