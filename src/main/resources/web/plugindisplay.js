@@ -47,8 +47,11 @@ class ListItem extends React.Component
             return;
 
         var updatekeyref = this.props.updatekey.replace("\.", "_");
-        this.setState({
-            list: [...this.state.list, $("#" + updatekeyref).val()]
+        ReactDOM.flushSync(() =>
+        {
+            this.setState({
+                list: [...this.state.list, $("#" + updatekeyref).val()]
+            });
         });
 
         this.props.updatehook(this.props.updatekey, this.state.list);
@@ -58,10 +61,12 @@ class ListItem extends React.Component
 
     removeElement(element)
     {
-        this.setState({
-            list: this.state.list.filter(function(item){
-                return item !== element;
-            })
+        ReactDOM.flushSync(() =>{
+            this.setState({
+                list: this.state.list.filter(function(item){
+                    return item !== element;
+                })
+            });
         });
 
         this.props.updatehook(this.props.updatekey, this.state.list);
@@ -204,8 +209,11 @@ class BooleanItem extends React.Component
 
     onValueChange(event)
     {
-        this.setState({
-            value: !this.state.value
+        ReactDOM.flushSync(() =>
+        {
+            this.setState({
+                value: !this.state.value
+            });
         });
         
         this.props.updatehook(this.props.updatekey, this.state.value);
@@ -245,8 +253,10 @@ class DefaultItem extends React.Component
 
     onValueChange(event)
     {
-        this.setState({
-            item: $("#" + this.state.id).val()
+        ReactDOM.flushSync(() =>{
+            this.setState({
+                item: $("#" + this.state.id).val()
+            });
         });
 
         this.props.updatehook(this.props.updatekey, $("#" + this.state.id).val());
@@ -290,8 +300,11 @@ class NumberItem extends React.Component
         if(val.match("-?\\d+"))
             val = Number(val);
 
-        this.setState({
-            item: val
+        ReactDOM.flushSync(() =>
+        {
+            this.setState({
+                item: val
+            });
         });
 
         this.props.updatehook(this.props.updatekey, val);
@@ -451,7 +464,6 @@ class PluginConfig extends React.Component
     setPropertiesForChildren(path, value)
     {
         var newstate = this.setProperty(this.state, path, value);
-
         this.setState(newstate);
     }
 
