@@ -25,6 +25,7 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
+import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
@@ -218,6 +219,8 @@ public class AMGN
 		//whitelist plugin
 		bot.addEventListener(new BlacklistCommand());
 		bot.addEventListener(new WhitelistCommand());
+
+		bot.addEventListener(new ListenerWrapper());
 		
 		
 		logger.info("initialising listener cache...");
