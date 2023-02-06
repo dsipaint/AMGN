@@ -37,6 +37,7 @@ public class BlacklistCommand extends ListenerAdapter
 					if(plugin.getName().equalsIgnoreCase(args[2]))
 					{
 						List<Long> blacklistforplugin = GuildNetwork.blacklist.getOrDefault(plugin.getName(), new ArrayList<Long>());
+						GuildNetwork.blacklist.put(plugin.getName(), blacklistforplugin);
 						if(!blacklistforplugin.contains(e.getGuild().getIdLong()))
 						{
 							blacklistforplugin.add(e.getGuild().getIdLong());
@@ -66,10 +67,10 @@ public class BlacklistCommand extends ListenerAdapter
 					if(plugin.getName().equalsIgnoreCase(args[2]))
 					{
 						List<Long> blacklistforplugin = GuildNetwork.blacklist.getOrDefault(plugin.getName(), new ArrayList<Long>());
-						if(!blacklistforplugin.contains(e.getGuild().getIdLong()))
+						if(blacklistforplugin.contains(e.getGuild().getIdLong()))
 						{
 							blacklistforplugin.remove(e.getGuild().getIdLong());
-							
+							GuildNetwork.blacklist.put(plugin.getName(), blacklistforplugin);
 							try
 							{
 								IOHandler.writeWhitelistBlacklist();

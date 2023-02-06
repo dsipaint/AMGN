@@ -3317,7 +3317,7 @@ public class ListenerWrapper extends ListenerAdapter
                             Command cmd = ((Command) listener);
                             String[] args = event.getMessage().getContentRaw().split(" ");
                             if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel()))
-                                cmd.onCommand(new CommandEvent(event));
+                                cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), event.getTextChannel(), event.getMessage()));
                         }
                     });
                 }
@@ -4249,7 +4249,7 @@ public class ListenerWrapper extends ListenerAdapter
         });
     }
 
-    private final HashMap<String, List<Long>> applyWhitelistBlacklist(Guild g)
+    public static final HashMap<String, List<Long>> applyWhitelistBlacklist(Guild g)
     {
         HashMap<String, List<Long>> callevents = new HashMap<String, List<Long>>();
 
@@ -4339,7 +4339,7 @@ public class ListenerWrapper extends ListenerAdapter
         }
     }
 
-    private final HashMap<String, List<Long>> applyWhitelistBlacklist(String id)
+    public static final HashMap<String, List<Long>> applyWhitelistBlacklist(String id)
     {
         HashMap<String, List<Long>> callevents = new HashMap<String, List<Long>>();
 

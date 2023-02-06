@@ -154,9 +154,9 @@ over the network.
 In order to add a listener to your plugin, you must use the method `GuildNetwork.registerListener(ListenerAdapter l, Plugin p)`. The network will then create a JDA listener associated with your plugin. **All listeners you register with your plugin are automatically unregistered and deactivated when your plugin is disabled- no need to do this yourself in your Plugin.onDisable()**. The parameters of GuildNetwork.registerListener(ListenerAdapter l, Plugin p) are the listener you wish to register, and the plugin you wish to register it to (i.e. the plugin you are making it for, this plugin). The listeneradapter comes from the JDA API, and is used as specified by JDA.
 
 ### Programming Commands:
-Commands differ from listeners in AMGN in that they have more rigid support. Technically, one can register a listener, and use that listener as a command. This would mean one would not have to document the command in the plugin's `plugin.yml`, however, this command could then not be found in the intrinsic help command. For formal command support, commands must be registered separately to listeners, using `GuildNetwork.registerCommand(Plugin p, Command c)`. The plugin parameter is the same as for registering a listener- it refers to this plugin instance i.e. `this` in java syntax. The command parameter must be a Command object, which is again found in the API. The Command class is abstract, and is meant to be extended before use.
+Commands differ from listeners in AMGN in that they have more rigid support. Technically, one can register a listener, and use that listener as a command. This would mean one would not have to document the command in the plugin's `plugin.yml`, however, this command could then not be found in the intrinsic help command, or be treated formally as a command by AMGN. For formal command support, commands must be registered separately to listeners, using `GuildNetwork.registerCommand(Plugin p, Command c)`. The plugin parameter is the same as for registering a listener- it refers to this plugin instance i.e. `this` in java syntax. The command parameter must be a Command object, which is again found in the API. The Command class is abstract, and is meant to be extended before use.
 
-Create a class which extends this class. It must inherit the JDA method `ListenerAdapter.onMessageReceived(MessageReceivedEvent)`. The constructor of this class must also call its superclass constructor, which accepts a plugin instance (again, the plugin object we registered this listener with), and a string representing the label parameter of the command in the plugin.yml file, already specified. From here, the constructor will ensure that this listener inherits the correct command metadata from plugin.yml. **As for listeners, commands are automatically unregistered and deactivated when the plugin is disabled in any manner, so don't worry about doing this in the onDisable() method.**
+Create a class which extends this class. It must inherit the JDA method `Command.onCommand(CommandEvent e)`. The constructor of this class must also call its superclass constructor, which accepts a plugin instance (again, the plugin object we registered this listener with), and a string representing the label parameter of the command in the plugin.yml file, already specified. From here, the constructor will ensure that this listener inherits the correct command metadata from plugin.yml. **As for listeners, commands are automatically unregistered and deactivated when the plugin is disabled in any manner, so don't worry about doing this in the onDisable() method.**
 
 An example plugin, which registers an example Listener and an example Command is shown here, including the plugin.json for this plugin:
 
@@ -197,10 +197,7 @@ public class ExampleListener extends ListenerAdapter
 ```
 ExampleCommand.java:
 ```java
-import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
-
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class ExampleCommand extends Command
 {
@@ -209,7 +206,7 @@ public class ExampleCommand extends Command
 		super(plugin, "example"); //the command label is "example" in plugin.yml
 	}
 	
-	public void onMessageReceived(MessageReceivedEvent e)
+	public void onCommand(CommandEvent e)
 	{
 		System.out.println("Command code goes here as in JDA");
 	}
@@ -230,33 +227,15 @@ plugin.yml:
       permission: "all"
 ```
 This sets up a basic plugin with as of yet, no function.
-The `GuildNetwork` class then contains many methods to make creating your commands (or listeners) much much easier. We can use `GuildNetwork.getPrefix(long guild_id)` to get the prefix for whichever guild the command is used in, or the default prefix if none is chosen. We can also use `Command.getLabel` to get the label of the command we just created. The superconstructor sets all of the command metadata ready to be called by Command's methods in this way.
+The `GuildNetwork` class then contains many methods to make creating your commands (or listeners) much much easier. We can use `GuildNetwork.getPrefix(long guild_id)` to get the prefix for whichever guild the command is used in, or the default prefix if none is chosen. We can also use `Command.getLabel` to get the label of the command we just created. The superconstructor sets all of the command metadata ready to be called by Command's methods in this way. The command is only run if the member has the relevant permissions, and this is checked before firing the event by AMGN.
 We can use these two methods like this:
 ```java
-public void onMessageReceived(MessageReceivedEvent e)
-{
-	String msg = e.getMessage().getContentRaw();
-	String[] args = msg.split(" ");
-	
+public void onCommand(CommandEvent e)
+{	
 	//this checks if the command is indeed used
-	if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()))
+	if(e.getArgs[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + this.getLabel()))
 	{
 		e.getChannel().sendMessage("The example command was used!").queue();
-	}
-}
-```
-The Command class also comes with a method to check if a member has permission to use the command, as opposed to doing this manually, with `Command.hasPermission(Member m)`:
-```java
-public void onMessageReceived(MessageReceivedEvent e)
-{
-	String msg = e.getMessage().getContentRaw();
-	String[] args = msg.split(" ");
-	
-	//this checks if the command is indeed used
-	if(args[0].equalsIgnoreCase((GuildNetwork.getPrefix(e.getGuild().getIdLong()) + 	this.getLabel())
-		&& this.hasPermission(e.getMember())))
-	{
-		e.getChannel().sendMessage("The example command was used and the user had permission!").queue();
 	}
 }
 ```
@@ -317,6 +296,9 @@ MenuBuilder builder = new MenuBuilder(emote, message, press ->
 And so on for how many more buttons you need to add. To then build the Menu, which will send the message if not already sent, and add the buttons and their functionality. Finally, if you want to destroy an existing menu, simply reference the menu and call its `destroy` method.
 
 With these tools, you are able to make a plugin with AMGN. You can then compile this plugin as a non-executable jar. All plugins must be placed in a folder called "plugins", which should be located in the same directory as the network. This is where the network will look for plugins. By placing a plugin here and launching the network, the plugin will be automatically enabled. This plugin can also be enabled after launching the network by placing it in the plugins directory and using the `enableplugin` command. Plugins can be disabled similarly with the disableplugin command.
+
+### Running commands programmatically
+Commands can also be called not just from a real discord member, but you can simulate a command being run from your code. By using `AMGN.runCommand(commandstring, member)`, the command will be run as if it is run as the member. If the member is `null`, then it is assumed to be a programmed command. This can be checked for in a plugin's onCommand methods by using `event.isProgrammedCommand()`.
 
 ### Managing plugin configs
 Developers may wish to allow some form of storage/customisation for their plugin settings, and AMGN has inbuilt support for this. Every `Plugin` object comes with a `Config` object that can handle a config setup for a plugin. Configs are usually kept in `plugins/{plugin name}/`, where `{plugin name}` is the name of your plugin defined in `plugin.yml`. To access the Config object for your plugin, simply call `Plugin.getConfig()`. For example inside the onEnable method:

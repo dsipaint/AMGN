@@ -39,6 +39,8 @@ public class WhitelistCommand extends ListenerAdapter
 						List<Long> whitelistforplugin = GuildNetwork.whitelist.getOrDefault(plugin.getName(), new ArrayList<Long>());
 						if(!whitelistforplugin.contains(e.getGuild().getIdLong()))
 						{
+							whitelistforplugin.add(e.getGuild().getIdLong());
+							GuildNetwork.whitelist.put(plugin.getName(), whitelistforplugin);
 							try
 							{
 								IOHandler.writeWhitelistBlacklist();
@@ -46,9 +48,7 @@ public class WhitelistCommand extends ListenerAdapter
 							catch(IOException e1)
 							{
 								e1.printStackTrace();
-							}
-
-							whitelistforplugin.add(e.getGuild().getIdLong());	
+							}	
 						}
 
 						e.getChannel().sendMessage("Added " + e.getGuild().getName() + " to this plugin's whitelist").queue();
@@ -67,8 +67,10 @@ public class WhitelistCommand extends ListenerAdapter
 					if(plugin.getName().equalsIgnoreCase(args[2]))
 					{
 						List<Long> whitelistforplugin = GuildNetwork.whitelist.getOrDefault(plugin.getName(), new ArrayList<Long>());
-						if(!whitelistforplugin.contains(e.getGuild().getIdLong()))
+						if(whitelistforplugin.contains(e.getGuild().getIdLong()))
 						{
+							whitelistforplugin.remove(e.getGuild().getIdLong());
+							GuildNetwork.whitelist.put(plugin.getName(), whitelistforplugin);
 							try
 							{
 								IOHandler.writeWhitelistBlacklist();
@@ -77,8 +79,6 @@ public class WhitelistCommand extends ListenerAdapter
 							{
 								e1.printStackTrace();
 							}
-							
-							whitelistforplugin.remove(e.getGuild().getIdLong());
 						}
 
 						e.getChannel().sendMessage("Removed " + e.getGuild().getName() + " from this plugin's whitelist").queue();

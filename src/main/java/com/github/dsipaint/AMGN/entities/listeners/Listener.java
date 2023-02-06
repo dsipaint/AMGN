@@ -168,9 +168,15 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateDiscriminatorEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateFlagsEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 
-public class Listener
+public class Listener implements EventListener
 {
+    public void onEvent(GenericEvent e)
+    {
+        
+    }
+
     public void onButtonInteraction(ButtonInteractionEvent event)
     {
         

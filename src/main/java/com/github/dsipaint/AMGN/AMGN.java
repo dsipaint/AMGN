@@ -22,6 +22,8 @@ import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.Command;
+import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
@@ -46,6 +48,7 @@ import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -53,6 +56,10 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 @SpringBootApplication
 public class AMGN
 {
+	/*
+	 * TODO: the programmatic commands currently does not
+	 * support inbuilt commands as these use ListenerAdapters
+	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
@@ -319,5 +326,22 @@ public class AMGN
 		
 		logger.info("Finished setup.");
 		//END SETUP
+	}
+
+	public static final void runCommand(String cmdtxt, Member member)
+	{
+		AMGN.plugin_listeners.values().forEach(listeners ->
+		{
+			listeners.forEach(listener ->
+			{
+				if(listener instanceof Command)
+				{
+					Command cmd = ((Command) listener);
+					String[] args = cmdtxt.split(" ");
+					if(args[0].equalsIgnoreCase(cmd.getLabel()))
+						cmd.onCommand(new CommandEvent(cmdtxt, member, null, null));
+				}
+			});
+		});	
 	}
 }
