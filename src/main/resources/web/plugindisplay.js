@@ -11,6 +11,18 @@ function getSelectedGuild()
     return $(".nodisplay").text();
 }
 
+function displayMessage(msg, success)
+{
+    if(success)
+        $("#success_err_msg").css("background-color", "green");
+    else
+        $("#success_err_msg").css("background-color", "red");
+
+    $("#success_err_msg").text(msg);
+    $("#success_err_msg").show();
+    $("#success_err_msg").fadeOut(5000);
+}
+
 class Config extends React.Component
 {
     constructor(props)
@@ -405,10 +417,18 @@ class PluginConfig extends React.Component
 
     setPluginInfo()
     {
-        $.ajax("/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name + "&guild=" + getSelectedGuild(), {
+        $.ajax({
+            url: "/webpanel/api/plugininfo?name=" + this.state.selectedplugin.name + "&guild=" + getSelectedGuild(), 
             method: "PUT",
             contentType: "application/json",
-            data: JSON.stringify(this.state.selectedplugin.config)
+            dataType: "json",
+            data: JSON.stringify(this.state.selectedplugin.config),
+            success: function(succ) {
+                displayMessage("Plugin settings saved!", true);
+            },
+            error: function(err) {
+                displayMessage("There was a problem saving the settings", false);
+            }
         });
     }
 
@@ -427,7 +447,13 @@ class PluginConfig extends React.Component
             data: JSON.stringify({
                 operators: this.state.networkinfo.operators,
                 guild_data: this.state.networkinfo.guild_data
-            })
+            }),
+            success: function(succ) {
+                displayMessage("Plugin settings saved!", true);
+            },
+            error: function(err) {
+                displayMessage("There was a problem saving the settings", false);
+            }
         });
     }
 

@@ -7,6 +7,7 @@
 + commands can now be called programmatically, acting as a particular user or as the network
 ~ Fix default webpanel values being in the wrong format to be parsed by AMGN
 + webpanel values did not always go through previously- this has been fixed
++ add confirmation/error messages to webpanel when saving values
 
 ## beta-1.0.1
 ~ Fix issue where webpanel settings are not saved to network.yml when network settings are updated
