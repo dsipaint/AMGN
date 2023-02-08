@@ -404,6 +404,7 @@ class PluginConfig extends React.Component
             success: this.setPluginInfoInState,
             error: function(data) {
                 console.log(data.responseJSON);
+                displayMessage("Could not display plugin", false);
             }
         });
     }
