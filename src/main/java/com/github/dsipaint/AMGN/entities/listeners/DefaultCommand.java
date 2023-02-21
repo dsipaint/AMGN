@@ -11,13 +11,16 @@ public enum DefaultCommand
 	METAVIEW("viewmetainfo", "^viewmetainfo {prefix/modlogs/modrole}", "View the metainfo of the network, for example a guild's prefix", GuildPermission.STAFF),
 	OPADD("setoperator", "^setoperator {user id}", "Add a user as an operator of the network", GuildPermission.OPERATOR),
 	OPREMOVE("removeoperator", "^removeoperator {user id}", "Remove a user as an operator of the network", GuildPermission.OPERATOR),
-	RUNNING("showplugins", "^showplugins", "Displays all active plugins on the network", GuildPermission.STAFF),
+	RUNNING("showplugins", "^showplugins", "Displays all active plugins in this guild (only shows plugins that can act in this guild according to the whitelist/blacklist)", GuildPermission.STAFF),
 	ENABLE("enable", "^enable {plugin name}", "Enable plugins from your discord client!", GuildPermission.ADMIN),
 	DISABLE("disable", "^disable {plugin name}", "Disable plugins from your discord client!", GuildPermission.ADMIN),
 	RELOAD("reload", "^reload {plugin name}", "Reload plugins from your discord client!", GuildPermission.ADMIN),
 	RELOADALL("reloadall", "^reloadall", "Reload all plugins from your discord client!", GuildPermission.ADMIN),
-	CLOSE("closenetwork", "^closenetwork", "disables every plugin and shuts down the program", GuildPermission.ADMIN);
-	
+	CLOSE("closenetwork", "^closenetwork", "disables every plugin and shuts down the program", GuildPermission.ADMIN),
+	WHITELIST("whitelist", "^whitelist {add/remove} {plugin name} in the guild you want to change the whitelist for", "Add or remove a guild to the whitelist for a given plugin", GuildPermission.OPERATOR),
+	BLACKLIST("blacklist", "^blacklist {add/remove} {plugin name} in the guild you want to change the blacklist for", "Add or remove a guild to the blacklist for a given plugin", GuildPermission.OPERATOR),
+	RUNNINGALL("showallplugins", "^showallplugins", "displays all plugins that are active on the network somewhere, regardless of the whitelist/blacklist settings", GuildPermission.STAFF);
+
 	//TODO: for now, default commands will have default, unchangeable permissions, but I will change this in the future to allow customisation of permissions for these commands
 	//TODO: new intrinsic feature to change bot status
 	private String label, usage, desc;

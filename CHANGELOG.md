@@ -1,3 +1,14 @@
+## beta-1.1
++ Add plugin whitelisting and blacklisting feature
++ Add wrapper-classes for Listeners and Commands
++ change showplugins command to only show plugins running in the given guild
++ add showallplugins command to replace old showplugins functionality
++ add whitelist and blacklist commands
++ commands can now be called programmatically, acting as a particular user or as the network
+~ Fix default webpanel values being in the wrong format to be parsed by AMGN
++ webpanel values did not always go through previously- this has been fixed
++ add confirmation/error messages to webpanel when saving values
+
 ## beta-1.0.1
 ~ Fix issue where webpanel settings are not saved to network.yml when network settings are updated
 ~ Fix bug where saving network settings via the webpanel would not remember which guild had which settings

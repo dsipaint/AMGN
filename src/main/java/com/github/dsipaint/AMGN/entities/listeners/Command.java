@@ -4,18 +4,16 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
+import org.yaml.snakeyaml.Yaml;
+
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
-import org.yaml.snakeyaml.Yaml;
-
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public abstract class Command extends ListenerAdapter
+public abstract class Command extends Listener
 {
 	private String label, usage, desc; //TODO: change from private to protected to allow local referencing?
 	private GuildPermission perm;
@@ -65,8 +63,7 @@ public abstract class Command extends ListenerAdapter
 			});
 	}
 	
-	public abstract void onMessageReceived(MessageReceivedEvent e); //must inherit and implement this method for it to be a command
-	
+	public abstract void onCommand(CommandEvent e); //must inherit and implement this method for it to be a command
 	
 	/** 
 	 * @param m member to test permissions for

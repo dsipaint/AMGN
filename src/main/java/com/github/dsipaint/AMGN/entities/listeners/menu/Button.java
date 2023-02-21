@@ -3,6 +3,7 @@ package com.github.dsipaint.AMGN.entities.listeners.menu;
 import java.util.function.Consumer;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 import net.dv8tion.jda.api.entities.Emoji;
@@ -10,9 +11,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class Button extends ListenerAdapter
+public class Button extends Listener
 {
     private Emoji emoji;
     private Message message;

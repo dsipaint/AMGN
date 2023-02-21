@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -21,6 +22,10 @@ import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.Command;
+import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
+import com.github.dsipaint.AMGN.entities.listeners.Listener;
+import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
@@ -36,12 +41,15 @@ import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaUpdateLi
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaViewListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpAddListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpRemoveListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningAllListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.BlacklistCommand;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.WhitelistCommand;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -50,14 +58,8 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class AMGN
 {
 	/*
-	 * TODO:
-	 * 
-	 * 1. BASIC WEBPANEL
-	 * 	make client-side value updates more synchronous (still a problem?)
-	 * 
-	 * 2. NEW AMGN FEATURES INTEGRATED
-	 * 	add plugin blacklist/whitelisting feature
-	 * 	add support for global/guild-specific plugin configs
+	 * TODO: the programmatic commands currently does not
+	 * support inbuilt commands as these use ListenerAdapters
 	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
@@ -65,7 +67,7 @@ public class AMGN
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
-	public static HashMap<Plugin, ArrayList<ListenerAdapter>> plugin_listeners;
+	public static HashMap<Plugin, ArrayList<Listener>> plugin_listeners;
 	public static void main(String[] args)
 	{
 		//SETUP
@@ -81,7 +83,13 @@ public class AMGN
 			//by default we use ./web/ for web assets
 			if(IOHandler.copyFileToExternalPath("networkdefault.yml", GuildNetwork.NETWORKINFO_PATH))
 			{
-				logger.info("network.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				logger.warn("network.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				System.exit(0);
+			}
+
+			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.WHITELIST_PATH))
+			{
+				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
 				System.exit(0);
 			}
 		}
@@ -196,6 +204,7 @@ public class AMGN
 		
 		//isrunning plugin
 		bot.addEventListener(new RunningListener());
+		bot.addEventListener(new RunningAllListener());
 		
 		//consistency plugin
 		bot.addEventListener(new ModlogsListener());
@@ -206,10 +215,16 @@ public class AMGN
 		//operators plugin
 		bot.addEventListener(new OpAddListener());
 		bot.addEventListener(new OpRemoveListener());
+
+		//whitelist plugin
+		bot.addEventListener(new BlacklistCommand());
+		bot.addEventListener(new WhitelistCommand());
+
+		bot.addEventListener(new ListenerWrapper());
 		
 		
 		logger.info("initialising listener cache...");
-		plugin_listeners = new HashMap<Plugin, ArrayList<ListenerAdapter>>();
+		plugin_listeners = new HashMap<Plugin, ArrayList<Listener>>();
 		
 		logger.info("Enabling plugins...");
 		
@@ -252,6 +267,17 @@ public class AMGN
 				logger.info("No plugins folder found. Created a plugins folder.");
 		}
 		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		logger.info("applying whitelist...");
+		try
+		{
+			GuildNetwork.whitelist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "whitelist");
+			GuildNetwork.blacklist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "blacklist");
+		}
+		catch(FileNotFoundException e)
 		{
 			e.printStackTrace();
 		}
@@ -303,5 +329,22 @@ public class AMGN
 		
 		logger.info("Finished setup.");
 		//END SETUP
+	}
+
+	public static final void runCommand(String cmdtxt, Member member)
+	{
+		AMGN.plugin_listeners.values().forEach(listeners ->
+		{
+			listeners.forEach(listener ->
+			{
+				if(listener instanceof Command)
+				{
+					Command cmd = ((Command) listener);
+					String[] args = cmdtxt.split(" ");
+					if(args[0].equalsIgnoreCase(cmd.getLabel()))
+						cmd.onCommand(new CommandEvent(cmdtxt, member, null, null));
+				}
+			});
+		});	
 	}
 }
