@@ -225,6 +225,21 @@ public class AMGN
 		
 		logger.info("initialising listener cache...");
 		plugin_listeners = new HashMap<Plugin, ArrayList<Listener>>();
+
+		logger.info("applying whitelist...");
+		try
+		{
+			GuildNetwork.whitelist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "whitelist");
+			GuildNetwork.blacklist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "blacklist");
+			if(GuildNetwork.whitelist == null)
+				GuildNetwork.whitelist = new HashMap<String, List<Long>>();
+			if(GuildNetwork.blacklist == null)
+				GuildNetwork.blacklist = new HashMap<String, List<Long>>();
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
 		
 		logger.info("Enabling plugins...");
 		
@@ -267,17 +282,6 @@ public class AMGN
 				logger.info("No plugins folder found. Created a plugins folder.");
 		}
 		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		logger.info("applying whitelist...");
-		try
-		{
-			GuildNetwork.whitelist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "whitelist");
-			GuildNetwork.blacklist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "blacklist");
-		}
-		catch(FileNotFoundException e)
 		{
 			e.printStackTrace();
 		}

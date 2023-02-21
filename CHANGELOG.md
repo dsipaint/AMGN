@@ -1,3 +1,6 @@
+## beta-1.1.1
+Fix whitelist/blacklist breaking if not used
+
 ## beta-1.1
 + Add plugin whitelisting and blacklisting feature
 + Add wrapper-classes for Listeners and Commands
