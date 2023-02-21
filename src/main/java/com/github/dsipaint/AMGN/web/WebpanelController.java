@@ -50,10 +50,6 @@ import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-
 @Controller
 public class WebpanelController
 {
@@ -563,6 +559,187 @@ public class WebpanelController
 
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @PutMapping(value = "/webpanel/api/whitelist", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode addGuildToWhitelist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        // if(request.getCookies() == null)
+        // {
+        //     response.setStatus(403);
+        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // }
+
+        // if(isAuthenticatedRequest(request))
+        // {
+            List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
+            if(!newlist.contains(Long.parseLong(guild)))
+                newlist.add(Long.parseLong(guild));
+
+            GuildNetwork.whitelist.put(plugin, newlist);
+            try
+            {
+                IOHandler.writeWhitelistBlacklist();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            response.setStatus(200);
+            return new ObjectMapper().createObjectNode().put("success", "whitelist updated successfully");
+        // }
+
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @DeleteMapping(value = "/webpanel/api/whitelist", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode removeGuildFromWhitelist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        // if(request.getCookies() == null)
+        // {
+        //     response.setStatus(403);
+        //     return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        // }
+
+        // if(isAuthenticatedRequest(request))
+        // {
+            List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
+            if(newlist.contains(Long.parseLong(guild)))
+                newlist.remove(Long.parseLong(guild));
+
+            GuildNetwork.whitelist.put(plugin, newlist);
+            try
+            {
+                IOHandler.writeWhitelistBlacklist();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            response.setStatus(200);
+            return new ObjectMapper().createObjectNode().put("success", "whitelist updated successfully");
+        // }
+        
+        // response.setStatus(403);
+        // return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @PutMapping(value = "/webpanel/api/blacklist", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode addGuildToBlacklist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
+            if(!newlist.contains(Long.parseLong(guild)))
+                newlist.add(Long.parseLong(guild));
+
+            GuildNetwork.blacklist.put(plugin, newlist);
+
+            try
+            {
+                IOHandler.writeWhitelistBlacklist();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            response.setStatus(200);
+            return new ObjectMapper().createObjectNode().put("success", "blacklist updated successfully");
+        }
+        
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @DeleteMapping(value = "/webpanel/api/blacklist", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode removeGuildFromBlacklist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
+            if(newlist.contains(Long.parseLong(guild)))
+                newlist.remove(Long.parseLong(guild));
+
+            GuildNetwork.blacklist.put(plugin, newlist);
+            try
+            {
+                IOHandler.writeWhitelistBlacklist();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            response.setStatus(200);
+            return new ObjectMapper().createObjectNode().put("success", "blacklist updated successfully");
+        }
+        
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @GetMapping(value = "/webpanel/api/whitelist", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode isInWhitelist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            if(GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>()).contains(Long.parseLong(guild)))
+                return new ObjectMapper().createObjectNode().put("result", true);
+
+            return new ObjectMapper().createObjectNode().put("result", false);
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @GetMapping(value = "/webpanel/api/blacklist", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode isInBlacklist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            if(GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>()).contains(Long.parseLong(guild)))
+                return new ObjectMapper().createObjectNode().put("result", true);
+
+            return new ObjectMapper().createObjectNode().put("result", false);
         }
 
         response.setStatus(403);

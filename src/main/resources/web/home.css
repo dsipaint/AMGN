@@ -264,7 +264,7 @@ input[type=text] {
     width: 100%;
 }
 
-#savesettings {
+.savesettings {
     float: right;
     background-color: rgb(19, 140, 19);
     padding: 10px;
@@ -272,7 +272,7 @@ input[type=text] {
     cursor: pointer;
 }
 
-#removesettings {
+.removesettings {
     float: right;
     background-color:rgb(252, 70, 70);
     padding: 10px;

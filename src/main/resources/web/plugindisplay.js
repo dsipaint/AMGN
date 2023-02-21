@@ -362,6 +362,11 @@ class PluginConfig extends React.Component
 
         this.refreshConfig = this.refreshConfig.bind(this);
 
+        this.addToWhitelist = this.addToWhitelist.bind(this);
+        this.addToBlacklist = this.addToBlacklist.bind(this);
+        this.removeFromWhitelist = this.removeFromWhitelist.bind(this);
+        this.removeFromBlacklist = this.removeFromBlacklist.bind(this);
+
         //and use a jquery listener to detect a change to the selected guild
         //then have this listener trigger a re-render, all from within the plugindisplay class
         $("div").on("click", ".guild", this.refreshConfig);
@@ -405,6 +410,54 @@ class PluginConfig extends React.Component
             error: function(data) {
                 console.log(data.responseJSON);
                 displayMessage("Could not display plugin", false);
+            }
+        });
+
+        var updatewlfunc = function(data) {
+            if(data.result)
+            {
+                this.setState({
+                    selectedplugin: {
+                        ...this.state.selectedplugin,
+                        whitelist: true
+                    }
+                });
+            }
+        };
+        updatewlfunc = updatewlfunc.bind(this);
+
+        await $.ajax({
+            url: "/webpanel/api/whitelist?plugin=" + name + "&guild=" + getSelectedGuild(),
+            type: "GET",
+            success: function(data){
+                updatewlfunc(data);
+            },
+            error: function(data) {
+                console.log(data.responseJSON);
+            }
+        });
+
+        var updateblfunc = function(data) {
+            if(data.result)
+            {
+                this.setState({
+                    selectedplugin: {
+                        ...this.state.selectedplugin,
+                        blacklist: true
+                    }
+                });
+            }
+        }
+        updateblfunc = updateblfunc.bind(this);
+
+        await $.ajax({
+            url: "/webpanel/api/blacklist?plugin=" + name + "&guild=" + getSelectedGuild(),
+            type: "GET",
+            success: function(data){
+                updateblfunc(data);
+            },
+            error: function(data) {
+                console.log(data.responseJSON);
             }
         });
     }
@@ -488,6 +541,94 @@ class PluginConfig extends React.Component
         });
     }
 
+    addToWhitelist()
+    {
+        var updatefunc = function(data) {
+            this.setState({
+                selectedplugin: {
+                    ...this.state.selectedplugin,
+                    whitelist: true
+                }
+            })
+        }
+        updatefunc = updatefunc.bind(this);
+
+        $.ajax({
+            method: "PUT",
+            url: "/webpanel/api/whitelist?guild=" + getSelectedGuild() + "&plugin=" + this.state.selectedplugin.name,
+            success: updatefunc,
+            error: function(err) {
+                displayMessage("There was a problem updating the whitelist", false);
+            }
+        });
+    }
+
+    addToBlacklist()
+    {
+        var updatefunc = function(data) {
+            this.setState({
+                selectedplugin: {
+                    ...this.state.selectedplugin,
+                    blacklist: true
+                }
+            })
+        }
+        updatefunc = updatefunc.bind(this);
+
+        $.ajax({
+            method: "PUT",
+            url: "/webpanel/api/blacklist?guild=" + getSelectedGuild() + "&plugin=" + this.state.selectedplugin.name,
+            success: updatefunc,
+            error: function(err) {
+                displayMessage("There was a problem updating the blacklist", false);
+            }
+        });
+    }
+
+    removeFromWhitelist()
+    {
+        var updatefunc = function(data) {
+            this.setState({
+                selectedplugin: {
+                    ...this.state.selectedplugin,
+                    whitelist: false
+                }
+            })
+        }
+        updatefunc = updatefunc.bind(this);
+
+        $.ajax({
+            method: "DELETE",
+            url: "/webpanel/api/whitelist?guild=" + getSelectedGuild() + "&plugin=" + this.state.selectedplugin.name,
+            success: updatefunc,
+            error: function(err) {
+                displayMessage("There was a problem updating the whitelist", false);
+            }
+        });
+    }
+
+    removeFromBlacklist()
+    {
+        var updatefunc = function(data) {
+            this.setState({
+                selectedplugin: {
+                    ...this.state.selectedplugin,
+                    blacklist: false
+                }
+            })
+        }
+        updatefunc = updatefunc.bind(this);
+
+        $.ajax({
+            method: "DELETE",
+            url: "/webpanel/api/blacklist?guild=" + getSelectedGuild() + "&plugin=" + this.state.selectedplugin.name,
+            success: updatefunc,
+            error: function(err) {
+                displayMessage("There was a problem updating the blacklist", false);
+            }
+        });
+    }
+
     setPropertiesForChildren(path, value)
     {
         var newstate = this.setProperty(this.state, path, value);
@@ -551,7 +692,7 @@ class PluginConfig extends React.Component
                                 </div>
                             }
                         </div>
-                        <div id="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+                        <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
                     </div>
 
                     :
@@ -572,16 +713,34 @@ class PluginConfig extends React.Component
                                     {this.state.selectedplugin.config.map(function(config, i){
                                         return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
                                     })}
-                                    <div id="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
-                                    {getSelectedGuild() == "global" ? "" :
-                                        <div id="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
+                                    <div class="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
+                                    {
+                                    getSelectedGuild() == "global" ? "" :
+                                        <div class="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
                                     }
                                 </div>
                                 :
                                 <div>
                                     <h2>Sorry! This plugin has no config</h2>
                                     <p>The selected guild has no config for this plugin. This means either this guild is using the Global Settings for this plugin, or this plugin has no config to edit. Either edit the Global Settings for this plugin, or add a local config for this guild using the button below.</p>
-                                    <div id="savesettings" onClick={this.addConfigForPlugin}>Add Local Config</div>
+                                    <div class="savesettings" onClick={this.addConfigForPlugin}>Add Local Config</div>
+                                </div>
+                            }
+                            {
+                                getSelectedGuild() == "global" ? "" :
+                                <div>
+                                    {
+                                        this.state.selectedplugin.whitelist ? 
+                                            <div class="removesettings" onClick={this.removeFromWhitelist}>Remove from Whitelist</div>
+                                            :
+                                            <div class="savesettings" onClick={this.addToWhitelist}>Add to Whitelist</div>
+                                    }
+                                    {
+                                        this.state.selectedplugin.blacklist ? 
+                                            <div class="removesettings" onClick={this.removeFromBlacklist}>Remove from Blacklist</div>
+                                            :
+                                            <div class="savesettings" onClick={this.addToBlacklist}>Add to Blacklist</div>
+                                    }
                                 </div>
                             }
                         </div>
