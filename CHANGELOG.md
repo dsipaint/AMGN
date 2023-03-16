@@ -1,3 +1,6 @@
+## beta-1.2
+Add channel option to the AMGN.runCommand method, and integrate user permissions to this method. This method will not run a command for a user who doesn't have permission to run the command.
+
 ## beta-1.1.1
 Fix whitelist/blacklist breaking if not used
 
