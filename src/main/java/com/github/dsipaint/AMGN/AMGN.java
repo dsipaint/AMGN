@@ -332,6 +332,11 @@ public class AMGN
 		if(use_web == null || use_web)
 			SpringApplication.run(AMGN.class, args);
 		
+		//log in modlogs
+		GuildNetwork.guild_data.keySet().forEach(guild_id -> {
+			GuildNetwork.sendToModlogs(guild_id, "Network started");
+		});
+
 		logger.info("Finished setup.");
 		//END SETUP
 	}
