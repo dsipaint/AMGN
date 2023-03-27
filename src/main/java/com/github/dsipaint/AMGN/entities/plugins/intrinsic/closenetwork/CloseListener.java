@@ -32,8 +32,9 @@ public final class CloseListener extends ListenerAdapter
 			//run disable methods and unregister commands/listeners
 			
 			//log in modlogs
-			long id = GuildNetwork.guild_data.containsKey(e.getGuild().getIdLong()) ?  e.getGuild().getIdLong() : Guild.DEFAULT_ID;
-			GuildNetwork.sendToModlogs(id, "Network shutdown by " + e.getAuthor().getAsTag());
+			GuildNetwork.guild_data.keySet().forEach(guild_id -> {
+				GuildNetwork.sendToModlogs(guild_id, "Network shutdown by " + e.getAuthor().getAsTag());
+			});
 			
 			e.getChannel().sendMessage("Disabled all plugins. Shutting down...").complete();
 			e.getJDA().shutdown();

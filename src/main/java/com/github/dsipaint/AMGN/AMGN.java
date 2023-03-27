@@ -50,6 +50,7 @@ import com.github.dsipaint.AMGN.io.IOHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -331,11 +332,16 @@ public class AMGN
 		if(use_web == null || use_web)
 			SpringApplication.run(AMGN.class, args);
 		
+		//log in modlogs
+		GuildNetwork.guild_data.keySet().forEach(guild_id -> {
+			GuildNetwork.sendToModlogs(guild_id, "Network started");
+		});
+
 		logger.info("Finished setup.");
 		//END SETUP
 	}
 
-	public static final void runCommand(String cmdtxt, Member member)
+	public static final void runCommand(String cmdtxt, Member member, TextChannel tc)
 	{
 		AMGN.plugin_listeners.values().forEach(listeners ->
 		{
@@ -345,8 +351,9 @@ public class AMGN
 				{
 					Command cmd = ((Command) listener);
 					String[] args = cmdtxt.split(" ");
-					if(args[0].equalsIgnoreCase(cmd.getLabel()))
-						cmd.onCommand(new CommandEvent(cmdtxt, member, null, null));
+					if(args[0].equalsIgnoreCase(cmd.getLabel())
+						&& cmd.hasPermission(member))
+						cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
 				}
 			});
 		});	
