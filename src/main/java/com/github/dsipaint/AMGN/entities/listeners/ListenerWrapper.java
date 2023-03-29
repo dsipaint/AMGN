@@ -8,15 +8,11 @@ import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.DisconnectEvent;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.GatewayPingEvent;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.RawGatewayEvent;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.ReconnectedEvent;
-import net.dv8tion.jda.api.events.ResumedEvent;
-import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.StatusChangeEvent;
 import net.dv8tion.jda.api.events.UpdateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
@@ -38,12 +34,12 @@ import net.dv8tion.jda.api.events.channel.update.ChannelUpdateTopicEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateTypeEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateUserLimitEvent;
 import net.dv8tion.jda.api.events.channel.update.GenericChannelUpdateEvent;
-import net.dv8tion.jda.api.events.emote.EmoteAddedEvent;
-import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent;
-import net.dv8tion.jda.api.events.emote.GenericEmoteEvent;
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent;
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateRolesEvent;
-import net.dv8tion.jda.api.events.emote.update.GenericEmoteUpdateEvent;
+import net.dv8tion.jda.api.events.emoji.EmojiAddedEvent;
+import net.dv8tion.jda.api.events.emoji.EmojiRemovedEvent;
+import net.dv8tion.jda.api.events.emoji.GenericEmojiEvent;
+import net.dv8tion.jda.api.events.emoji.update.EmojiUpdateNameEvent;
+import net.dv8tion.jda.api.events.emoji.update.EmojiUpdateRolesEvent;
+import net.dv8tion.jda.api.events.emoji.update.GenericEmojiUpdateEvent;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.GuildAvailableEvent;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
@@ -102,9 +98,6 @@ import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceDeafenEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildDeafenEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildMuteEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMuteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceRequestToSpeakEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
@@ -124,7 +117,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.GenericSelectMenuInteractionEvent;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
@@ -134,7 +127,7 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveAllEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEmoteEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEmojiEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.role.GenericRoleEvent;
 import net.dv8tion.jda.api.events.role.RoleCreateEvent;
@@ -152,6 +145,11 @@ import net.dv8tion.jda.api.events.self.SelfUpdateAvatarEvent;
 import net.dv8tion.jda.api.events.self.SelfUpdateMFAEvent;
 import net.dv8tion.jda.api.events.self.SelfUpdateNameEvent;
 import net.dv8tion.jda.api.events.self.SelfUpdateVerifiedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
+import net.dv8tion.jda.api.events.session.SessionDisconnectEvent;
+import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
+import net.dv8tion.jda.api.events.session.SessionResumeEvent;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.events.stage.GenericStageInstanceEvent;
 import net.dv8tion.jda.api.events.stage.StageInstanceCreateEvent;
 import net.dv8tion.jda.api.events.stage.StageInstanceDeleteEvent;
@@ -811,16 +809,16 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onDisconnect(DisconnectEvent event)
+    public final void onSessionDisconnect(SessionDisconnectEvent event)
     { 
         AMGN.plugin_listeners.values().forEach(listeners ->
         {
-            listeners.forEach(listener -> {listener.onDisconnect(event);});
+            listeners.forEach(listener -> {listener.onSessionDisconnect(event);});
         });
     }
      
     @Override
-    public final void onEmoteAdded(EmoteAddedEvent event)
+    public final void onEmojiAdded(EmojiAddedEvent event)
     {
         HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
@@ -836,7 +834,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onEmoteAdded(event);
+                        listener.onEmojiAdded(event);
                     });
                 }
             });
@@ -844,7 +842,7 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onEmoteRemoved(EmoteRemovedEvent event)
+    public final void onEmojiRemoved(EmojiRemovedEvent event)
     {
         HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
@@ -860,7 +858,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onEmoteRemoved(event);
+                        listener.onEmojiRemoved(event);
                     });
                 }
             });
@@ -868,7 +866,7 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onEmoteUpdateName(EmoteUpdateNameEvent event)
+    public final void onEmojiUpdateName(EmojiUpdateNameEvent event)
     {
         HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
@@ -884,7 +882,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onEmoteUpdateName(event);
+                        listener.onEmojiUpdateName(event);
                     });
                 }
             });
@@ -892,7 +890,7 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onEmoteUpdateRoles(EmoteUpdateRolesEvent event)
+    public final void onEmojiUpdateRoles(EmojiUpdateRolesEvent event)
     {
         HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
@@ -908,7 +906,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onEmoteUpdateRoles(event);
+                        listener.onEmojiUpdateRoles(event);
                     });
                 }
             });
@@ -1132,7 +1130,7 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onGenericEmote(GenericEmoteEvent event)
+    public final void onGenericEmoji(GenericEmojiEvent event)
     {   
         HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
@@ -1148,7 +1146,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onGenericEmote(event);
+                        listener.onGenericEmoji(event);
                     });
                 }
             });
@@ -1156,7 +1154,7 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onGenericEmoteUpdate(GenericEmoteUpdateEvent event)
+    public final void onGenericEmojiUpdate(GenericEmojiUpdateEvent event)
     {
         HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
@@ -1172,7 +1170,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onGenericEmoteUpdate(event);
+                        listener.onGenericEmojiUpdate(event);
                     });
                 }
             });
@@ -2754,77 +2752,77 @@ public class ListenerWrapper extends ListenerAdapter
         });
     }
      
-    @Override
-    public final void onGuildVoiceJoin(GuildVoiceJoinEvent event)
-    {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
+    // @Override
+    // public final void onGuildVoiceJoin(GuildVoiceJoinEvent event)
+    // {
+    //     HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
-        {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
-            {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceJoin(event);
-                    });
-                }
-            });
-        });
-    }
+    //     //iterate through all plugins on network
+    //     AMGN.plugin_listeners.forEach((plugin, listeners) ->
+    //     {
+    //         //check to see if there are plugins we want to use
+    //         callevents.forEach((pluginname, guilds) ->
+    //         {
+    //             //if there is
+    //             if(pluginname.equals(plugin.getName()))
+    //             {
+    //                 //for every listener, we want to pass this event to it
+    //                 listeners.forEach(listener ->
+    //                 {
+    //                     listener.onGuildVoiceJoin(event);
+    //                 });
+    //             }
+    //         });
+    //     });
+    // }
      
-    @Override
-    public final void onGuildVoiceLeave(GuildVoiceLeaveEvent event)
-    {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
+    // @Override
+    // public final void onGuildVoiceLeave(GuildVoiceLeaveEvent event)
+    // {
+    //     HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
-        {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
-            {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceLeave(event);
-                    });
-                }
-            });
-        });
-    }
+    //     //iterate through all plugins on network
+    //     AMGN.plugin_listeners.forEach((plugin, listeners) ->
+    //     {
+    //         //check to see if there are plugins we want to use
+    //         callevents.forEach((pluginname, guilds) ->
+    //         {
+    //             //if there is
+    //             if(pluginname.equals(plugin.getName()))
+    //             {
+    //                 //for every listener, we want to pass this event to it
+    //                 listeners.forEach(listener ->
+    //                 {
+    //                     listener.onGuildVoiceLeave(event);
+    //                 });
+    //             }
+    //         });
+    //     });
+    // }
      
-    @Override
-    public final void onGuildVoiceMove(GuildVoiceMoveEvent event)
-    {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
+    // @Override
+    // public final void onGuildVoiceMove(GuildVoiceMoveEvent event)
+    // {
+    //     HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
-        {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
-            {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceMove(event);
-                    });
-                }
-            });
-        });
-    }
+    //     //iterate through all plugins on network
+    //     AMGN.plugin_listeners.forEach((plugin, listeners) ->
+    //     {
+    //         //check to see if there are plugins we want to use
+    //         callevents.forEach((pluginname, guilds) ->
+    //         {
+    //             //if there is
+    //             if(pluginname.equals(plugin.getName()))
+    //             {
+    //                 //for every listener, we want to pass this event to it
+    //                 listeners.forEach(listener ->
+    //                 {
+    //                     listener.onGuildVoiceMove(event);
+    //                 });
+    //             }
+    //         });
+    //     });
+    // }
      
     @Override
     public final void onGuildVoiceMute(GuildVoiceMuteEvent event)
@@ -3250,13 +3248,13 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onMessageReactionRemoveEmote(MessageReactionRemoveEmoteEvent event)
+    public final void onMessageReactionRemoveEmoji(MessageReactionRemoveEmojiEvent event)
     {
         if(!event.isFromGuild())
         {
             AMGN.plugin_listeners.values().forEach(listeners ->
             {
-                listeners.forEach(listener -> {listener.onMessageReactionRemoveEmote(event);});
+                listeners.forEach(listener -> {listener.onMessageReactionRemoveEmoji(event);});
             });
             return;
         }
@@ -3275,7 +3273,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onMessageReactionRemoveEmote(event);
+                        listener.onMessageReactionRemoveEmoji(event);
                     });
                 }
             });
@@ -3317,7 +3315,7 @@ public class ListenerWrapper extends ListenerAdapter
                             Command cmd = ((Command) listener);
                             String[] args = event.getMessage().getContentRaw().split(" ");
                             if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel()))
-                                cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), event.getTextChannel(), event.getMessage()));
+                                cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));
                         }
                     });
                 }
@@ -3449,20 +3447,20 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onReconnected(ReconnectedEvent event)
+    public final void onSessionRecreate(SessionRecreateEvent event)
     {
         AMGN.plugin_listeners.values().forEach(listeners ->
         {
-            listeners.forEach(listener -> {listener.onReconnected(event);});
+            listeners.forEach(listener -> {listener.onSessionRecreate(event);});
         });
     }
      
     @Override
-    public final void onResumed(ResumedEvent event)
+    public final void onSessionResume(SessionResumeEvent event)
     {
         AMGN.plugin_listeners.values().forEach(listeners ->
         {
-            listeners.forEach(listener -> {listener.onResumed(event);});
+            listeners.forEach(listener -> {listener.onSessionResume(event);});
         });
     }
      
@@ -3683,13 +3681,13 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onSelectMenuInteraction(SelectMenuInteractionEvent event)
+    public final void onGenericSelectMenuInteraction(GenericSelectMenuInteractionEvent event)
     {
         if(!event.isFromGuild())
         {
             AMGN.plugin_listeners.values().forEach(listeners ->
             {
-                listeners.forEach(listener -> {listener.onSelectMenuInteraction(event);});
+                listeners.forEach(listener -> {listener.onGenericSelectMenuInteraction(event);});
             });
             return;
         }
@@ -3708,7 +3706,7 @@ public class ListenerWrapper extends ListenerAdapter
                     //for every listener, we want to pass this event to it
                     listeners.forEach(listener ->
                     {
-                        listener.onSelectMenuInteraction(event);
+                        listener.onGenericSelectMenuInteraction(event);
                     });
                 }
             });

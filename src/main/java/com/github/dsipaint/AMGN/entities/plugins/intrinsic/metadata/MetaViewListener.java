@@ -24,7 +24,7 @@ public final class MetaViewListener extends ListenerAdapter
 		{
 			e.getChannel().sendMessageEmbeds(GuildNetwork.guild_data.getOrDefault(id, new Guild(id))
 					.asEmbed())
-					.allowedMentions(Collections.EMPTY_SET).queue();
+					.mention(Collections.EMPTY_SET).queue();
 			
 			return;
 		}

@@ -1,3 +1,6 @@
+## beta-1.2.1
+~ Upgrade to JDA 5.0.0-beta.6
+
 ## beta-1.2
 + Add channel option to the AMGN.runCommand method, and integrate user permissions to this method. This method will not run a command for a user who doesn't have permission to run the command.
 ~ Made modlogs message when AMGN is closed down go to every modlogs channel

@@ -6,9 +6,10 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji.Type;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 
@@ -29,10 +30,7 @@ public class Button extends Listener
 
     public void attachToMessage(Message message)
     {
-        if(emoji.isCustom())
-            message.addReaction(emoji.getName() + ":" + emoji.getId()).queue();
-        else
-            message.addReaction(emoji.getName()).queue();
+        message.addReaction(emoji).queue();
 
         this.message = message;
 
@@ -45,11 +43,11 @@ public class Button extends Listener
             return;
         
 
-        if(e.getReactionEmote().isEmote()
-            && e.getReactionEmote().getId().equals(this.emoji.getId())
+        if(e.getReaction().getEmoji().getType().equals(Type.CUSTOM)
+            && e.getEmoji().getAsReactionCode().equals(this.emoji.getAsReactionCode())
             && e.getMessageId().equals(this.message.getId()))
             press.accept(new MenuButtonClickEvent(e.getMember(), message, this, true));
-        else if(e.getReactionEmote().getName().equals(this.emoji.getName())
+        else if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
             && e.getMessageId().equals(this.message.getId()))
             press.accept(new MenuButtonClickEvent(e.getMember(), message, this, true));
     }
@@ -58,12 +56,12 @@ public class Button extends Listener
     {
         if(e.getUser().equals(e.getJDA().getSelfUser()))
             return;
-            
-        if(e.getReactionEmote().isEmote()
-            && e.getReactionEmote().getId().equals(this.emoji.getId())
+        
+        if(e.getReaction().getEmoji().getType().equals(Type.CUSTOM)
+            && e.getEmoji().getAsReactionCode().equals(this.emoji.getAsReactionCode())
             && e.getMessageId().equals(this.message.getId()))
             unpress.accept(new MenuButtonClickEvent(e.getMember(), message, this, false));
-        else if(e.getReactionEmote().getName().equals(this.emoji.getName())
+        else if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
             && e.getMessageId().equals(this.message.getId()))
             unpress.accept(new MenuButtonClickEvent(e.getMember(), message, this, false));
     }
