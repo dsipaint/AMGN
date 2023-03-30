@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javax.security.auth.login.LoginException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -50,7 +48,8 @@ import com.github.dsipaint.AMGN.io.IOHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -123,7 +122,7 @@ public class AMGN
 						CacheFlag.ACTIVITY) //honestly I just need these here for one plugin rn
 					.build(); //TODO: change to a plugin-specific gateway intent system
 		}
-		catch (LoginException e1)
+		catch(InvalidTokenException | IllegalArgumentException e1)
 		{
 			logger.error("Invalid token, shutting down network...");
 			e1.printStackTrace();

@@ -8,10 +8,11 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Button.MenuButtonClickEvent;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 
 public class MenuBuilder
 {
@@ -49,7 +50,7 @@ public class MenuBuilder
     //self-referencing to allow for chaining
     public MenuBuilder setMessage(Message message)
     {
-        this.message.editMessage(message);
+        this.message.editMessage(MessageEditBuilder.fromMessage(message).build());
         return this;
     }
 

@@ -1,14 +1,9 @@
 package com.github.dsipaint.AMGN.entities.listeners;
 
-import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.GatewayPingEvent;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.RawGatewayEvent;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.ReconnectedEvent;
-import net.dv8tion.jda.api.events.ResumedEvent;
-import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.StatusChangeEvent;
 import net.dv8tion.jda.api.events.UpdateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
@@ -30,12 +25,12 @@ import net.dv8tion.jda.api.events.channel.update.ChannelUpdateTopicEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateTypeEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateUserLimitEvent;
 import net.dv8tion.jda.api.events.channel.update.GenericChannelUpdateEvent;
-import net.dv8tion.jda.api.events.emote.EmoteAddedEvent;
-import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent;
-import net.dv8tion.jda.api.events.emote.GenericEmoteEvent;
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent;
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateRolesEvent;
-import net.dv8tion.jda.api.events.emote.update.GenericEmoteUpdateEvent;
+import net.dv8tion.jda.api.events.emoji.EmojiAddedEvent;
+import net.dv8tion.jda.api.events.emoji.EmojiRemovedEvent;
+import net.dv8tion.jda.api.events.emoji.GenericEmojiEvent;
+import net.dv8tion.jda.api.events.emoji.update.EmojiUpdateNameEvent;
+import net.dv8tion.jda.api.events.emoji.update.EmojiUpdateRolesEvent;
+import net.dv8tion.jda.api.events.emoji.update.GenericEmojiUpdateEvent;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.GuildAvailableEvent;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
@@ -94,9 +89,6 @@ import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceDeafenEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildDeafenEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildMuteEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMuteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceRequestToSpeakEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
@@ -116,7 +108,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.GenericSelectMenuInteractionEvent;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
@@ -126,7 +118,7 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveAllEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEmoteEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEmojiEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.role.GenericRoleEvent;
 import net.dv8tion.jda.api.events.role.RoleCreateEvent;
@@ -144,6 +136,11 @@ import net.dv8tion.jda.api.events.self.SelfUpdateAvatarEvent;
 import net.dv8tion.jda.api.events.self.SelfUpdateMFAEvent;
 import net.dv8tion.jda.api.events.self.SelfUpdateNameEvent;
 import net.dv8tion.jda.api.events.self.SelfUpdateVerifiedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
+import net.dv8tion.jda.api.events.session.SessionDisconnectEvent;
+import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
+import net.dv8tion.jda.api.events.session.SessionResumeEvent;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.events.stage.GenericStageInstanceEvent;
 import net.dv8tion.jda.api.events.stage.StageInstanceCreateEvent;
 import net.dv8tion.jda.api.events.stage.StageInstanceDeleteEvent;
@@ -272,27 +269,27 @@ public class Listener implements EventListener
 
     }
      
-    public void onDisconnect(DisconnectEvent event)
+    public void onSessionDisconnect(SessionDisconnectEvent event)
     {
 
     }
      
-    public void onEmoteAdded(EmoteAddedEvent event)
+    public void onEmojiAdded(EmojiAddedEvent event)
     {
 
     }
      
-    public void onEmoteRemoved(EmoteRemovedEvent event)
+    public void onEmojiRemoved(EmojiRemovedEvent event)
     {
 
     }
      
-    public void onEmoteUpdateName(EmoteUpdateNameEvent event)
+    public void onEmojiUpdateName(EmojiUpdateNameEvent event)
     {
 
     }
      
-    public void onEmoteUpdateRoles(EmoteUpdateRolesEvent event)
+    public void onEmojiUpdateRoles(EmojiUpdateRolesEvent event)
     {
 
     }
@@ -337,12 +334,12 @@ public class Listener implements EventListener
 
     }
      
-    public void onGenericEmote(GenericEmoteEvent event)
+    public void onGenericEmoji(GenericEmojiEvent event)
     {
 
     }
      
-    public void onGenericEmoteUpdate(GenericEmoteUpdateEvent event)
+    public void onGenericEmojiUpdate(GenericEmojiUpdateEvent event)
     {
 
     }
@@ -682,17 +679,7 @@ public class Listener implements EventListener
 
     }
      
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceMove(GuildVoiceMoveEvent event)
+    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event)
     {
 
     }
@@ -723,11 +710,6 @@ public class Listener implements EventListener
     }
      
     public void onGuildVoiceSuppress(GuildVoiceSuppressEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event)
     {
 
     }
@@ -777,26 +759,26 @@ public class Listener implements EventListener
 
     }
      
-    public void onMessageReactionRemoveEmote(MessageReactionRemoveEmoteEvent event)
+    public void onMessageReactionRemoveEmoji(MessageReactionRemoveEmojiEvent event)
     {
 
     }
-     
+
     public void onMessageReceived(MessageReceivedEvent event)
     {
 
     }
-     
+    
     public void onMessageUpdate(MessageUpdateEvent event)
     {
 
     }
-     
+
     public void onPermissionOverrideCreate(PermissionOverrideCreateEvent event)
     {
 
     }
-     
+    
     public void onPermissionOverrideDelete(PermissionOverrideDeleteEvent event)
     {
 
@@ -817,12 +799,12 @@ public class Listener implements EventListener
 
     }
      
-    public void onReconnected(ReconnectedEvent event)
+    public void onSessionRecreate(SessionRecreateEvent event)
     {
 
     }
      
-    public void onResumed(ResumedEvent event)
+    public void onSessionResume(SessionResumeEvent event)
     {
 
     }
@@ -872,7 +854,7 @@ public class Listener implements EventListener
 
     }
      
-    public void onSelectMenuInteraction(SelectMenuInteractionEvent event)
+    public void onGenericSelectMenuInteraction(GenericSelectMenuInteractionEvent event)
     {
 
     }
