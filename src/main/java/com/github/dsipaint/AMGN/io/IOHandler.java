@@ -39,7 +39,7 @@ public class IOHandler
 	 */
 	//reads data in from network.yml, using default values if not found (see default values in GuildNetwork.java
 	@SuppressWarnings("unchecked")
-	public static final HashMap<Long, Guild> readGuildData(String path) throws FileNotFoundException
+	public static final HashMap<Long, Guild> readGuildData() throws FileNotFoundException
 	{
 		ArrayList<Object> guilds_data = (ArrayList<Object>) readYamlData(GuildNetwork.NETWORKINFO_PATH, "guild_data");
 		HashMap<Long, Guild> guilds_out = new HashMap<Long, Guild>();
@@ -65,7 +65,6 @@ public class IOHandler
 			Guild parsed_guild_obj = new Guild(
 				(long) (guild.getOrDefault("guild_id", Guild.DEFAULT_ID)),
 				(long) guild.getOrDefault("modlogs", Guild.DEFAULT_ID),
-				(long) guild.getOrDefault("modrole", Guild.DEFAULT_ID),
 				(String) guild.getOrDefault("prefix", Guild.DEFAULT_PREFIX),
 				accept_col,
 				decline_col,
@@ -80,13 +79,6 @@ public class IOHandler
 				AMGN.logger.warn("Modlogs ID is missing for " 
 					+ (parsed_guild_obj.getGuild_id() == Guild.DEFAULT_ID ? "this guild" : AMGN.bot.getGuildById(parsed_guild_obj.getGuild_id()))
 					+ ". In order to use modlogs features for this guild with AMGN, please set a value for the modlogs with the updatemetainfo"
-					+ " command or by editing " + GuildNetwork.NETWORKINFO_PATH + ".");
-			}
-			if(parsed_guild_obj.getModrole() == Guild.DEFAULT_ID)
-			{
-				AMGN.logger.warn("Modrole ID is missing for " 
-					+ (parsed_guild_obj.getGuild_id() == Guild.DEFAULT_ID ? "this guild" : AMGN.bot.getGuildById(parsed_guild_obj.getGuild_id()))
-					+ ". In order to use modrole features for this guild with AMGN, please set a value for the modrole with the updatemetainfo"
 					+ " command or by editing " + GuildNetwork.NETWORKINFO_PATH + ".");
 			}
 		});
@@ -105,6 +97,13 @@ public class IOHandler
 	{
 		return ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path)))).get(value);
 	}
+
+	//works like above, but returns the whole file instead
+	@SuppressWarnings("unchecked")
+	public static final HashMap<String, Object> readAllYamlData(String path) throws FileNotFoundException
+	{
+		return ((HashMap<String, Object>) new Yaml().load(new FileReader(new File(path))));
+	}
 	
 	
 	/** 
@@ -113,15 +112,14 @@ public class IOHandler
 	 * @param path
 	 */
 	//writes data to a file from a valid hashmap (i.e. GuildNetwork.guild_data)
-	public static final void writeNetworkData(Map<Long, Guild> guilds, List<Long> operators, String path) throws IOException
+	public static final void writeNetworkData(Map<Long, Guild> guilds, String path) throws IOException
 	{
 		Yaml yaml_out = new Yaml(dumperopts);
 		Map<String, Object> parse_objects = new HashMap<String, Object>();
 
 		//parse token first
 		parse_objects.put("token", AMGN.bot.getToken().replace("Bot ", ""));
-		//then parse operators
-		parse_objects.put("operators", operators);
+
 		//then parse guild data
 		List<Map<String, Object>> parse_guilds = new ArrayList<Map<String, Object>>();
 		guilds.values().forEach(guild ->
@@ -136,8 +134,6 @@ public class IOHandler
 				guild_list_obj.put("guild_id", guild.getGuild_id());
 			if(guild.getModlogs() != Guild.DEFAULT_ID)
 				guild_list_obj.put("modlogs", guild.getModlogs());
-			if(guild.getModrole() != Guild.DEFAULT_ID)
-				guild_list_obj.put("modrole", guild.getModrole());
 
 			guild_list_obj.put("accept_col", Guild.formatHexString(guild.getAccept_col()));
 			guild_list_obj.put("decline_col", Guild.formatHexString(guild.getDecline_col()));
@@ -161,6 +157,7 @@ public class IOHandler
 		yaml_out.dump(parse_objects, new FileWriter(new File(path)));
 	}
 
+	//TODO: switch usage of this method to the one below eventually?
 	public static final void writeWhitelistBlacklist() throws IOException
 	{
 		Yaml yaml_out = new Yaml(dumperopts);
@@ -169,7 +166,12 @@ public class IOHandler
 		data_out.put("blacklist", GuildNetwork.blacklist);
 		yaml_out.dump(data_out, new FileWriter(new File(GuildNetwork.WHITELIST_PATH)));
 	}
-	
+
+	public static final void writeYamlData(Map<?, ?> data, String path) throws IOException
+	{
+		Yaml yaml_out = new Yaml(dumperopts);
+		yaml_out.dump(data, new FileWriter(new File(path)));
+	}
 	
 	/** 
 	 * @param name

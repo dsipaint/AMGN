@@ -499,7 +499,6 @@ class PluginConfig extends React.Component
             method: "PUT",
             contentType: "application/json",
             data: JSON.stringify({
-                operators: this.state.networkinfo.operators,
                 guild_data: this.state.networkinfo.guild_data
             }),
             success: function(succ) {
@@ -687,7 +686,6 @@ class PluginConfig extends React.Component
                             {
                                 this.state.networkinfo.guild_data === undefined ? "No network settings to show" :
                                 <div>
-                                    {this.state.networkinfo.operators !== undefined ? <ListItem list={this.state.networkinfo.operators} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.operators" addmore="true" removemore="true"/> : ""}
                                     <ListItem list={this.state.networkinfo.guild_data} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
                                 </div>
                             }

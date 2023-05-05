@@ -23,7 +23,7 @@ public final class ModlogsListener extends ListenerAdapter
 			GuildNetwork.guild_data.put(id, g);
 			try
 			{
-				IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+				IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.NETWORKINFO_PATH);
 			}
 			catch(IOException e1)
 			{

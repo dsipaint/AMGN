@@ -19,9 +19,6 @@ crucial information for your bot, and takes this form:
 ```yaml
 token: 1234567890afdlfjfkadadsfnkfasd
 
-operators:
-  - 475859944101380106
-
 use_webpanel: false
 clientid: 127348349832489324
 clientsecret: 127348349832489324
@@ -42,14 +39,12 @@ guild_data:
   - guild_id: 123456789
     prefix: ":"
     modlogs: 23456455
-    modrole: 12343545
 	unique_col: "#32a852"
 	
 ```
 | Variable | Required | Type |Default | Description |
 | -------- | -------- | ---- | ------ | ----------- |
 | token | yes | string | N/A | your bot's token |
-| operators | no | list of strings | N/A | user or role ids of operators of your network |
 | use_webpanel | no | boolean | true | If this is set to `false`, the webpanel will not be activated for your installation of AMGN. If this is true, the webpanel will be used. |
 | clientid | no | string | | The client ID for your application if you wish to use the webpanel |
 | clientsecret | no | string | | The client secret for your application if you wish to use the webpanel |
@@ -59,13 +54,11 @@ guild_data:
 | guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
 | prefix | no | string | "^" | prefix for commands in the aforementioned guild |
 | modlogs | no | long | GuildNetwork.DEFAULT_ID (-1) | channel id for modlogs to be theoretically sent to by AMGN and its plugins |
-| modrole | no | long | GuildNetwork.DEFAULT_ID (-1) | role id for the role you wish to be treated with "staff" permissions in the guild |
 | accept_col | no | string of hex | GuildNetwork.GREEN_EMBED_COLOUR (65280) | colour that will be used in this guild for "accepted"-coloured embeds e.g. a successful log |
 | decline_col | no | string of hex | GuildNetwork.RED_EMBED_COLOUR (16073282) | colour that will be used in this guild for "declined"-coloured embeds e.g. an UNsuccessful log |
 | unique_col | no | string of hex | GuildNetwork.PURPLE_EMBED_COLOUR (11023006) | colour that will be used in this guild for unique-event embeds e.g. something unexpected or special |
 
 
-An `operator` has full access to all commands and permissions on the network. This can either be a user or a discord role to be given to users.
 Each `guild_data` object of the array represents a single guild and the metadata associated with it.
 
 `network.yml` must be in the same directory as the network jar, have the correct name (network.yml) and contain the required fields, in the above format, or the network will close. Otherwise, you are now able to run the network by simply running the jar file as normal.

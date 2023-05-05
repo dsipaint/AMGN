@@ -23,10 +23,12 @@ public final class HelpListener extends ListenerAdapter
 
 		if(!e.isFromGuild())
 			return;
+
+		if(!DefaultCommand.HELP.hasPermission(e.getMember()))
+			return;
 		
 		//^help
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.HELP.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.HELP.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.HELP.getLabel()))
 		{
 			String prefix = GuildNetwork.getPrefix(e.getGuild().getIdLong());
 			
@@ -39,7 +41,7 @@ public final class HelpListener extends ListenerAdapter
 				for(DefaultCommand command : DefaultCommand.values())
 				{
 					//only show commands a user has permission to see
-					if(Command.hasPermission(e.getMember(), command.getGuildPermission()))
+					if(command.hasPermission(e.getMember()))
 						commandlist.append("**" + prefix + command.getLabel() + ":** " + command.getDesc() + "\n");
 				}
 
@@ -75,7 +77,7 @@ public final class HelpListener extends ListenerAdapter
 			//loop through all intrinsic commands
 			for(DefaultCommand command : DefaultCommand.values())
 			{
-				if(command.getLabel().equalsIgnoreCase(args[1]) && Command.hasPermission(e.getMember(), command.getGuildPermission()))
+				if(command.getLabel().equalsIgnoreCase(args[1]) && command.hasPermission(e.getMember()))
 				{
 					EmbedBuilder eb = new EmbedBuilder()
 							.setTitle(prefix + command.getLabel())

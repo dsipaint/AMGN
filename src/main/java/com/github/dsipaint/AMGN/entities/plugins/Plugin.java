@@ -1,6 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins;
 
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
@@ -22,12 +23,15 @@ public abstract class Plugin
 		imageurl,
 		description;
 
+	private String[] perms;
+
 	private Config config; //config object for the plugin
 	
 	public abstract void onEnable();
 	
 	public abstract void onDisable();
 	
+	@SuppressWarnings("unchecked")
 	public Plugin()
 	{
 		Map<String, Object> metadata = new Yaml().load(new InputStreamReader(getClass().getResourceAsStream(RESOURCE_PATH)));
@@ -37,6 +41,11 @@ public abstract class Plugin
 		url = (String) metadata.get("url");
 		imageurl = (String) metadata.get("image");
 		description = (String) metadata.get("description");
+
+		List<String> parseperms = (List<String>) metadata.get("permissions");
+		this.perms = new String[parseperms.size()];
+		for(int i = 0; i < this.perms.length; i++)
+			this.perms[i] = parseperms.get(i);
 		
 		config_path = "./plugins/" + getName().toLowerCase();
 		config = new Config(this);
@@ -93,6 +102,11 @@ public abstract class Plugin
 	public final String getDescription()
 	{
 		return this.description;
+	}
+
+	public final String[] getPerms()
+	{
+		return this.perms;
 	}
 
 	/** 

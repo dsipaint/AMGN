@@ -12,15 +12,14 @@ public class Guild
 	public static final int DEFAULT_ACCEPT_COL = 65280, DEFAULT_DECLINE_COL = 16073282, DEFAULT_UNIQUE_COL = 11023006; //Embed colours
 	
 	private String prefix;
-	private long guild_id, modlogs, modrole;
+	private long guild_id, modlogs;
 	private int accept_col, decline_col, unique_col;
 	
-	public Guild(long guild_id, long modlogs, long modrole, String prefix, int accept_col, int decline_col, int unique_col)
+	public Guild(long guild_id, long modlogs, String prefix, int accept_col, int decline_col, int unique_col)
 	{
 		//if ID can't be resolved, set it to default id
 		this.guild_id = (AMGN.bot.getGuildById(guild_id) == null ? DEFAULT_ID : guild_id );
 		this.modlogs = (AMGN.bot.getTextChannelById(modlogs) == null ? DEFAULT_ID : modlogs );
-		this.modrole = (AMGN.bot.getRoleById(modrole) == null ? DEFAULT_ID : modrole );
 		this.prefix = prefix;
 		this.accept_col = accept_col;
 		this.decline_col = decline_col;
@@ -32,7 +31,6 @@ public class Guild
 	{
 		this.guild_id = guild_id;
 		this.modlogs = DEFAULT_ID;
-		this.modrole = DEFAULT_ID;
 		this.prefix = DEFAULT_PREFIX;
 		this.accept_col = DEFAULT_ACCEPT_COL;
 		this.decline_col = DEFAULT_DECLINE_COL;
@@ -74,25 +72,6 @@ public class Guild
 	{
 		this.modlogs = modlogs;
 	}
-
-	
-	/** 
-	 * @return long modrole role id
-	 */
-	public final long getModrole()
-	{
-		return modrole;
-	}
-
-	
-	/** 
-	 * @param modrole role id
-	 */
-	public final void setModrole(long modrole)
-	{
-		this.modrole = modrole;
-	}
-
 	
 	/** 
 	 * @return long id of the guild
@@ -151,22 +130,6 @@ public class Guild
 	}
 	
 	/** 
-	 * @param offset String padding for pretty-printing the json with
-	 * @return String json pretty-printed string of the Guild object
-	 */
-	public String asJson(String offset)
-	{
-		String json = offset + "{\n";
-		json += offset + "\t\"guild_id\": " + this.getGuild_id() + ",\n";
-		json += offset +"\t\"prefix\": \"" + this.getPrefix() + "\",\n";
-		json += offset +"\t\"modlogs\": " + this.getModlogs() + ",\n";
-		json += offset +"\t\"modrole\": " + this.getModrole() + "\n";
-		json += offset +"}";
-		return json;
-	}
-	
-	
-	/** 
 	 * @return MessageEmbed
 	 */
 	public MessageEmbed asEmbed()
@@ -180,7 +143,6 @@ public class Guild
 				.addField("Owner: ", guild.getOwner().getEffectiveName(), true)
 				.addField("Prefix: ", this.getPrefix(), true)
 				.addField("Modlogs: ", this.getModlogs() == DEFAULT_ID ? "no modlogs set" : guild.getTextChannelById(this.getModlogs()).getAsMention(), true)
-				.addField("Modrole: ", this.getModrole() == DEFAULT_ID ? "no modrole set" : guild.getRoleById(this.getModrole()).getAsMention(), true)
 				.addField("Accept colour: ", formatHexString(this.accept_col), true)
 				.addField("Decline colour: ", formatHexString(this.decline_col), true)
 				.addField("Unique colour: ", formatHexString(this.unique_col), true)

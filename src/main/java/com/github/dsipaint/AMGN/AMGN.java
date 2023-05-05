@@ -29,16 +29,15 @@ import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModroleListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.OperatorListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ReloadListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.HelpListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaUpdateListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaViewListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpAddListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.operators.OpRemoveListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.GroupsListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.ListPermissionsListener;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.PermissionAddRemoveListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningAllListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.BlacklistCommand;
@@ -55,12 +54,9 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 @SpringBootApplication
+@SuppressWarnings("unchecked")
 public class AMGN
 {
-	/*
-	 * TODO: the programmatic commands currently does not
-	 * support inbuilt commands as these use ListenerAdapters
-	 */
 	public static JDA bot;
 	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
 
@@ -90,6 +86,12 @@ public class AMGN
 			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.WHITELIST_PATH))
 			{
 				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				System.exit(0);
+			}
+
+			if(IOHandler.copyFileToExternalPath("permissionsdefault.yml", GuildNetwork.PERMISSIONS_PATH))
+			{
+				logger.warn("permissions.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
 				System.exit(0);
 			}
 		}
@@ -164,8 +166,7 @@ public class AMGN
 		try
 		{
 			logger.info("Reading operators and guild data from network settings...");
-			GuildNetwork.guild_data = IOHandler.readGuildData(GuildNetwork.NETWORKINFO_PATH); //read guild data from network.yml
-			GuildNetwork.operators = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
+			GuildNetwork.guild_data = IOHandler.readGuildData(); //read guild data from network.yml
 		}
 		catch(IOException e)
 		{
@@ -208,17 +209,16 @@ public class AMGN
 		
 		//consistency plugin
 		bot.addEventListener(new ModlogsListener());
-		bot.addEventListener(new ModroleListener());
 		bot.addEventListener(new MenuDeleteListener());
-		bot.addEventListener(new OperatorListener());
-		
-		//operators plugin
-		bot.addEventListener(new OpAddListener());
-		bot.addEventListener(new OpRemoveListener());
 
 		//whitelist plugin
 		bot.addEventListener(new BlacklistCommand());
 		bot.addEventListener(new WhitelistCommand());
+
+		//permissions plugin
+		bot.addEventListener(new PermissionAddRemoveListener());
+		bot.addEventListener(new ListPermissionsListener());
+		bot.addEventListener(new GroupsListener());
 
 		bot.addEventListener(new ListenerWrapper());
 		

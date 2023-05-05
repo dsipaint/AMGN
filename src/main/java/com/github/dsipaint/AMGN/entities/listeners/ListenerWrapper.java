@@ -3314,7 +3314,8 @@ public class ListenerWrapper extends ListenerAdapter
                         {
                             Command cmd = ((Command) listener);
                             String[] args = event.getMessage().getContentRaw().split(" ");
-                            if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel()))
+                            if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel())
+                                && cmd.hasPermission(event.getMember())) //check if the user has permission to run the command
                                 cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));
                         }
                     });

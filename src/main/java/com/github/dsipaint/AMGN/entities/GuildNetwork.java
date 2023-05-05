@@ -1,17 +1,22 @@
 package com.github.dsipaint.AMGN.entities;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.AMGN.io.IOHandler;
+import com.github.dsipaint.AMGN.io.Permissions;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
@@ -20,7 +25,6 @@ public class GuildNetwork
 	//general utility class, like the Bukkit class in spigot- represents actions available across the whole network
 	
 	public static Map<Long, Guild> guild_data; //placed here to be globally available, set up in the Main class
-	public static List<Long> operators;
 	public static String clientid, clientsecret, redirecturi;
 	public static Map<String, List<Long>> whitelist, blacklist;
 	
@@ -28,64 +32,124 @@ public class GuildNetwork
 	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
 	public static final String WHITELIST_PATH = "./whitelist.yml"; //whitelist file path
 	public static final String WEB_PATH = "./web"; //path for all web assets
+	public static final String PERMISSIONS_PATH = "./permissions.yml"; //for the permissions file
 
 	public static final String ID_REGEX = "\\d{17,19}";
-	
-	
+
 	/** 
-	 * @param m member to check staff status of
-	 * @return boolean true if member has discord mod, admin or is owner, false otherwise
+	 * @param m member to check operator status of
+	 * @return boolean true if member is an operator, or has any role that has operator perms, false otherwise
 	 */
-	public static final boolean isStaff(Member m)
+	@SuppressWarnings("unchecked")
+	public static final boolean isOperator(User u)
 	{
-		//if owner
-		if(m.isOwner())
-			return true;
-		
-		//if admin
-		if(m.hasPermission(Permission.ADMINISTRATOR))
-			return true;
-		
-		//modrole for the given server
-		Role modrole = m.getGuild().getRoleById(guild_data.get(m.getGuild().getIdLong()).getModrole());
-		
-		//no modrole, means the user can't be a mod
-		if(modrole == null)
-			return false;
-		
-		//if this member has the modrole for this guild, return true
-		for(Role r : m.getRoles())
+		//we must manually check operator status, because Command.hasPermission relies
+		//on this method. Re-using Command.hasPermission will cause unwanted recursion.
+		//read permissions.yml
+		Map<String, List<String>> perms = new HashMap<String, List<String>>();
+		try
 		{
-			if(r.equals(modrole))
-				return true;
+			//check all groups and see if a group has the permission
+			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
+			for(String groupname : groups.keySet())
+			{
+				HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
+				//if this is the user's id or a role the user has
+				if(Permissions.isInGroup(u.getId(), groupname))
+				{
+					for(String perm : groupdata.get("permissions"))
+					{
+						if(perm.equalsIgnoreCase("AMGN.operator"))
+							return true;
+					}
+				}
+			}
+
+			perms = new Yaml().load(
+				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+		//check to see if an id is either a member, or a role the member has (in any guild)
+		//if this ID has been given the specified permission, return true
+		
+		for(String id : perms.keySet())
+		{
+			if(id.equalsIgnoreCase("groups"))
+				continue;
+
+			//we must check every role that the user may have,
+			//if it has operator perms, they are a global operator
+
+			//if this is a role ID and the user has this role
+			if(u.getId().equals(id)
+				|| (AMGN.bot.getRoleById(id) != null
+						&& AMGN.bot.getRoleById(id).getGuild().getMembersWithRoles(AMGN.bot.getRoleById(id))
+						.contains(AMGN.bot.getRoleById(id).getGuild().getMember(u)))
+				|| (u.getMutualGuilds().contains(AMGN.bot.getGuildById(id))))
+			{
+				//if this role has op perms, return true
+				for(String commandperm : perms.get(id))
+				{
+					if(commandperm.equals("AMGN.operator"))
+						return true;
+				}
+			}
 		}
 		
 		return false;
 	}
 
-	/** 
-	 * @param m member to check operator status of
-	 * @return boolean true if member is an operator, false otherwise
-	 */
-	public static final boolean isOperator(User u)
+	@SuppressWarnings("unchecked")
+	public static final boolean isOperator(Role r)
 	{
-		for(long id : operators)
+		Map<String, List<String>> perms = new HashMap<String, List<String>>();
+		try
 		{
-			if(AMGN.bot.getUserById(id) != null)
+			//check all groups and see if a group has the permission
+			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
+			for(String groupname : groups.keySet())
 			{
-				if(AMGN.bot.getUserById(id).equals(u))
-					return true;
-				continue;
+				HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
+				if(Permissions.isInGroup(r.getId(), groupname))
+				{
+					for(String perm : groupdata.get("permissions"))
+					{
+						if(perm.equalsIgnoreCase("AMGN.operator"))
+							return true;
+					}
+				}
 			}
-			
-			if(AMGN.bot.getRoleById(id) != null)
-			{
-				Member m = AMGN.bot.getRoleById(id).getGuild().getMember(u);
-				if(m != null && m.getRoles().contains(AMGN.bot.getRoleById(id)))
-					return true;
-			}
+
+			perms = new Yaml().load(
+				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 
+		//check to see if an id is either a member, or a role the member has (in any guild)
+		//if this ID has been given the specified permission, return true
+		for(String id : perms.keySet())
+		{
+			if(id.equalsIgnoreCase("groups"))
+				continue;
+			
+			if(r.getId().equals(id)
+				|| r.getGuild().getId().equals(id))
+			{
+				for(String commandperm : perms.get(id))
+				{
+					if(commandperm.equals("AMGN.operator"))
+						return true;
+				}
+			}
+		}
+		
 		return false;
 	}
 	
@@ -99,17 +163,6 @@ public class GuildNetwork
 	{
 		return guild_data.get(guild_id) == null ? Guild.DEFAULT_PREFIX : guild_data.get(guild_id).getPrefix();
 	}
-	
-	
-	/** 
-	 * @param guild_id guild to find modrole for
-	 * @return long id of mod role
-	 */
-	public static final long getModrole(long guild_id)
-	{
-		return guild_data.get(guild_id) == null ? Guild.DEFAULT_ID : guild_data.get(guild_id).getModrole();
-	}
-	
 	
 	/** 
 	 * @param guild_id guild to find modlogs id for

@@ -1,9 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork;
 
 import com.github.dsipaint.AMGN.AMGN;
-import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,10 +16,12 @@ public final class CloseListener extends ListenerAdapter
 
 		if(!e.isFromGuild())
 			return;
+
+		if(!DefaultCommand.CLOSE.hasPermission(e.getMember()))
+			return;
 		
 		//^closenetwork
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.CLOSE.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.CLOSE.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.CLOSE.getLabel()))
 		{
 			//disable every active plugin
 			AMGN.plugin_listeners.forEach((plugin, listenerlist) ->
