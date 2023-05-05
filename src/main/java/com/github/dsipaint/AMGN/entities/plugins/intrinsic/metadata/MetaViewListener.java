@@ -4,17 +4,22 @@ import java.util.Collections;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public final class MetaViewListener extends ListenerAdapter
 {
+	@SuppressWarnings("unchecked")
 	public void onMessageReceived(MessageReceivedEvent e)
 	{
 		if(!e.isFromGuild())
 			return;
-			
+
+		if(DefaultCommand.METAVIEW.hasPermission(e.getMember()))
+			return;
+
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		long id = e.getGuild().getIdLong();
@@ -24,7 +29,7 @@ public final class MetaViewListener extends ListenerAdapter
 		{
 			e.getChannel().sendMessageEmbeds(GuildNetwork.guild_data.getOrDefault(id, new Guild(id))
 					.asEmbed())
-					.mention(Collections.EMPTY_SET).queue();
+					.setAllowedMentions(Collections.EMPTY_SET).queue();
 			
 			return;
 		}

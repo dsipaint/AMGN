@@ -1,3 +1,39 @@
+## beta-1.3
+Upgraded permission system. Previously any command could have "all", "staff" "admin" or "operator" permissions, and no permission configuration for non-command actions. Now, custom permissions are specified and configured by the plugin developer, allowing permissions for certain commands to be handed out freely
+
+~ Changed command argument `permission` to `permissions`, which now takes a list of string permissions in a recommended format of `pluginname.commands.commandname` or `pluginname.commands.*`
+
++ Added default AMGN permissions:
+    AMGN.operator: all permissions allowed everywhere
+    AMGN.commands.*: access to all AMGN default commands
+    AMGN.commands.controlplugins.*: access to ^showplugins, ^showallplugins, ^enable, ^disable, ^reload and ^reloadall
+
+    AMGN.commands.help
+    AMGN.commands.updatemetainfo
+    AMGN.commands.viewmetainfo
+    AMGN.commands.showplugins
+    AMGN.commands.enable
+    AMGN.commands.disable
+    AMGN.commands.reload
+    AMGN.commands.reloadall
+    AMGN.commands.closenetwork
+    AMGN.commands.whitelist
+    AMGN.commands.blacklist
+    AMGN.commands.showallplugins
+    AMGN.commands.permission
+    AMGN.commands.listpermissions
+    (For all default AMGN commands)
+
+    AMGN.webpanel.access: gives access to the webpanel
+
+- dropped support for operators in `network.yml`. This variable is no longer used. Instead, give the user/role the AMGN.operator permission
+
++ Added support for `permissions` variable in `plugin.yml`, to list all permissions a plugin uses
+
++ small improvements to IO helper methods
+
++ added permissions.yml and several new permissions/groups commands to help with managing permissions on servers
+
 ## beta-1.2.1
 ~ Upgrade to JDA 5.0.0-beta.6
 

@@ -46,13 +46,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
-
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
+import com.github.dsipaint.AMGN.io.Permissions;
 
 @Controller
 public class WebpanelController
@@ -98,7 +94,7 @@ public class WebpanelController
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
 
         //if this is a valid authorised user and we don't know this user already:
-        if(getAuthLevelFromId(userinfo.getBody().get("id").asLong()) != GuildPermission.ALL &&
+        if(canViewId(userinfo.getBody().get("id").asLong()) &&
             !TOKEN_CACHE.contains(usertoken))
             TOKEN_CACHE.add(usertoken);
 
@@ -126,10 +122,9 @@ public class WebpanelController
         {
             ObjectMapper mapper = new ObjectMapper();
             ArrayNode guild_data = mapper.createArrayNode();
-            GuildPermission authlevel = getAuthLevelFromToken(getTokenFromRequest(request));
 
             AMGN.bot.getGuilds().forEach(guild -> {
-                if(authlevel == GuildPermission.OPERATOR || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                if(GuildNetwork.isOperator(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request)))) || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
                 {
                     ObjectNode objectnode = mapper.createObjectNode();
                     objectnode.put("id", guild.getId());
@@ -263,7 +258,6 @@ public class WebpanelController
     //for now, any authorised user may use this but I may change it to just operators
     @GetMapping(value="/webpanel/api/networkinfo", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @SuppressWarnings("unchecked")
     public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
     {
         if(request.getCookies() == null)
@@ -276,42 +270,25 @@ public class WebpanelController
         {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode network_data = mapper.createObjectNode();
-            try
-            {
-                GuildPermission authlevel = getAuthLevelFromToken(getTokenFromRequest(request));
-                if(authlevel == GuildPermission.OPERATOR)
+            boolean isoperator = GuildNetwork.isOperator(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))));
+
+            ArrayNode guilds = mapper.createArrayNode();
+
+            AMGN.bot.getGuilds().forEach(guild -> {
+                //if they are an operator or if they are in the guild, then they can have this guild
+                if(isoperator || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
                 {
-                    ArrayNode operators = mapper.createArrayNode();
-                    ArrayList<Long> op_data = (ArrayList<Long>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "operators");
-                    op_data.forEach(operator ->{operators.add(Long.toString(operator));});
-                    network_data.set("operators", operators);
+                    ObjectNode obj = mapper.createObjectNode();
+                    obj.put("guild_id", guild.getId());
+                    obj.put("modlogs", Long.toString(GuildNetwork.getModlogs(guild.getIdLong())));
+                    obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
+                    obj.put("accept_col", Guild.formatHexString(GuildNetwork.getAccept_col(guild.getIdLong())));
+                    obj.put("decline_col", Guild.formatHexString(GuildNetwork.getDecline_col(guild.getIdLong())));
+                    obj.put("unique_col", Guild.formatHexString(GuildNetwork.getUnique_col(guild.getIdLong())));
+                    guilds.add(obj);
                 }
-
-                ArrayNode guilds = mapper.createArrayNode();
-
-                AMGN.bot.getGuilds().forEach(guild -> {
-                    //if they are an operator or if they are in the guild, then they can have this guild
-                    if(authlevel == GuildPermission.OPERATOR || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
-                    {
-                        ObjectNode obj = mapper.createObjectNode();
-                        obj.put("guild_id", guild.getId());
-                        if(authlevel == GuildPermission.OPERATOR)
-                            obj.put("modrole", Long.toString(GuildNetwork.getModrole(guild.getIdLong())));
-                        obj.put("modlogs", Long.toString(GuildNetwork.getModlogs(guild.getIdLong())));
-                        obj.put("prefix", GuildNetwork.getPrefix(guild.getIdLong()));
-                        obj.put("accept_col", Guild.formatHexString(GuildNetwork.getAccept_col(guild.getIdLong())));
-                        obj.put("decline_col", Guild.formatHexString(GuildNetwork.getDecline_col(guild.getIdLong())));
-                        obj.put("unique_col", Guild.formatHexString(GuildNetwork.getUnique_col(guild.getIdLong())));
-                        guilds.add(obj);
-                    }
-                });
-                network_data.set("guild_data", guilds);
-            }
-            catch(FileNotFoundException e)
-            {
-                response.setStatus(500);
-                return new ObjectMapper().createObjectNode().put("error", "problem reading network data");
-            }
+            });
+            network_data.set("guild_data", guilds);
 
             response.setStatus(201);
             return network_data;
@@ -335,30 +312,18 @@ public class WebpanelController
 
         if(isAuthenticatedRequest(request))
         {
-            GuildPermission authlevel = getAuthLevelFromToken(getTokenFromRequest(request));
-            if(authlevel == GuildPermission.OPERATOR)
-            {
-                ArrayNode ops = body.withArray("operators");
-                List<Long> new_ops = new ArrayList<Long>();
-                ops.forEach(op ->{
-                    new_ops.add(op.asLong());
-                });
-                GuildNetwork.operators = new_ops;
-            }
+            boolean isoperator = GuildNetwork.isOperator(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))));
 
             ArrayNode guild_data = body.withArray("guild_data");
             Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
             guild_data.forEach(guildnode ->{
                 //if they are an operator or if they are in the guild, then they can have this guild
-                if(authlevel == GuildPermission.OPERATOR || AMGN.bot.getGuildById(guildnode.get("id").asLong())
+                if(isoperator || AMGN.bot.getGuildById(guildnode.get("id").asLong())
                     .getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
                 {
                     new_guild_data.put(guildnode.get("guild_id").asLong(),
                         new Guild(guildnode.get("guild_id").asLong(),
                                 guildnode.get("modlogs").asLong(),
-                                authlevel == GuildPermission.OPERATOR ? //if not operator, don't update value, use old value
-                                    guildnode.get("modrole").asLong() :
-                                    GuildNetwork.guild_data.get(guildnode.get("guild_id").asLong()).getModrole(),
                                 guildnode.get("prefix").asText(),
                                 Integer.parseInt(guildnode.get("accept_col").asText().replace("#", ""), 16),
                                 Integer.parseInt(guildnode.get("decline_col").asText().replace("#", ""), 16),
@@ -370,7 +335,7 @@ public class WebpanelController
 
             try
             {
-                IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.operators, GuildNetwork.NETWORKINFO_PATH);
+                IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.NETWORKINFO_PATH);
             }
             catch(IOException e)
             {
@@ -773,41 +738,19 @@ public class WebpanelController
         return false;
     }
 
-    public static GuildPermission getAuthLevelFromToken(String token)
+    //checks a token and checks if this discord user has the permission to view the webpanel
+    public static boolean canViewToken(String token)
     {
-        return getAuthLevelFromId(Long.parseLong(resolveIdFromToken(token)));
+        return canViewId(Long.parseLong(resolveIdFromToken(token)));
     }
 
-    public static GuildPermission getAuthLevelFromId(long id)
+    //checks a user id and checks if this discord user has the permission to view the webpanel
+    public static boolean canViewId(long id)
     {
-        // is this user an operator
-        if(GuildNetwork.isOperator(AMGN.bot.getUserById(id)))
-            return GuildPermission.OPERATOR;
-        
-        //check every guild the bot is in
-        for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
-        {
-            //if the member is an admin in any guild, return this
-            Member member = guild.getMemberById(id);
-            if(member != null && member.hasPermission(Permission.ADMINISTRATOR))
-                return GuildPermission.ADMIN;
-        }
-
-        for(net.dv8tion.jda.api.entities.Guild guild : AMGN.bot.getGuilds())
-        {
-            Member member = guild.getMemberById(id);
-            if(member != null)
-            {
-                //check every role of every guild the member is in to see if they have a modrole anywhere
-                for(Role role : member.getRoles())
-                {
-                    if(role.getIdLong() == GuildNetwork.guild_data.get(guild.getIdLong()).getModrole())
-                        return GuildPermission.STAFF;
-                }
-            }
-        }
-
-        return GuildPermission.ALL;
+        if(Permissions.hasPermission(AMGN.bot.getUserById(id), null, "AMGN.webpanel.access")
+            || GuildNetwork.isOperator(AMGN.bot.getUserById(id)))
+            return true;
+        return false;
     }
 
     public static String getTokenFromRequest(HttpServletRequest request)

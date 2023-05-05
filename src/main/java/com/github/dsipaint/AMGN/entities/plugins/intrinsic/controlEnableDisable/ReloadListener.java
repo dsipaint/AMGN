@@ -2,7 +2,6 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
@@ -20,8 +19,10 @@ public class ReloadListener extends ListenerAdapter
 		if(!e.isFromGuild())
 			return;
 
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RELOAD.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.RELOAD.getGuildPermission()))
+		if(!DefaultCommand.RELOAD.hasPermission(e.getMember()))
+			return;
+
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RELOAD.getLabel()))
 		{
 			//check if plugin is enabled with that name
 			if(args.length == 1)
@@ -52,9 +53,11 @@ public class ReloadListener extends ListenerAdapter
 			e.getChannel().sendMessage("No plugin found with this name.").queue();
 			return;
 		}
+
+		if(!DefaultCommand.RELOADALL.hasPermission(e.getMember()))
+			return;
 		
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RELOADALL.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.RELOADALL.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RELOADALL.getLabel()))
 		{
 			//iterate through enabled plugins
 			AMGN.plugin_listeners.forEach((plugin, listeners) ->

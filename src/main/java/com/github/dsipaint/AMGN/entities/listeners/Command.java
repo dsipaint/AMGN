@@ -1,22 +1,25 @@
 package com.github.dsipaint.AMGN.entities.listeners;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.GuildPermission;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
+import com.github.dsipaint.AMGN.io.IOHandler;
+import com.github.dsipaint.AMGN.io.Permissions;
 
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 
 public abstract class Command extends Listener
 {
 	private String label, usage, desc; //TODO: change from private to protected to allow local referencing?
-	private GuildPermission perm;
+	private String[] permissions;
 	
 	@SuppressWarnings("unchecked")
 	public Command(Plugin plugin, String label)
@@ -37,28 +40,11 @@ public abstract class Command extends Listener
 					this.usage = (String) command_obj.get("usageinfo");
 					this.desc = (String) command_obj.get("description");
 					
-					switch((String) command_obj.get("permission"))
-					{
-						case "operator":
-							this.perm = GuildPermission.OPERATOR;
-							break;
-						
-						case "admin":
-							this.perm = GuildPermission.ADMIN;
-							break;
-							
-						case "staff":
-							this.perm = GuildPermission.STAFF;
-							break;
-							
-						case "all":
-							this.perm = GuildPermission.ALL;
-							break;
-							
-						default:
-							this.perm = GuildPermission.ADMIN; //default to admin if needed
-						
-					}
+					//parse custom permissions
+					List<String> perms = (List<String>) command_obj.get("permissions");
+					this.permissions = new String[perms.size()];
+					for(int i = 0; i < perms.size(); i++)
+						this.permissions[i] = perms.get(i);
 				}
 			});
 	}
@@ -70,85 +56,61 @@ public abstract class Command extends Listener
 	 * @return boolean true if the member can run this command, false otherwise
 	 */
 	//returns true if this member has permission to run this command, as specified in plugin.yml
+	//this uses guild-specific "members" because commands are always used in a guild-context
+	@SuppressWarnings("unchecked")
 	public final boolean hasPermission(Member m)
 	{
 		//operators always have permission
 		if(GuildNetwork.isOperator(m.getUser()))
 			return true;
 		
-		switch(this.perm)
+		//read permissions.yml
+		Map<String, List<String>> perms = new HashMap<String, List<String>>();
+		try
 		{
-			
-			case OPERATOR:
-				break;
-				
-			case ADMIN:
-				if(m.hasPermission(Permission.ADMINISTRATOR))
-					return true;
-				
-				return false;
-				
-			case STAFF:
-				if(m.hasPermission(Permission.ADMINISTRATOR))
-					return true;
-				
-				//in this case no one can be staff
-				if(GuildNetwork.getModrole(m.getGuild().getIdLong()) == -1)
-					return false;
-				
-				//if member has modrole
-				if(m.getRoles().contains(m.getGuild().getRoleById(GuildNetwork.getModrole(m.getGuild().getIdLong()))))
-					return true;
-				
-				return false;
-				
-			case ALL:
-				return true;
+			//check all groups and see if a group has the permission
+			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
+			for(String groupname : groups.keySet())
+			{
+				if(Permissions.isInGroup(m.getId(), groupname))
+				{
+					for(String permission : this.permissions)
+					{
+						if(Permissions.hasPermission(groupname, permission))
+							return true;
+					}
+				}
+			}
+
+
+			perms = new Yaml().load(
+				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
 		}
-		
-		return false;
-	}
-	
-	
-	/** 
-	 * @param m member to check permissions for
-	 * @param permission permission to check if the member has
-	 * @return boolean true if the member has permission to run this command, as specified in plugin.yml, false otherwise
-	 */
-	public static final boolean hasPermission(Member m, GuildPermission permission)
-	{
-		//operators always have permission
-		if(GuildNetwork.isOperator(m.getUser()))
-			return true;
-		
-		switch(permission)
+		catch(FileNotFoundException e)
 		{
-			
-			case OPERATOR:
-				break;
-				
-			case ADMIN:
-				if(m.hasPermission(Permission.ADMINISTRATOR))
-					return true;
-				
-				return false;
-				
-			case STAFF:
-				if(m.hasPermission(Permission.ADMINISTRATOR))
-					return true;
-				
-				//in this case no one can be staff
-				if(GuildNetwork.getModrole(m.getGuild().getIdLong()) == -1)
-					return false;
-				
-				//if member has modrole
-				if(m.getRoles().contains(m.getGuild().getRoleById(GuildNetwork.getModrole(m.getGuild().getIdLong()))))
-					return true;
-				
-				return false;
-				
-			case ALL:
-				return true;
+			e.printStackTrace();
+		}
+
+		//check to see if an id is either a member, or a role the member has (in this guild!!)
+		//if this ID has been given any of this command's permissions, return true
+		for(String id : perms.keySet())
+		{
+			if(id.equalsIgnoreCase("groups")) //only deal with IDs here, we check groups above
+				continue;
+
+			if(m.getId().equals(id) ||
+				(m.getGuild().getRoleById(id) != null && m.getRoles().contains(m.getGuild().getRoleById(id)))
+				|| m.getGuild().getId().equals(id))
+			{
+				for(String commandperm : this.permissions)
+				{
+					for(String permission : perms.get(id))
+					{
+						if(commandperm.equals(permission))
+							return true;
+					}
+				}
+			}
 		}
 		
 		return false;
@@ -185,8 +147,8 @@ public abstract class Command extends Listener
 	/** 
 	 * @return GuildPermission
 	 */
-	public final GuildPermission getPerm()
+	public final String[] getPerms()
 	{
-		return perm;
+		return permissions;
 	}
 }

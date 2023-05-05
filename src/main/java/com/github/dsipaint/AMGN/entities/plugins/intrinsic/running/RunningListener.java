@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 
@@ -20,11 +19,13 @@ public final class RunningListener extends ListenerAdapter
 		if(!e.isFromGuild())
 			return;
 			
+		if(!DefaultCommand.RUNNING.hasPermission(e.getMember()))
+			return;
+
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RUNNING.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.RUNNING.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RUNNING.getLabel()))
 		{
 			EmbedBuilder eb = new EmbedBuilder()
 					.setTitle("Active plugins in " + e.getGuild().getName() + ": ")

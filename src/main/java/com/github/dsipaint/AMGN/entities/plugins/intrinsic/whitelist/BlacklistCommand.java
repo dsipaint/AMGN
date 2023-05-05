@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
@@ -23,9 +22,11 @@ public class BlacklistCommand extends ListenerAdapter
 			
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
+
+		if(!DefaultCommand.BLACKLIST.hasPermission(e.getMember()))
+			return;
 		
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.BLACKLIST.getLabel())
-			&& Command.hasPermission(e.getMember(), DefaultCommand.BLACKLIST.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.BLACKLIST.getLabel()))
 		{
 			if(args.length < 3)
 				return;

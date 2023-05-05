@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
@@ -20,10 +19,12 @@ public final class EnableListener extends ListenerAdapter
 
 		if(!e.isFromGuild())
 			return;
+
+		if(!DefaultCommand.ENABLE.hasPermission(e.getMember()))
+			return;
 		
 		//^enable
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.ENABLE.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.ENABLE.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.ENABLE.getLabel()))
 		{
 			if(args.length == 1)
 				return;
@@ -51,7 +52,7 @@ public final class EnableListener extends ListenerAdapter
 					}
 					
 					//enable it if the name matches the command argument
-					if(plugin.getName().equalsIgnoreCase(args[1]))
+					if(plugin != null && plugin.getName().equalsIgnoreCase(args[1]))
 					{						
 						if(!IOHandler.isEnabled(plugin)) //check that it isn't already enabled
 						{

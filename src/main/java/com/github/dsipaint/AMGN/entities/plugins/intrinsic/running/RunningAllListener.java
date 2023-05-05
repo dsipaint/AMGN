@@ -2,7 +2,6 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.running;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -15,12 +14,14 @@ public class RunningAllListener extends ListenerAdapter
 	{
 		if(!e.isFromGuild())
 			return;
-			
+
+		if(!DefaultCommand.RUNNINGALL.hasPermission(e.getMember()))
+			return;
+
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RUNNINGALL.getLabel())
-			&& Command.hasPermission(e.getMember(), DefaultCommand.RUNNINGALL.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.RUNNINGALL.getLabel()))
 		{
 			EmbedBuilder eb = new EmbedBuilder()
 					.setTitle("Active plugins in network: ")

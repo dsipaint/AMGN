@@ -2,7 +2,6 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
@@ -19,10 +18,12 @@ public final class DisableListener extends ListenerAdapter
 
 		if(!e.isFromGuild())
 			return;
+
+		if(!DefaultCommand.DISABLE.hasPermission(e.getMember()))
+			return;
 		
 		//^disable
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.DISABLE.getLabel())
-				&& Command.hasPermission(e.getMember(), DefaultCommand.DISABLE.getGuildPermission()))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(e.getGuild().getIdLong()) + DefaultCommand.DISABLE.getLabel()))
 		{
 			if(args.length == 1)
 				return;
