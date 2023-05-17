@@ -1,3 +1,8 @@
+## beta-1.4
++ Added permissions section to the webpanel
+~ Patched YAML vulnerability by updating snakeyaml dependency version
++ Added permissions to whitelist and blacklist PUT API endpoints
+
 ## beta-1.3
 Upgraded permission system. Previously any command could have "all", "staff" "admin" or "operator" permissions, and no permission configuration for non-command actions. Now, custom permissions are specified and configured by the plugin developer, allowing permissions for certain commands to be handed out freely
 
