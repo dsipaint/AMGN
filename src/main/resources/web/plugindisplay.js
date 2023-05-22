@@ -342,8 +342,11 @@ class PluginConfig extends React.Component
         super(props);
         this.state = {
             plugins: [],
-            selectedplugin: {},
-            networkinfo: {}
+            selectedplugin: {
+                name: "internal-network" //by default, we start in the network settings
+            },
+            networkinfo: {},
+            permissioninfo: {}
         }
 
         this.getPluginNames = this.getPluginNames.bind(this);
@@ -351,8 +354,13 @@ class PluginConfig extends React.Component
         this.setPluginInfoInState = this.setPluginInfoInState.bind(this);
         this.setPluginInfo = this.setPluginInfo.bind(this);
 
+        this.renderGlobalSettings = this.renderGlobalSettings.bind(this);
+
         this.setNetworkInfoInState = this.setNetworkInfoInState.bind(this);
         this.setNetworkInfo = this.setNetworkInfo.bind(this);
+
+        this.setPermissionInfoInState = this.setPermissionInfoInState.bind(this);
+        this.setPermissionInfo = this.setPermissionInfo.bind(this);
 
         this.setPropertiesForChildren = this.setPropertiesForChildren.bind(this);
         this.setProperty = this.setProperty.bind(this);
@@ -375,7 +383,8 @@ class PluginConfig extends React.Component
     async componentDidMount()
     {
         await $.get("/webpanel/api/plugins", this.getPluginNames);
-        await $.get("/webpanel/api/networkinfo", this.setNetworkInfoInState)
+        await $.get("/webpanel/api/networkinfo", this.setNetworkInfoInState);
+        await $.get("/webpanel/api/permissions", this.setPermissionInfoInState);
     }
 
     async refreshConfig(event)
@@ -395,10 +404,13 @@ class PluginConfig extends React.Component
     async selectPlugin(name)
     {
         this.setState({
-            selectedplugin: {}
+            selectedplugin: {
+                ...this.state.selectedplugin,
+                name: name
+            }
         });
 
-        if(name == "")
+        if(name == "internal-network" || name == "internal-permission")
             return;
 
         console.log(getSelectedGuild());
@@ -508,6 +520,65 @@ class PluginConfig extends React.Component
                 displayMessage("There was a problem saving the settings", false);
             }
         });
+    }
+
+    setPermissionInfoInState(data) {
+        this.setState({
+            permissioninfo: data
+        });
+    }
+
+    setPermissionInfo() {
+        $.ajax("/webpanel/api/permissions", {
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(this.state.permissioninfo),
+            success: function(succ) {
+                displayMessage("Plugin settings saved!", true);
+            },
+            error: function(err) {
+                displayMessage("There was a problem saving the settings", false);
+            }
+        });
+    }
+
+    //this can be used to render either the network settings or the permissions settings
+    renderGlobalSettings(name)
+    {
+        if(name === "internal-network")
+        {
+            return (
+            <div id="pluginsettings">
+                <div id="plugintitle">
+                    <h1>Edit Network Settings</h1>
+                </div>
+                <div id="options">
+                    {
+                        this.state.networkinfo.guild_data === undefined ? "No network settings to show" :
+                        <div>
+                            <ListItem list={this.state.networkinfo.guild_data} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
+                        </div>
+                    }
+                </div>
+                <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+            </div>);
+        }
+
+        return (
+            <div id="pluginsettings">
+                <div id="plugintitle">
+                    <h1>Edit Permission Settings</h1>
+                </div>
+                <div id="options">
+                    {
+                        this.state.permissioninfo === undefined ? "No permission settings to show" :
+                        <div>
+                            <ObjectItem object={this.state.permissioninfo} updatehook={this.setPropertiesForChildren} updatekey="permissioninfo"/>
+                        </div>
+                    }
+                </div>
+                <div class="savesettings"  onClick={this.setPermissionInfo}>Save Settings</div>
+            </div>);
     }
 
     addConfigForPlugin()
@@ -661,9 +732,14 @@ class PluginConfig extends React.Component
         return(
             <div>
                 <div id="pluginlist">
-                    {getSelectedGuild() == "global" ? 
-                        <div class="plugin" onClick={() => {this.selectPlugin("")}}>
-                            Network Settings
+                    {getSelectedGuild() == "global" ?
+                        <div>
+                            <div class="plugin" onClick={() => {this.selectPlugin("internal-network")}}>
+                                Network Settings
+                            </div>
+                            <div class="plugin" onClick={() => {this.selectPlugin("internal-permission")}}>
+                                Permission Settings
+                            </div>
                         </div>
                         :
                         ""
@@ -676,25 +752,14 @@ class PluginConfig extends React.Component
                 </div>
 
                 {
-                    this.state.selectedplugin.name === undefined && getSelectedGuild() == "global" ? 
+                    getSelectedGuild() == "global" && this.state.selectedplugin.name.startsWith("internal-") ?
                     
-                    <div id="pluginsettings">
-                        <div id="plugintitle">
-                            <h1>Edit Network Settings</h1>
-                        </div>
-                        <div id="options">
-                            {
-                                this.state.networkinfo.guild_data === undefined ? "No network settings to show" :
-                                <div>
-                                    <ListItem list={this.state.networkinfo.guild_data} updatehook={this.setPropertiesForChildren} updatekey="networkinfo.guild_data" addmore="false" removemore="false"/>
-                                </div>
-                            }
-                        </div>
-                        <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
-                    </div>
+                    //network settings
+                    this.renderGlobalSettings(this.state.selectedplugin.name)
 
                     :
 
+                    //specific plugin settings
                     <div id="pluginsettings">  
                         <div id="plugintitle">
                             <img src={this.state.selectedplugin.picture} alt="plugin image" width="70" height="70"/>

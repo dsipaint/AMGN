@@ -38,6 +38,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.yaml.snakeyaml.Yaml;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -546,22 +547,32 @@ public class WebpanelController
 
         if(isAuthenticatedRequest(request))
         {
-            List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
-            if(!newlist.contains(Long.parseLong(guild)))
-                newlist.add(Long.parseLong(guild));
-
-            GuildNetwork.whitelist.put(plugin, newlist);
-            try
+            //also need permission AMGN.commands.whitelist
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
             {
-                IOHandler.writeWhitelistBlacklist();
+                List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
+                if(!newlist.contains(Long.parseLong(guild)))
+                    newlist.add(Long.parseLong(guild));
+    
+                GuildNetwork.whitelist.put(plugin, newlist);
+                try
+                {
+                    IOHandler.writeWhitelistBlacklist();
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+    
+                response.setStatus(200);
+                return new ObjectMapper().createObjectNode().put("success", "whitelist updated successfully");
             }
-            catch(IOException e)
+            else
             {
-                e.printStackTrace();
+               
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.whitelist"); 
             }
-
-            response.setStatus(200);
-            return new ObjectMapper().createObjectNode().put("success", "whitelist updated successfully");
         }
 
         response.setStatus(403);
@@ -580,22 +591,31 @@ public class WebpanelController
 
         if(isAuthenticatedRequest(request))
         {
-            List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
-            if(newlist.contains(Long.parseLong(guild)))
-                newlist.remove(Long.parseLong(guild));
-
-            GuildNetwork.whitelist.put(plugin, newlist);
-            try
+            //also need permission AMGN.commands.whitelist
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
             {
-                IOHandler.writeWhitelistBlacklist();
+                List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
+                if(newlist.contains(Long.parseLong(guild)))
+                    newlist.remove(Long.parseLong(guild));
+    
+                GuildNetwork.whitelist.put(plugin, newlist);
+                try
+                {
+                    IOHandler.writeWhitelistBlacklist();
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+    
+                response.setStatus(200);
+                return new ObjectMapper().createObjectNode().put("success", "whitelist updated successfully");
             }
-            catch(IOException e)
+            else
             {
-                e.printStackTrace();
+                response.setStatus(403);
+                return new ObjectMapper().createObjectNode().put("error", "invalid token");
             }
-
-            response.setStatus(200);
-            return new ObjectMapper().createObjectNode().put("success", "whitelist updated successfully");
         }
         
         response.setStatus(403);
@@ -614,23 +634,32 @@ public class WebpanelController
 
         if(isAuthenticatedRequest(request))
         {
-            List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
-            if(!newlist.contains(Long.parseLong(guild)))
-                newlist.add(Long.parseLong(guild));
-
-            GuildNetwork.blacklist.put(plugin, newlist);
-
-            try
+            //also need permission AMGN.commands.blacklist
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
             {
-                IOHandler.writeWhitelistBlacklist();
+                List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
+                if(!newlist.contains(Long.parseLong(guild)))
+                    newlist.add(Long.parseLong(guild));
+    
+                GuildNetwork.blacklist.put(plugin, newlist);
+    
+                try
+                {
+                    IOHandler.writeWhitelistBlacklist();
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+    
+                response.setStatus(200);
+                return new ObjectMapper().createObjectNode().put("success", "blacklist updated successfully");
             }
-            catch(IOException e)
+            else
             {
-                e.printStackTrace();
+                response.setStatus(403);
+                return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.blacklist");
             }
-
-            response.setStatus(200);
-            return new ObjectMapper().createObjectNode().put("success", "blacklist updated successfully");
         }
         
         response.setStatus(403);
@@ -649,22 +678,31 @@ public class WebpanelController
 
         if(isAuthenticatedRequest(request))
         {
-            List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
-            if(newlist.contains(Long.parseLong(guild)))
-                newlist.remove(Long.parseLong(guild));
-
-            GuildNetwork.blacklist.put(plugin, newlist);
-            try
+            //also need permission AMGN.commands.blacklist
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
             {
-                IOHandler.writeWhitelistBlacklist();
+                List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
+                if(newlist.contains(Long.parseLong(guild)))
+                    newlist.remove(Long.parseLong(guild));
+    
+                GuildNetwork.blacklist.put(plugin, newlist);
+                try
+                {
+                    IOHandler.writeWhitelistBlacklist();
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+    
+                response.setStatus(200);
+                return new ObjectMapper().createObjectNode().put("success", "blacklist updated successfully");
             }
-            catch(IOException e)
+            else
             {
-                e.printStackTrace();
+                response.setStatus(403);
+                return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.blacklist"); 
             }
-
-            response.setStatus(200);
-            return new ObjectMapper().createObjectNode().put("success", "blacklist updated successfully");
         }
         
         response.setStatus(403);
@@ -709,6 +747,129 @@ public class WebpanelController
                 return new ObjectMapper().createObjectNode().put("result", true);
 
             return new ObjectMapper().createObjectNode().put("result", false);
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //returns the permissions.yml file as a json object
+    @GetMapping(value = "/webpanel/api/permissions", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode getPermissions(HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            //must also have AMGN.commands.listpermissions to get this info
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.listpermissions"))
+            {
+                try
+                {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode permissions = mapper.reader().readTree(mapper.writeValueAsString(IOHandler.readAllYamlData(GuildNetwork.PERMISSIONS_PATH)));
+                    return permissions;
+                }
+                catch(JsonProcessingException | FileNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                response.setStatus(403);
+                return new ObjectMapper().createObjectNode().put("error", "this user is missing permission AMGN.commands.listpermissions");
+            }
+        }
+
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    @PutMapping(value="/webpanel/api/permissions", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode putPermissionInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
+    {
+        if(request.getCookies() == null)
+        {
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        if(isAuthenticatedRequest(request))
+        {
+            //must also have AMGN.commands.groups and AMGN.commands.permission to do this
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.groups")
+                && Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.permission"))
+            {
+                HashMap<String, Object> parsed_json = new HashMap<String, Object>();
+                //parse the json and turn it into a hashmap
+                body.fieldNames().forEachRemaining(field ->
+                {
+                    if(field.equals("groups"))
+                    {
+                        HashMap<String, Object> parse_groups = new HashMap<String, Object>();
+                        body.get("groups").fieldNames().forEachRemaining(groupname ->
+                        {
+                            HashMap<String, List<String>> group = new HashMap<String, List<String>>();
+                            List<String> permissions = new ArrayList<String>();
+                            List<String> members = new ArrayList<String>();
+    
+                            body.get("groups").get(groupname).withArray("permissions")
+                            .forEach(permission ->
+                            {
+                                permissions.add(permission.asText());
+                            });
+    
+                            body.get("groups").get(groupname).withArray("members")
+                            .forEach(member ->
+                            {
+                                members.add(member.asText());
+                            });
+    
+                            group.put("permissions", permissions);
+                            group.put("members", members);
+    
+                            parse_groups.put(groupname, group);
+                        });
+    
+                        parsed_json.put("groups", parse_groups);
+                    }
+                    else
+                    {
+                        List<String> permissions = new ArrayList<String>();
+                        body.withArray(field).forEach(permission ->
+                        {
+                            permissions.add(permission.asText());
+                        });
+                        parsed_json.put(field, permissions);
+                    }
+                });
+    
+                try
+                {
+                    IOHandler.writeYamlData(parsed_json, GuildNetwork.PERMISSIONS_PATH);
+                }
+                catch(IOException e)
+                {
+                    response.setStatus(500);
+                    return new ObjectMapper().createObjectNode().put("error", "problem writing permission data");
+                }
+    
+                response.setStatus(201);
+                return new ObjectMapper().createObjectNode().put("success", "network data saved");
+            }
+            else
+            {
+                response.setStatus(403);
+                return new ObjectMapper().createObjectNode().put("error", "user must have both permissions AMGN.commands.groups and AMGN.commands.permission");
+            }
+
         }
 
         response.setStatus(403);
