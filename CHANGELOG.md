@@ -1,3 +1,6 @@
+## beta-1.4.1
+~ Fixed viewmetainfo command which didn't work
+
 ## beta-1.4
 + Added permissions section to the webpanel
 ~ Patched YAML vulnerability by updating snakeyaml dependency version

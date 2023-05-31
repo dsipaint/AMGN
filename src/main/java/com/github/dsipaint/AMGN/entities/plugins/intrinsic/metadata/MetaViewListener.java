@@ -16,16 +16,15 @@ public final class MetaViewListener extends ListenerAdapter
 	{
 		if(!e.isFromGuild())
 			return;
-
-		if(DefaultCommand.METAVIEW.hasPermission(e.getMember()))
+			
+		if(!DefaultCommand.METAVIEW.hasPermission(e.getMember()))
 			return;
 
 		String msg = e.getMessage().getContentRaw();
 		String[] args = msg.split(" ");
 		long id = e.getGuild().getIdLong();
-		
 		//^viewmetainfo
-		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(id) + "viewmetainfo"))
+		if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(id) + DefaultCommand.METAVIEW.getLabel()))
 		{
 			e.getChannel().sendMessageEmbeds(GuildNetwork.guild_data.getOrDefault(id, new Guild(id))
 					.asEmbed())
