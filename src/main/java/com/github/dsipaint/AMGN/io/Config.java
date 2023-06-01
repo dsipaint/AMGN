@@ -213,19 +213,23 @@ public class Config
     //local config -> global config -> default config -> null
     public final Object getValue(String filename, String key, Guild g) throws FileNotFoundException
     {
-        if(new File(plugin.getGuildConfigPath(g) + "/" + filename).exists())
+        System.out.println("Getting value " + key + " for guild " + g.getName()); //DEBUG
+        if(new File(plugin.getGuildConfigPath(g) + "/" + filename).exists()
+            && getValueFromGuildConfig(filename, key, g) != null)
             return getValueFromGuildConfig(filename, key, g);
-        if(new File(plugin.getGlobalConfigPath() + "/" + filename).exists())
+        if(new File(plugin.getGlobalConfigPath() + "/" + filename).exists()
+            && getValueFromGlobalConfig(filename, key) != null)
             return getValueFromGlobalConfig(filename, key);
 
         return getDefaultValue(filename, key);
     }
 
     //will retrieve a config value according to the priority:
-    //local config -> global config -> default config -> null
+    //global config -> default config -> null
     public final Object getValue(String filename, String key) throws FileNotFoundException
     {
-        if(new File(plugin.getGlobalConfigPath() + "/" + filename).exists())
+        if(new File(plugin.getGlobalConfigPath() + "/" + filename).exists()
+            && getValueFromGlobalConfig(filename, key) != null)
             return getValueFromGlobalConfig(filename, key);
 
         return getDefaultValue(filename, key);
@@ -233,12 +237,12 @@ public class Config
 
     public final Map<String, Object> getDefaultConfig(String filename)
     {
-        return yaml.load(this.getClass().getResourceAsStream(filename));
+        return yaml.load(this.plugin.getClass().getResourceAsStream(filename));
     }
 
     public final Object getDefaultValue(String path, String key)
     {
-        return getValueFromMap(yaml.load(this.getClass().getResourceAsStream(path)), key);
+        return getValueFromMap(yaml.load(this.plugin.getClass().getResourceAsStream("/" + path)), key);
     }
 
     //recursively get a value set inside a Map, checking if it is contained in any maps within this map
