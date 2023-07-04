@@ -1,3 +1,8 @@
+## beta-1.4.2
+~ Changed the way that config getValue methods work. Previously the only requirement to return a value before deferring down the config hierarchy (local -> global -> default) was for the config file to exist. This caused null values to be returned when they shouldn't have been. Now, if the value is null, this will not be returned and we continue down the hierarchy.
+
+~ Fixed the methods Config.getDefaultConfig and Config.getDefaultValue
+
 ## beta-1.4.1
 ~ Fixed viewmetainfo command which didn't work
 
