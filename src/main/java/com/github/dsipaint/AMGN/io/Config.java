@@ -213,7 +213,6 @@ public class Config
     //local config -> global config -> default config -> null
     public final Object getValue(String filename, String key, Guild g) throws FileNotFoundException
     {
-        System.out.println("Getting value " + key + " for guild " + g.getName()); //DEBUG
         if(new File(plugin.getGuildConfigPath(g) + "/" + filename).exists()
             && getValueFromGuildConfig(filename, key, g) != null)
             return getValueFromGuildConfig(filename, key, g);

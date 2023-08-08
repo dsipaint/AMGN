@@ -84,16 +84,10 @@ public class AMGN
 			}
 
 			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.WHITELIST_PATH))
-			{
 				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
-				System.exit(0);
-			}
 
 			if(IOHandler.copyFileToExternalPath("permissionsdefault.yml", GuildNetwork.PERMISSIONS_PATH))
-			{
 				logger.warn("permissions.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
-				System.exit(0);
-			}
 		}
 		catch(IOException e)
 		{
@@ -342,9 +336,13 @@ public class AMGN
 
 	public static final void runCommand(String cmdtxt, Member member, TextChannel tc)
 	{
-		AMGN.plugin_listeners.values().forEach(listeners ->
+		AMGN.logger.info("Running command \"" + cmdtxt + "\"" + " as member " + member.toString()
+			+ " in channel " + tc.toString());
+
+		boolean cmd_found = false;
+		for(ArrayList<Listener> listeners : AMGN.plugin_listeners.values())
 		{
-			listeners.forEach(listener ->
+			for(Listener listener : listeners)
 			{
 				if(listener instanceof Command)
 				{
@@ -352,9 +350,16 @@ public class AMGN
 					String[] args = cmdtxt.split(" ");
 					if(args[0].equalsIgnoreCase(cmd.getLabel())
 						&& cmd.hasPermission(member))
+					{
 						cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
+						cmd_found = true;
+					}
 				}
-			});
-		});	
+			}
+		}
+
+		if(!cmd_found)
+			AMGN.logger.warn("Command " + cmdtxt.split(" ")[0] + "was not found, so the command \""
+				+ cmdtxt + "\" was not executed");
 	}
 }

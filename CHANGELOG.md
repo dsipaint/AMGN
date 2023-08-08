@@ -1,3 +1,9 @@
+# 1.0!!!
+~ AMGN will now continue to run when permissions.yml or whitelist.yml are missing
+~ default whitelist.yml no longer includes a fake plugin, which could be annoying for setting up a whitelist
+- removed erroneous debug print from config getValue method
++ Added logging for AMGN.runCommand, and a warning if the command is not found
+
 ## beta-1.4.2
 ~ Changed the way that config getValue methods work. Previously the only requirement to return a value before deferring down the config hierarchy (local -> global -> default) was for the config file to exist. This caused null values to be returned when they shouldn't have been. Now, if the value is null, this will not be returned and we continue down the hierarchy.
 
