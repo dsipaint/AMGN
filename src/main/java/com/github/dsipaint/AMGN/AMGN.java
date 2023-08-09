@@ -262,10 +262,10 @@ public class AMGN
 							logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
 							continue;
 						}
-						
+
+						logger.info("Enabling " + p.getName() + " " + p.getVersion());
 						//enable these classes/plugins with GuildNetwork.enablePlugin
-						if(GuildNetwork.enablePlugin(p))
-							logger.info("Enabled " + p.getName() + " " + p.getVersion());
+						GuildNetwork.enablePlugin(p);
 					}
 					catch(Exception e)
 					{

@@ -4,6 +4,8 @@
 - removed erroneous debug print from config getValue method
 + Added logging for AMGN.runCommand, and a warning if the command is not found
 ~ fixed format of default permissions file
+~ changed plugin initialise logs to before loading rather than after
+
 
 ## beta-1.4.2
 ~ Changed the way that config getValue methods work. Previously the only requirement to return a value before deferring down the config hierarchy (local -> global -> default) was for the config file to exist. This caused null values to be returned when they shouldn't have been. Now, if the value is null, this will not be returned and we continue down the hierarchy.
