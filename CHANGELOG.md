@@ -5,6 +5,8 @@
 + Added logging for AMGN.runCommand, and a warning if the command is not found
 ~ fixed format of default permissions file
 ~ changed plugin initialise logs to before loading rather than after
+~ config methods no longer throw exceptions, this is captured internally and the exception messages should make clear that a config file is missing
++ add convenience methods setGlobalConfig, setGuildConfig, setConfig, setGlobalValue, setGuildValue and setValue for easily writing back to config files
 
 
 ## beta-1.4.2

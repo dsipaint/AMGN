@@ -3,7 +3,6 @@ package com.github.dsipaint.AMGN.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -158,26 +157,38 @@ public class Config
 		}
     }
 
-    //save a config to a specific place
-    public final void save(Map<String, Object> config, String path) throws IOException
-    {
-        yaml.dump(config, new FileWriter(new File(path)));
-    }
-
     //parse maps of yaml files given the filename
-    public final Map<String, Object> getGlobalConfig(String filename) throws FileNotFoundException
+    public final Map<String, Object> getGlobalConfig(String filename)
     {
-        return yaml.load(new FileReader(new File(plugin.getGlobalConfigPath() + "/" + filename)));
+        try
+        {
+            return yaml.load(new FileReader(new File(plugin.getGlobalConfigPath() + "/" + filename)));
+        }
+        catch(FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    public final Map<String, Object> getGuildConfig(String filename, Guild g) throws FileNotFoundException
+    public final Map<String, Object> getGuildConfig(String filename, Guild g)
     {
-        return yaml.load(new FileReader(new File(plugin.getGuildConfigPath(g) + "/" + filename)));
+        try
+        {
+            return yaml.load(new FileReader(new File(plugin.getGuildConfigPath(g) + "/" + filename)));
+        }
+        catch(FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     //will retrieve a config according to the priority:
     //local config -> global config -> default config -> null
-    public final Map<String, Object> getConfig(String filename, Guild g) throws FileNotFoundException
+    public final Map<String, Object> getConfig(String filename, Guild g)
     {
         if(new File(plugin.getGuildConfigPath(g) + "/" + filename).exists())
             return getGuildConfig(filename, g);
@@ -187,7 +198,7 @@ public class Config
         return getDefaultConfig(filename);
     }
 
-    public final Map<String, Object> getConfig(String filename) throws FileNotFoundException
+    public final Map<String, Object> getConfig(String filename)
     {
         if(new File(plugin.getGlobalConfigPath() + "/" + filename).exists())
             return getGlobalConfig(filename);
@@ -196,14 +207,14 @@ public class Config
     }
 
     //get a specific value from a yaml file
-    public final Object getValueFromGlobalConfig(String filename, String key) throws FileNotFoundException
+    public final Object getValueFromGlobalConfig(String filename, String key)
     {
         Map<String, Object> config = getGlobalConfig(filename);
         return getValueFromMap(config, key);
     }
 
     //get a specific value from a yaml file
-    public final Object getValueFromGuildConfig(String filename, String key, Guild g) throws FileNotFoundException
+    public final Object getValueFromGuildConfig(String filename, String key, Guild g)
     {
         Map<String, Object> config = getGuildConfig(filename, g);
         return getValueFromMap(config, key);
@@ -211,7 +222,7 @@ public class Config
 
     //will retrieve a config value according to the priority:
     //local config -> global config -> default config -> null
-    public final Object getValue(String filename, String key, Guild g) throws FileNotFoundException
+    public final Object getValue(String filename, String key, Guild g)
     {
         if(new File(plugin.getGuildConfigPath(g) + "/" + filename).exists()
             && getValueFromGuildConfig(filename, key, g) != null)
@@ -225,7 +236,7 @@ public class Config
 
     //will retrieve a config value according to the priority:
     //global config -> default config -> null
-    public final Object getValue(String filename, String key) throws FileNotFoundException
+    public final Object getValue(String filename, String key)
     {
         if(new File(plugin.getGlobalConfigPath() + "/" + filename).exists()
             && getValueFromGlobalConfig(filename, key) != null)
@@ -242,6 +253,76 @@ public class Config
     public final Object getDefaultValue(String path, String key)
     {
         return getValueFromMap(yaml.load(this.plugin.getClass().getResourceAsStream("/" + path)), key);
+    }
+
+    public final void setGlobalConfig(String filename, Map<String, Object> config)
+    {
+        try
+        {
+            IOHandler.writeYamlData(config, plugin.getGlobalConfigPath() + "/" + filename);   
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public final void setGuildConfig(String filename, Map<String, Object> config, Guild g)
+    {
+        try
+        {
+            IOHandler.writeYamlData(config, plugin.getGuildConfigPath(g) + "/" + filename);   
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public final void setConfig(String filename, Map<String, Object> config, Guild g)
+    {
+        File localconfig = new File(plugin.getGuildConfigPath(g));
+        if(localconfig.exists())
+            setGuildConfig(filename, config, g);
+        else
+            setGlobalConfig(filename, config);
+    }
+
+    public final void setGlobalValue(String filename, String key, Object value)
+    {
+        try
+        {
+            Map<String, Object> config = IOHandler.readAllYamlData(plugin.getGlobalConfigPath() + "/" + filename);
+            config.put(key, value);
+            IOHandler.writeYamlData(config, plugin.getGlobalConfigPath() + "/" + filename);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public final void setGuildValue(String filename, String key, Object value, Guild g)
+    {
+        try
+        {
+            Map<String, Object> config = IOHandler.readAllYamlData(plugin.getGuildConfigPath(g) + "/" + filename);
+            config.put(key, value);
+            IOHandler.writeYamlData(config, plugin.getGuildConfigPath(g) + "/" + filename);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public final void setValue(String filename, String key, Object value, Guild g)
+    {
+        File localconfig = new File(plugin.getGuildConfigPath(g));
+        if(localconfig.exists())
+            setGuildValue(filename, key, value, g);
+        else
+            setGlobalValue(filename, key, value);
     }
 
     //recursively get a value set inside a Map, checking if it is contained in any maps within this map
