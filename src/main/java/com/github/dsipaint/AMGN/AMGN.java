@@ -23,7 +23,6 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
-import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
@@ -359,12 +358,6 @@ public class AMGN
 					}
 				}
 			}
-		}
-
-		//TODO integrate default commands
-		for(DefaultCommand cmd : DefaultCommand.values())
-		{
-			
 		}
 
 		if(!cmd_found)
