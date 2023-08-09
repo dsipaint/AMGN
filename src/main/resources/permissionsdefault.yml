@@ -1,6 +1,9 @@
+#example permissions
 # '475859944101380106': #me
 #   - AMGN.operator
 
 # '936234314545381406': #discord mods
 #   - AMGN.commands.*
 #   - AMGN.webpanel.access
+
+groups: {}

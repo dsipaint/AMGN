@@ -9,10 +9,12 @@ import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.HelpListener;
 import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.io.Permissions;
 
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public enum DefaultCommand
 {
@@ -36,7 +38,7 @@ public enum DefaultCommand
 
 	//TODO: new intrinsic feature to change bot status
 	private String label, usage, desc;
-	String[] perms;
+	private String[] perms;
 	DefaultCommand(String label, String usage, String desc, String[] perms)
 	{
 		this.label = label;

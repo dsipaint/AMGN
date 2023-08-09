@@ -1,4 +1,5 @@
 package com.github.dsipaint.AMGN;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
@@ -339,6 +341,8 @@ public class AMGN
 		AMGN.logger.info("Running command \"" + cmdtxt + "\"" + " as member " + member.toString()
 			+ " in channel " + tc.toString());
 
+		String[] args = cmdtxt.split(" ");
+
 		boolean cmd_found = false;
 		for(ArrayList<Listener> listeners : AMGN.plugin_listeners.values())
 		{
@@ -347,7 +351,6 @@ public class AMGN
 				if(listener instanceof Command)
 				{
 					Command cmd = ((Command) listener);
-					String[] args = cmdtxt.split(" ");
 					if(args[0].equalsIgnoreCase(cmd.getLabel())
 						&& cmd.hasPermission(member))
 					{
@@ -358,8 +361,14 @@ public class AMGN
 			}
 		}
 
+		//TODO integrate default commands
+		for(DefaultCommand cmd : DefaultCommand.values())
+		{
+			
+		}
+
 		if(!cmd_found)
-			AMGN.logger.warn("Command " + cmdtxt.split(" ")[0] + "was not found, so the command \""
+			AMGN.logger.warn("Command " + args[0] + " was not found, so the command \""
 				+ cmdtxt + "\" was not executed");
 	}
 }
