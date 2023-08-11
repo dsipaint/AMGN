@@ -8,6 +8,7 @@
 ~ config methods no longer throw exceptions, this is captured internally and the exception messages should make clear that a config file is missing
 + add convenience methods setGlobalConfig, setGuildConfig, setConfig, setGlobalValue, setGuildValue and setValue for easily writing back to config files
 + add a plugin load order to network.yml. This allows bot owners to decide what order plugins are loaded in, if one plugin must be loaded before another for example.
+~ Previously when retrieving a config value, AMGN would actually search recursively for values, in nested objects and lists. This behaviour is weird, and has been removed. No recursive-searching now happens in configs.
 
 
 ## beta-1.4.2

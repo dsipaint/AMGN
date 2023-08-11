@@ -158,6 +158,7 @@ public class Config
     }
 
     //parse maps of yaml files given the filename
+    //TODO use IOHandler?
     public final Map<String, Object> getGlobalConfig(String filename)
     {
         try
@@ -172,6 +173,7 @@ public class Config
         return null;
     }
 
+    //TODO use IOHandler?
     public final Map<String, Object> getGuildConfig(String filename, Guild g)
     {
         try
@@ -210,14 +212,14 @@ public class Config
     public final Object getValueFromGlobalConfig(String filename, String key)
     {
         Map<String, Object> config = getGlobalConfig(filename);
-        return getValueFromMap(config, key);
+        return config.get(key);
     }
 
     //get a specific value from a yaml file
     public final Object getValueFromGuildConfig(String filename, String key, Guild g)
     {
         Map<String, Object> config = getGuildConfig(filename, g);
-        return getValueFromMap(config, key);
+        return config.get(key);
     }
 
     //will retrieve a config value according to the priority:
@@ -245,14 +247,17 @@ public class Config
         return getDefaultValue(filename, key);
     }
 
+    //TODO use IOHandler?
     public final Map<String, Object> getDefaultConfig(String filename)
     {
         return yaml.load(this.plugin.getClass().getResourceAsStream(filename));
     }
 
+    //TODO use IOHandler?
+    @SuppressWarnings("unchecked")
     public final Object getDefaultValue(String path, String key)
     {
-        return getValueFromMap(yaml.load(this.plugin.getClass().getResourceAsStream("/" + path)), key);
+        return ((Map<String, Object>) yaml.load(this.plugin.getClass().getResourceAsStream("/" + path))).get(key);
     }
 
     public final void setGlobalConfig(String filename, Map<String, Object> config)
@@ -323,26 +328,5 @@ public class Config
             setGuildValue(filename, key, value, g);
         else
             setGlobalValue(filename, key, value);
-    }
-
-    //recursively get a value set inside a Map, checking if it is contained in any maps within this map
-    @SuppressWarnings("unchecked")
-    private final Object getValueFromMap(Map<String, Object> map, String key)
-    {
-        Object value = map.get(key);
-        //if we couldn't find the value, check inside nested objects if possible
-        if(value == null)
-        {
-            Object nestedvalue = null;
-            for(Object obj : map.values())
-            {
-                if(obj instanceof Map)
-                    nestedvalue = getValueFromMap((Map<String, Object>) obj, key);
-            }
-
-            return nestedvalue;
-        }
-        else
-            return value;
     }
 }
