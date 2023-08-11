@@ -4,9 +4,10 @@
 - removed erroneous debug print from config getValue method
 + Added logging for AMGN.runCommand, and a warning if the command is not found
 ~ fixed format of default permissions file
-~ changed plugin initialise logs to before loading rather than after
+~ changed plugin initialise log messages to before loading rather than after (helps with plugin-debugging)
 ~ config methods no longer throw exceptions, this is captured internally and the exception messages should make clear that a config file is missing
 + add convenience methods setGlobalConfig, setGuildConfig, setConfig, setGlobalValue, setGuildValue and setValue for easily writing back to config files
++ add a plugin load order to network.yml. This allows bot owners to decide what order plugins are loaded in, if one plugin must be loaded before another for example.
 
 
 ## beta-1.4.2

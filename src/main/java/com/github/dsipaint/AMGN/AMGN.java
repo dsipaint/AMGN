@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -236,13 +237,15 @@ public class AMGN
 			e.printStackTrace();
 		}
 		
-		logger.info("Enabling plugins...");
-		
-		File plugins = new File(GuildNetwork.PLUGIN_PATH);
-		plugins.mkdir(); //folder for plugins
-		
 		try
 		{
+			logger.info("Finding plugins...");
+		
+			File plugins = new File(GuildNetwork.PLUGIN_PATH);
+			plugins.mkdir(); //folder for plugins
+			
+			LinkedList<Plugin> loadorder = new LinkedList<Plugin>();
+			ArrayList<Plugin> foundplugins = new ArrayList<Plugin>();
 			if(!plugins.createNewFile()) //create the folder if one doesn't exist- if it did, do this:
 			{
 				//a list of only the jars found directly in the plugins directory
@@ -263,9 +266,7 @@ public class AMGN
 							continue;
 						}
 
-						logger.info("Enabling " + p.getName() + " " + p.getVersion());
-						//enable these classes/plugins with GuildNetwork.enablePlugin
-						GuildNetwork.enablePlugin(p);
+						foundplugins.add(p);
 					}
 					catch(Exception e)
 					{
@@ -275,6 +276,52 @@ public class AMGN
 			}
 			else
 				logger.info("No plugins folder found. Created a plugins folder.");
+
+			if(foundplugins.isEmpty())
+				logger.info("AMGN has been started with no plugins.");
+			else
+			{
+				logger.info("Applying plugin load order...");
+				//check network.yml for a load order
+				//this should be a list of strings in the order we want to load
+				ArrayList<String> parseloadorder = (ArrayList<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "load_order");
+				LinkedList<String> userloadorder;
+				if(parseloadorder != null)
+					userloadorder = new LinkedList<String>(parseloadorder);
+				else
+					userloadorder = new LinkedList<String>();
+				
+				// if(userloadorder == null)
+				// 	userloadorder = new LinkedList<String>(); //default to no order if value is missing
+				
+				//iterate through user's requested loading order
+				for(String pluginname : userloadorder)
+				{
+					//if we have a plugin from the order that we found,
+					for(int i = 0; i < foundplugins.size(); i++)
+					{
+						if(foundplugins.get(i).getName().equalsIgnoreCase(pluginname))
+						{
+							//remove that plugin from our list of plugins
+							//and add that plugin to the load order
+							loadorder.add(foundplugins.remove(i));
+							break;
+						}
+					}
+				}
+
+				//then just add whatever is left, onto the load order, we don't care what order that bit is in
+				loadorder.addAll(foundplugins);
+
+				//finally, enable all those plugins
+				logger.info("Enabling plugins...");
+				for(Plugin p : loadorder)
+				{
+					logger.info("Enabling " + p.getName() + " " + p.getVersion());
+					//enable these classes/plugins with GuildNetwork.enablePlugin
+					GuildNetwork.enablePlugin(p);
+				}
+			}
 		}
 		catch (IOException e)
 		{

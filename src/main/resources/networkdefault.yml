@@ -5,6 +5,8 @@ clientid: "127348349832489324"
 clientsecret: "127348349832489324"
 redirecturi: "https://localhost/redirect"
 
+load_order: []
+
 guild_data:
   - guild_id: 634667687233978388
     prefix: ":"
