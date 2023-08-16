@@ -38,14 +38,7 @@ public final class DisableListener extends ListenerAdapter
 				if(plugin.getName().equalsIgnoreCase(args[1])) //find correct plugin
 				{
 					correct_plugin = plugin;
-					plugin.onDisable(); //disable plugin
-					AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
-					AMGN.menucache.forEach(menu -> {
-						if(menu.getPlugin().equals(plugin))
-							menu.softDestroy();
-					});
-					AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);}); //remove menus
-					
+					GuildNetwork.disablePlugin(correct_plugin);
 					break;
 				}
 			}

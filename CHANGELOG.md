@@ -10,6 +10,7 @@
 + add a plugin load order to network.yml. This allows bot owners to decide what order plugins are loaded in, if one plugin must be loaded before another for example.
 ~ Previously when retrieving a config value, AMGN would actually search recursively for values, in nested objects and lists. This behaviour is weird, and has been removed. No recursive-searching now happens in configs.
 ~ Configs and webpanel now have better reliance on helper methods in GuildNetwork and IOHandler classes
+~ Improve reliance on enabling and disabling plugins in GuildNetwork class, used in the enable disable and reload commands
 
 
 ## beta-1.4.2

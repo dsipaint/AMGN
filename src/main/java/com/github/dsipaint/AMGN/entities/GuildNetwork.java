@@ -261,8 +261,8 @@ public class GuildNetwork
 	 */
 	public static final boolean disablePlugin(Plugin plugin)
 	{
-		//if plugin is not already disabled
-		if(AMGN.plugin_listeners.get(plugin) != null)
+		//if plugin is already disabled
+		if(AMGN.plugin_listeners.get(plugin) == null)
 			return false;
 		else
 		{
