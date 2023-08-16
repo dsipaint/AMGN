@@ -247,6 +247,7 @@ public class GuildNetwork
 			AMGN.plugin_listeners.put(plugin, new ArrayList<Listener>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
 			plugin.onEnable(); //run plugin's enable method
+			//menus will sort themselves out when the plugin recreates them
 			return true;
 		}
 		else
@@ -260,19 +261,20 @@ public class GuildNetwork
 	 */
 	public static final boolean disablePlugin(Plugin plugin)
 	{
-		//if plugin is not already enabled
-		if(AMGN.plugin_listeners.get(plugin) == null)
+		//if plugin is not already disabled
+		if(AMGN.plugin_listeners.get(plugin) != null)
 			return false;
 		else
 		{
-			//disable each of the listeners this plugin registers
-			AMGN.plugin_listeners.get(plugin).forEach(listener ->
+			plugin.onDisable(); //disable plugin
+			AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
+			AMGN.plugin_listeners.remove(plugin);
+			AMGN.menucache.forEach(menu ->
 			{
-				AMGN.bot.removeEventListener(listener); //NOTE: may not properly remove listener, may need to cast to ListenerAdapter?
+				if(menu.getPlugin().equals(plugin))
+					menu.softDestroy();
 			});
-			
-			AMGN.plugin_listeners.remove(plugin); //remove plugin from the list
-			plugin.onDisable(); //run plugin's onDisable method
+			AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
 			return true;
 		}
 	}

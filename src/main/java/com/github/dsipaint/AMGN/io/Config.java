@@ -2,7 +2,6 @@ package com.github.dsipaint.AMGN.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -158,12 +157,11 @@ public class Config
     }
 
     //parse maps of yaml files given the filename
-    //TODO use IOHandler?
     public final Map<String, Object> getGlobalConfig(String filename)
     {
         try
         {
-            return yaml.load(new FileReader(new File(plugin.getGlobalConfigPath() + "/" + filename)));
+            return IOHandler.readAllYamlData(plugin.getGlobalConfigPath() + "/" + filename);
         }
         catch(FileNotFoundException e)
         {
@@ -173,12 +171,11 @@ public class Config
         return null;
     }
 
-    //TODO use IOHandler?
     public final Map<String, Object> getGuildConfig(String filename, Guild g)
     {
         try
         {
-            return yaml.load(new FileReader(new File(plugin.getGuildConfigPath(g) + "/" + filename)));
+            return IOHandler.readAllYamlData(plugin.getGuildConfigPath(g) + "/" + filename);
         }
         catch(FileNotFoundException e)
         {
@@ -247,13 +244,11 @@ public class Config
         return getDefaultValue(filename, key);
     }
 
-    //TODO use IOHandler?
     public final Map<String, Object> getDefaultConfig(String filename)
     {
         return yaml.load(this.plugin.getClass().getResourceAsStream(filename));
     }
 
-    //TODO use IOHandler?
     @SuppressWarnings("unchecked")
     public final Object getDefaultValue(String path, String key)
     {

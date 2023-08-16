@@ -2,7 +2,6 @@ package com.github.dsipaint.AMGN.web;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
-import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -377,35 +375,21 @@ public class WebpanelController
             {
                 if(plugin.getName().equalsIgnoreCase(name))
                 {
-                    try
+                    //we go through the returned data in the following format (as is given to the user originally in the get method)
+                    //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+                    //then for each config file, we write the data
+                    for(JsonNode config : body)
                     {
-                        //we go through the returned data in the following format (as is given to the user originally in the get method)
-                        //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
-                        //then for each config file, we write the data
-                        //TODO: add formal config-writing
-                        Yaml yaml_out = new Yaml(IOHandler.dumperopts);
-                        for(JsonNode config : body)
-                        {
-                            Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
-                            yaml_out.dump(result, new FileWriter(new File((guild.equalsIgnoreCase("global") ? plugin.getGlobalConfigPath() : plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild))) + "/" + config.get("file").asText() + ".yml")));
-                        }
-                    }
-                    catch(IOException e)
-                    {
-                        response.setStatus(500);
-                        return new ObjectMapper().createObjectNode().put("error", "problem writing data");
+                        Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
+                        if(guild.equalsIgnoreCase("global"))
+                            plugin.getConfig().setGlobalConfig(config.get("file").asText() + ".yml", result);
+                        else
+                            plugin.getConfig().setGuildConfig(config.get("file").asText() + ".yml", result, AMGN.bot.getGuildById(guild));
                     }
 
                     //reload plugin
-                    plugin.onDisable(); //disable plugin
-                    AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
-                    AMGN.menucache.forEach(menu ->
-                    {
-                        if(menu.getPlugin().equals(plugin))
-                            menu.softDestroy();
-                    });
-                    AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
-                    plugin.onEnable(); //re-enable plugin
+                    GuildNetwork.disablePlugin(plugin);
+                    GuildNetwork.enablePlugin(plugin);
 
                     response.setStatus(201);
                     return new ObjectMapper().createObjectNode().put("success", "plugin config saved");
