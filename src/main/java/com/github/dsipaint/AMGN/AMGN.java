@@ -397,11 +397,14 @@ public class AMGN
 				if(listener instanceof Command)
 				{
 					Command cmd = ((Command) listener);
-					if(args[0].equalsIgnoreCase(cmd.getLabel())
-						&& cmd.hasPermission(member))
+					if(args[0].equalsIgnoreCase(cmd.getLabel()))
 					{
-						cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
 						cmd_found = true;
+						if(cmd.hasPermission(member))
+							cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
+						else
+							AMGN.logger.warn("Member " + member.toString()
+								+ " does not have permission to run command \"" + cmdtxt + "\"");
 					}
 				}
 			}

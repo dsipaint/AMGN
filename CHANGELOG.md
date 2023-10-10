@@ -13,6 +13,7 @@
 ~ Improve reliance on enabling and disabling plugins in GuildNetwork class, used in the enable disable and reload commands
 + Improve whitelist and blacklist helper methods to make them more intuitive. ListenerWrapper.java now has two methods that will tell you which guild has which plugins able to run, and which guilds a plugin can run in, based off the whitelisting rules.
 + Add convenience method that resolves an IMentionable Object from JDA when supplied with an ID (saves typing out code trying to figure out what an ID from a config file represents)
++ Improve AMGN.runCommand logging to show whether a command was not found, or there were just insufficient permissions when a command is not run
 
 
 
