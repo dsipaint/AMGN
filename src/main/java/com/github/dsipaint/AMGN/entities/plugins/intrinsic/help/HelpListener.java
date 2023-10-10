@@ -1,8 +1,5 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.help;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
@@ -45,23 +42,17 @@ public final class HelpListener extends ListenerAdapter
 						commandlist.append("**" + prefix + command.getLabel() + ":** " + command.getDesc() + "\n");
 				}
 
-				//go through every allowed plugin
-				HashMap<String, List<Long>> allowedplugins = ListenerWrapper.applyWhitelistBlacklist(e.getGuild());
 				AMGN.plugin_listeners.forEach((plugin, list) ->
 				{
-					allowedplugins.keySet().forEach(pluginname ->
+					if(ListenerWrapper.pluginShouldRun(plugin.getName(), e.getGuild()))
 					{
-						if(pluginname.equals(plugin.getName()))
+						list.forEach(listener ->
 						{
-							//and every listener
-							list.forEach(listener ->
-							{
-								//if this is a command and the user has permission for this command
-								if(listener instanceof Command && ((Command) listener).hasPermission(e.getMember()))
-									commandlist.append("**" + prefix + ((Command) listener).getLabel() + ":** " + ((Command) listener).getDesc() + "\n");
-							});
-						}
-					});
+							//if this is a command and the user has permission for this command
+							if(listener instanceof Command && ((Command) listener).hasPermission(e.getMember()))
+								commandlist.append("**" + prefix + ((Command) listener).getLabel() + ":** " + ((Command) listener).getDesc() + "\n");
+						});
+					}
 				});
 				
 				//produce the formatted list of embeds and display them

@@ -1,8 +1,5 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.running;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
@@ -31,15 +28,9 @@ public final class RunningListener extends ListenerAdapter
 					.setTitle("Active plugins in " + e.getGuild().getName() + ": ")
 					.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col());
 
-			HashMap<String, List<Long>> plugins_for_guild = ListenerWrapper.applyWhitelistBlacklist(e.getGuild());
-
-			plugins_for_guild.keySet().forEach(name ->
+			ListenerWrapper.getRunningPlugins(e.getGuild()).forEach(plugin ->
 			{
-				AMGN.plugin_listeners.keySet().forEach(plugin ->
-				{
-					if(name.equals(plugin.getName()))
-						appendEmbed(eb, plugin.getName() + " " + plugin.getVersion() + " (written by " + plugin.getAuthor() + ")\n");
-				});
+				appendEmbed(eb, plugin.getName() + " " + plugin.getVersion() + " (written by " + plugin.getAuthor() + ")\n");
 			});
 			
 			e.getChannel().sendMessageEmbeds(eb.build()).queue();

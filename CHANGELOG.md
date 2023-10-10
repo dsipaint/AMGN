@@ -11,6 +11,7 @@
 ~ Previously when retrieving a config value, AMGN would actually search recursively for values, in nested objects and lists. This behaviour is weird, and has been removed. No recursive-searching now happens in configs.
 ~ Configs and webpanel now have better reliance on helper methods in GuildNetwork and IOHandler classes
 ~ Improve reliance on enabling and disabling plugins in GuildNetwork class, used in the enable disable and reload commands
++ Improve whitelist and blacklist helper methods to make them more intuitive. ListenerWrapper.java now has two methods that will tell you which guild has which plugins able to run, and which guilds a plugin can run in, based off the whitelisting rules.
 
 
 ## beta-1.4.2

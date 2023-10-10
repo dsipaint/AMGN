@@ -1,11 +1,11 @@
 package com.github.dsipaint.AMGN.entities.listeners;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -193,23 +193,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onButtonInteraction(event);
-                    });
-                }
+                listener.onButtonInteraction(event);
             });
         });
     }
@@ -226,23 +215,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelCreate(event);
-                    });
-                }
+                listener.onChannelCreate(event);
             });
         });
     }
@@ -259,23 +237,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelDelete(event);
-                    });
-                }
+                listener.onChannelDelete(event);
             });
         });
     }
@@ -292,23 +259,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateArchived(event);
-                    });
-                }
+                listener.onChannelUpdateArchived(event);
             });
         });
     }
@@ -325,23 +281,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateArchiveTimestamp(event);
-                    });
-                }
+                listener.onChannelUpdateArchiveTimestamp(event);
             });
         });
     }
@@ -358,23 +303,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateAutoArchiveDuration(event);
-                    });
-                }
+                listener.onChannelUpdateAutoArchiveDuration(event);
             });
         });
     }
@@ -391,23 +325,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateBitrate(event);
-                    });
-                }
+                listener.onChannelUpdateBitrate(event);
             });
         });
     }
@@ -424,23 +347,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateInvitable(event);
-                    });
-                }
+                listener.onChannelUpdateInvitable(event);
             });
         });
     }
@@ -457,23 +369,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateLocked(event);
-                    });
-                }
+                listener.onChannelUpdateLocked(event);
             });
         });
     }
@@ -490,23 +391,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateName(event);
-                    });
-                }
+                listener.onChannelUpdateName(event);
             });
         });
     }
@@ -523,23 +413,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateNSFW(event);
-                    });
-                }
+                listener.onChannelUpdateNSFW(event);
             });
         });
     }
@@ -556,23 +435,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateParent(event);
-                    });
-                }
+                listener.onChannelUpdateParent(event);
             });
         });
     }
@@ -589,23 +457,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdatePosition(event);
-                    });
-                }
+                listener.onChannelUpdatePosition(event);
             });
         });
     }
@@ -622,23 +479,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateRegion(event);
-                    });
-                }
+                listener.onChannelUpdateRegion(event);
             });
         });
     }
@@ -655,23 +501,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateSlowmode(event);
-                    });
-                }
+                listener.onChannelUpdateSlowmode(event);
             });
         });
     }
@@ -688,23 +523,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateTopic(event);
-                    });
-                }
+                listener.onChannelUpdateTopic(event);
             });
         });
     }
@@ -721,23 +545,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateType(event);
-                    });
-                }
+                listener.onChannelUpdateType(event);
             });
         });
     }
@@ -753,24 +566,13 @@ public class ListenerWrapper extends ListenerAdapter
             });
             return;
         }
-        
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onChannelUpdateUserLimit(event);
-                    });
-                }
+                listener.onChannelUpdateUserLimit(event);
             });
         });
     }
@@ -787,23 +589,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onCommandAutoCompleteInteraction(event);
-                    });
-                }
+                listener.onCommandAutoCompleteInteraction(event);
             });
         });
     }
@@ -820,23 +611,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onEmojiAdded(EmojiAddedEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onEmojiAdded(event);
-                    });
-                }
+                listener.onEmojiAdded(event);
             });
         });
     }
@@ -844,23 +624,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onEmojiRemoved(EmojiRemovedEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onEmojiRemoved(event);
-                    });
-                }
+                listener.onEmojiRemoved(event);
             });
         });
     }
@@ -868,23 +637,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onEmojiUpdateName(EmojiUpdateNameEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onEmojiUpdateName(event);
-                    });
-                }
+                listener.onEmojiUpdateName(event);
             });
         });
     }
@@ -892,23 +650,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onEmojiUpdateRoles(EmojiUpdateRolesEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onEmojiUpdateRoles(event);
-                    });
-                }
+                listener.onEmojiUpdateRoles(event);
             });
         });
     }
@@ -943,23 +690,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericAutoCompleteInteraction(event);
-                    });
-                }
+                listener.onGenericAutoCompleteInteraction(event);
             });
         });
     }
@@ -976,23 +712,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericChannel(event);
-                    });
-                }
+                listener.onGenericChannel(event);
             });
         });
     }
@@ -1009,23 +734,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericChannelUpdate(event);
-                    });
-                }
+                listener.onGenericChannelUpdate(event);
             });
         });
     }
@@ -1042,23 +756,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericCommandInteraction(event);
-                    });
-                }
+                listener.onGenericCommandInteraction(event);
             });
         });
     }
@@ -1075,23 +778,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericComponentInteractionCreate(event);
-                    });
-                }
+                listener.onGenericComponentInteractionCreate(event);
             });
         });
     }
@@ -1108,23 +800,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericContextInteraction(event);
-                    });
-                }
+                listener.onGenericContextInteraction(event);
             });
         });
     }
@@ -1132,23 +813,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericEmoji(GenericEmojiEvent event)
     {   
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericEmoji(event);
-                    });
-                }
+                listener.onGenericEmoji(event);
             });
         });
     }
@@ -1156,23 +826,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericEmojiUpdate(GenericEmojiUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericEmojiUpdate(event);
-                    });
-                }
+                listener.onGenericEmojiUpdate(event);
             });
         });
     }
@@ -1189,23 +848,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericGuild(GenericGuildEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericGuild(event);
-                    });
-                }
+                listener.onGenericGuild(event);
             });
         });
     }
@@ -1213,23 +861,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericGuildInvite(GenericGuildInviteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericGuildInvite(event);
-                    });
-                }
+                listener.onGenericGuildInvite(event);
             });
         });
     }
@@ -1237,23 +874,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericGuildMember(GenericGuildMemberEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericGuildMember(event);
-                    });
-                }
+                listener.onGenericGuildMember(event);
             });
         });
     }
@@ -1261,23 +887,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericGuildMemberUpdate(GenericGuildMemberUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericGuildMemberUpdate(event);
-                    });
-                }
+                listener.onGenericGuildMemberUpdate(event);
             });
         });
     }
@@ -1285,23 +900,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericGuildUpdate(GenericGuildUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericGuildUpdate(event);
-                    });
-                }
+                listener.onGenericGuildUpdate(event);
             });
         });
     }
@@ -1309,23 +913,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericGuildVoice(GenericGuildVoiceEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericGuildVoice(event);
-                    });
-                }
+                listener.onGenericGuildVoice(event);
             });
         });
     }
@@ -1342,23 +935,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericInteractionCreate(event);
-                    });
-                }
+                listener.onGenericInteractionCreate(event);
             });
         });
     }
@@ -1375,23 +957,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericMessage(event);
-                    });
-                }
+                listener.onGenericMessage(event);
             });
         });
     }
@@ -1408,23 +979,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericMessageReaction(event);
-                    });
-                }
+                listener.onGenericMessageReaction(event);
             });
         });
     }
@@ -1432,23 +992,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericPermissionOverride(GenericPermissionOverrideEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericPermissionOverride(event);
-                    });
-                }
+                listener.onGenericPermissionOverride(event);
             });
         });
     }
@@ -1456,23 +1005,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericRole(GenericRoleEvent event)
     {   
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericRole(event);
-                    });
-                }
+                listener.onGenericRole(event);
             });
         });
     }
@@ -1480,23 +1018,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericRoleUpdate(GenericRoleUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericRoleUpdate(event);
-                    });
-                }
+                listener.onGenericRoleUpdate(event);
             });
         });
     }
@@ -1513,23 +1040,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericStageInstance(GenericStageInstanceEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericStageInstance(event);
-                    });
-                }
+                listener.onGenericStageInstance(event);
             });
         });
     }
@@ -1537,23 +1053,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericStageInstanceUpdate(GenericStageInstanceUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericStageInstanceUpdate(event);
-                    });
-                }
+                listener.onGenericStageInstanceUpdate(event);
             });
         });
     }
@@ -1561,23 +1066,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericThread(GenericThreadEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericThread(event);
-                    });
-                }
+                listener.onGenericThread(event);
             });
         });
     }
@@ -1585,23 +1079,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericThreadMember(GenericThreadMemberEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericThreadMember(event);
-                    });
-                }
+                listener.onGenericThreadMember(event);
             });
         });
     }
@@ -1627,23 +1110,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGenericUserPresence(GenericUserPresenceEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericUserPresence(event);
-                    });
-                }
+                listener.onGenericUserPresence(event);
             });
         });
     }
@@ -1651,23 +1123,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildAvailable(GuildAvailableEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildAvailable(event);
-                    });
-                }
+                listener.onGuildAvailable(event);
             });
         });
     }
@@ -1675,23 +1136,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildBan(GuildBanEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildBan(event);
-                    });
-                }
+                listener.onGuildBan(event);
             });
         });
     }
@@ -1699,23 +1149,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildInviteCreate(GuildInviteCreateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildInviteCreate(event);
-                    });
-                }
+                listener.onGuildInviteCreate(event);
             });
         });
     }
@@ -1723,23 +1162,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildInviteDelete(GuildInviteDeleteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildInviteDelete(event);
-                    });
-                }
+                listener.onGuildInviteDelete(event);
             });
         });
     }
@@ -1747,23 +1175,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildJoin(GuildJoinEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildJoin(event);
-                    });
-                }
+                listener.onGuildJoin(event);
             });
         });
     }
@@ -1771,23 +1188,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildLeave(GuildLeaveEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildLeave(event);
-                    });
-                }
+                listener.onGuildLeave(event);
             });
         });
     }
@@ -1795,23 +1201,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberJoin(GuildMemberJoinEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberJoin(event);
-                    });
-                }
+                listener.onGuildMemberJoin(event);
             });
         });
     }
@@ -1819,23 +1214,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberRemove(GuildMemberRemoveEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberRemove(event);
-                    });
-                }
+                listener.onGuildMemberRemove(event);
             });
         });
     }
@@ -1843,23 +1227,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberRoleAdd(event);
-                    });
-                }
+                listener.onGuildMemberRoleAdd(event);
             });
         });
     }
@@ -1867,23 +1240,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberRoleRemove(event);
-                    });
-                }
+                listener.onGuildMemberRoleRemove(event);
             });
         });
     }
@@ -1891,23 +1253,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberUpdate(GuildMemberUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberUpdate(event);
-                    });
-                }
+                listener.onGuildMemberUpdate(event);
             });
         });
     }
@@ -1915,23 +1266,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberUpdateAvatar(GuildMemberUpdateAvatarEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberUpdateAvatar(event);
-                    });
-                }
+                listener.onGuildMemberUpdateAvatar(event);
             });
         });
     }
@@ -1939,23 +1279,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberUpdateBoostTime(event);
-                    });
-                }
+                listener.onGuildMemberUpdateBoostTime(event);
             });
         });
     }
@@ -1963,23 +1292,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberUpdateNickname(event);
-                    });
-                }
+                listener.onGuildMemberUpdateNickname(event);
             });
         });
     }
@@ -1987,23 +1305,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberUpdatePending(event);
-                    });
-                }
+                listener.onGuildMemberUpdatePending(event);
             });
         });
     }
@@ -2011,23 +1318,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildMemberUpdateTimeOut(GuildMemberUpdateTimeOutEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildMemberUpdateTimeOut(event);
-                    });
-                }
+                listener.onGuildMemberUpdateTimeOut(event);
             });
         });
     }
@@ -2035,23 +1331,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildReady(GuildReadyEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildReady(event);
-                    });
-                }
+                listener.onGuildReady(event);
             });
         });
     }
@@ -2059,23 +1344,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildTimeout(GuildTimeoutEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuildId());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(AMGN.bot.getGuildById(event.getGuildId()));
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildTimeout(event);
-                    });
-                }
+                listener.onGuildTimeout(event);
             });
         });
     }
@@ -2083,23 +1357,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUnavailable(GuildUnavailableEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUnavailable(event);
-                    });
-                }
+                listener.onGuildUnavailable(event);
             });
         });
     }
@@ -2107,23 +1370,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUnban(GuildUnbanEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUnban(event);
-                    });
-                }
+                listener.onGuildUnban(event);
             });
         });
     }
@@ -2131,23 +1383,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateAfkChannel(GuildUpdateAfkChannelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateAfkChannel(event);
-                    });
-                }
+                listener.onGuildUpdateAfkChannel(event);
             });
         });
     }
@@ -2155,23 +1396,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateAfkTimeout(GuildUpdateAfkTimeoutEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateAfkTimeout(event);
-                    });
-                }
+                listener.onGuildUpdateAfkTimeout(event);
             });
         });
     }
@@ -2179,23 +1409,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateBanner(GuildUpdateBannerEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateBanner(event);
-                    });
-                }
+                listener.onGuildUpdateBanner(event);
             });
         });
     }
@@ -2203,23 +1422,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateBoostCount(GuildUpdateBoostCountEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateBoostCount(event);
-                    });
-                }
+                listener.onGuildUpdateBoostCount(event);
             });
         });
     }
@@ -2227,23 +1435,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateBoostTier(GuildUpdateBoostTierEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateBoostTier(event);
-                    });
-                }
+                listener.onGuildUpdateBoostTier(event);
             });
         });
     }
@@ -2251,23 +1448,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateCommunityUpdatesChannel(GuildUpdateCommunityUpdatesChannelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateCommunityUpdatesChannel(event);
-                    });
-                }
+                listener.onGuildUpdateCommunityUpdatesChannel(event);
             });
         });
     }
@@ -2275,23 +1461,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateDescription(GuildUpdateDescriptionEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateDescription(event);
-                    });
-                }
+                listener.onGuildUpdateDescription(event);
             });
         });
     }
@@ -2299,23 +1474,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateExplicitContentLevel(GuildUpdateExplicitContentLevelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateExplicitContentLevel(event);
-                    });
-                }
+                listener.onGuildUpdateExplicitContentLevel(event);
             });
         });
     }
@@ -2323,23 +1487,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateFeatures(GuildUpdateFeaturesEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateFeatures(event);
-                    });
-                }
+                listener.onGuildUpdateFeatures(event);
             });
         });
     }
@@ -2347,23 +1500,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateIcon(GuildUpdateIconEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateIcon(event);
-                    });
-                }
+                listener.onGuildUpdateIcon(event);
             });
         });
     }
@@ -2371,23 +1513,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateLocale(GuildUpdateLocaleEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateLocale(event);
-                    });
-                }
+                listener.onGuildUpdateLocale(event);
             });
         });
     }
@@ -2395,23 +1526,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateMaxMembers(GuildUpdateMaxMembersEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateMaxMembers(event);
-                    });
-                }
+                listener.onGuildUpdateMaxMembers(event);
             });
         });
     }
@@ -2419,23 +1539,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateMaxPresences(GuildUpdateMaxPresencesEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateMaxPresences(event);
-                    });
-                }
+                listener.onGuildUpdateMaxPresences(event);
             });
         });
     }
@@ -2443,23 +1552,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateMFALevel(GuildUpdateMFALevelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateMFALevel(event);
-                    });
-                }
+                listener.onGuildUpdateMFALevel(event);
             });
         });
     }
@@ -2467,23 +1565,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateName(GuildUpdateNameEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateName(event);
-                    });
-                }
+                listener.onGuildUpdateName(event);
             });
         });
     }
@@ -2491,23 +1578,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateNotificationLevel(GuildUpdateNotificationLevelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateNotificationLevel(event);
-                    });
-                }
+                listener.onGuildUpdateNotificationLevel(event);
             });
         });
     }
@@ -2515,23 +1591,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateNSFWLevel(GuildUpdateNSFWLevelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateNSFWLevel(event);
-                    });
-                }
+                listener.onGuildUpdateNSFWLevel(event);
             });
         });
     }
@@ -2539,23 +1604,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateOwner(GuildUpdateOwnerEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateOwner(event);
-                    });
-                }
+                listener.onGuildUpdateOwner(event);
             });
         });
     }
@@ -2563,23 +1617,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateRulesChannel(GuildUpdateRulesChannelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateRulesChannel(event);
-                    });
-                }
+                listener.onGuildUpdateRulesChannel(event);
             });
         });
     }
@@ -2587,23 +1630,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateSplash(GuildUpdateSplashEvent event)
     {        
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateSplash(event);
-                    });
-                }
+                listener.onGuildUpdateSplash(event);
             });
         });
     }
@@ -2611,23 +1643,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateSystemChannel(GuildUpdateSystemChannelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateSystemChannel(event);
-                    });
-                }
+                listener.onGuildUpdateSystemChannel(event);
             });
         });
     }
@@ -2635,23 +1656,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateVanityCode(GuildUpdateVanityCodeEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateVanityCode(event);
-                    });
-                }
+                listener.onGuildUpdateVanityCode(event);
             });
         });
     }
@@ -2659,23 +1669,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildUpdateVerificationLevel(GuildUpdateVerificationLevelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildUpdateVerificationLevel(event);
-                    });
-                }
+                listener.onGuildUpdateVerificationLevel(event);
             });
         });
     }
@@ -2683,23 +1682,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceDeafen(GuildVoiceDeafenEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceDeafen(event);
-                    });
-                }
+                listener.onGuildVoiceDeafen(event);
             });
         });
     }
@@ -2707,23 +1695,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceGuildDeafen(GuildVoiceGuildDeafenEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceGuildDeafen(event);
-                    });
-                }
+                listener.onGuildVoiceGuildDeafen(event);
             });
         });
     }
@@ -2731,23 +1708,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceGuildMute(event);
-                    });
-                }
+                listener.onGuildVoiceGuildMute(event);
             });
         });
     }
@@ -2827,23 +1793,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceMute(GuildVoiceMuteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceMute(event);
-                    });
-                }
+                listener.onGuildVoiceMute(event);
             });
         });
     }
@@ -2851,23 +1806,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceRequestToSpeak(GuildVoiceRequestToSpeakEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceRequestToSpeak(event);
-                    });
-                }
+                listener.onGuildVoiceRequestToSpeak(event);
             });
         });
     }
@@ -2875,23 +1819,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceSelfDeafen(event);
-                    });
-                }
+                listener.onGuildVoiceSelfDeafen(event);
             });
         });
     }
@@ -2899,23 +1832,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceSelfMute(GuildVoiceSelfMuteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceSelfMute(event);
-                    });
-                }
+                listener.onGuildVoiceSelfMute(event);
             });
         });
     }
@@ -2923,23 +1845,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceStream(GuildVoiceStreamEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceStream(event);
-                    });
-                }
+                listener.onGuildVoiceStream(event);
             });
         });
     }
@@ -2947,23 +1858,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceSuppress(GuildVoiceSuppressEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceSuppress(event);
-                    });
-                }
+                listener.onGuildVoiceSuppress(event);
             });
         });
     }
@@ -2971,23 +1871,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceUpdate(GuildVoiceUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceUpdate(event);
-                    });
-                }
+                listener.onGuildVoiceUpdate(event);
             });
         });
     }
@@ -2995,23 +1884,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onGuildVoiceVideo(GuildVoiceVideoEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGuildVoiceVideo(event);
-                    });
-                }
+                listener.onGuildVoiceVideo(event);
             });
         });
     }
@@ -3028,23 +1906,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onMessageBulkDelete(MessageBulkDeleteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageBulkDelete(event);
-                    });
-                }
+                listener.onMessageBulkDelete(event);
             });
         });
     }
@@ -3061,23 +1928,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageContextInteraction(event);
-                    });
-                }
+                listener.onMessageContextInteraction(event);
             });
         });
     }
@@ -3094,23 +1950,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageDelete(event);
-                    });
-                }
+                listener.onMessageDelete(event);
             });
         });
     }
@@ -3127,23 +1972,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageEmbed(event);
-                    });
-                }
+                listener.onMessageEmbed(event);
             });
         });
     }
@@ -3160,23 +1994,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageReactionAdd(event);
-                    });
-                }
+                listener.onMessageReactionAdd(event);
             });
         });
     }
@@ -3192,24 +2015,13 @@ public class ListenerWrapper extends ListenerAdapter
             });
             return;
         }
-        
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageReactionRemove(event);
-                    });
-                }
+                listener.onMessageReactionRemove(event);
             });
         });
     }
@@ -3226,23 +2038,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageReactionRemoveAll(event);
-                    });
-                }
+                listener.onMessageReactionRemoveAll(event);
             });
         });
     }
@@ -3259,27 +2060,17 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageReactionRemoveEmoji(event);
-                    });
-                }
+                listener.onMessageReactionRemoveEmoji(event);
             });
         });
     }
-     
+    
+    //TODO
     @Override
     public final void onMessageReceived(MessageReceivedEvent event)
     {
@@ -3294,33 +2085,26 @@ public class ListenerWrapper extends ListenerAdapter
             });
             return;
         }
-        
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
 
         //iterate through all plugins on network
         AMGN.plugin_listeners.forEach((plugin, listeners) ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            if(pluginShouldRun(plugin.getName(), event.getGuild()))
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
+                //for every listener, we want to pass this event to it
+                listeners.forEach(listener ->
                 {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
+                    listener.onMessageReceived(event);
+                    if(listener instanceof Command)
                     {
-                        listener.onMessageReceived(event);
-                        if(listener instanceof Command)
-                        {
-                            Command cmd = ((Command) listener);
-                            String[] args = event.getMessage().getContentRaw().split(" ");
-                            if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel())
-                                && cmd.hasPermission(event.getMember())) //check if the user has permission to run the command
-                                cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));
-                        }
-                    });
-                }
-            });
+                        Command cmd = ((Command) listener);
+                        String[] args = event.getMessage().getContentRaw().split(" ");
+                        if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel())
+                            && cmd.hasPermission(event.getMember())) //check if the user has permission to run the command
+                            cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));
+                    }
+                });
+            }
         });
     }
      
@@ -3336,23 +2120,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onMessageUpdate(event);
-                    });
-                }
+                listener.onMessageUpdate(event);
             });
         });
     }
@@ -3360,23 +2133,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onPermissionOverrideCreate(PermissionOverrideCreateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onPermissionOverrideCreate(event);
-                    });
-                }
+                listener.onPermissionOverrideCreate(event);
             });
         });
     }
@@ -3384,23 +2146,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onPermissionOverrideDelete(PermissionOverrideDeleteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onPermissionOverrideDelete(event);
-                    });
-                }
+                listener.onPermissionOverrideDelete(event);
             });
         });
     }
@@ -3408,23 +2159,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onPermissionOverrideUpdate(PermissionOverrideUpdateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onPermissionOverrideUpdate(event);
-                    });
-                }
+                listener.onPermissionOverrideUpdate(event);
             });
         });
     }
@@ -3468,23 +2208,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleCreate(RoleCreateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleCreate(event);
-                    });
-                }
+                listener.onRoleCreate(event);
             });
         });
     }
@@ -3492,23 +2221,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleDelete(RoleDeleteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleDelete(event);
-                    });
-                }
+                listener.onRoleDelete(event);
             });
         });
     }
@@ -3516,23 +2234,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdateColor(RoleUpdateColorEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdateColor(event);
-                    });
-                }
+                listener.onRoleUpdateColor(event);
             });
         });
     }
@@ -3540,23 +2247,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdateHoisted(RoleUpdateHoistedEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdateHoisted(event);
-                    });
-                }
+                listener.onRoleUpdateHoisted(event);
             });
         });
     }
@@ -3564,23 +2260,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdateIcon(RoleUpdateIconEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdateIcon(event);
-                    });
-                }
+                listener.onRoleUpdateIcon(event);
             });
         });
     }
@@ -3588,23 +2273,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdateMentionable(RoleUpdateMentionableEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdateMentionable(event);
-                    });
-                }
+                listener.onRoleUpdateMentionable(event);
             });
         });
     }
@@ -3612,23 +2286,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdateName(RoleUpdateNameEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdateName(event);
-                    });
-                }
+                listener.onRoleUpdateName(event);
             });
         });
     }
@@ -3636,23 +2299,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdatePermissions(RoleUpdatePermissionsEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdatePermissions(event);
-                    });
-                }
+                listener.onRoleUpdatePermissions(event);
             });
         });
     }
@@ -3660,23 +2312,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onRoleUpdatePosition(RoleUpdatePositionEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onRoleUpdatePosition(event);
-                    });
-                }
+                listener.onRoleUpdatePosition(event);
             });
         });
     }
@@ -3693,23 +2334,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onGenericSelectMenuInteraction(event);
-                    });
-                }
+                listener.onGenericSelectMenuInteraction(event);
             });
         });
     }
@@ -3771,23 +2401,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onSlashCommandInteraction(event);
-                    });
-                }
+                listener.onSlashCommandInteraction(event);
             });
         });
     }
@@ -3795,23 +2414,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onStageInstanceCreate(StageInstanceCreateEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onStageInstanceCreate(event);
-                    });
-                }
+                listener.onStageInstanceCreate(event);
             });
         });
     }
@@ -3819,23 +2427,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onStageInstanceDelete(StageInstanceDeleteEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onStageInstanceDelete(event);
-                    });
-                }
+                listener.onStageInstanceDelete(event);
             });
         });
     }
@@ -3843,23 +2440,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onStageInstanceUpdatePrivacyLevel(StageInstanceUpdatePrivacyLevelEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onStageInstanceUpdatePrivacyLevel(event);
-                    });
-                }
+                listener.onStageInstanceUpdatePrivacyLevel(event);
             });
         });
     }
@@ -3867,23 +2453,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onStageInstanceUpdateTopic(StageInstanceUpdateTopicEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onStageInstanceUpdateTopic(event);
-                    });
-                }
+                listener.onStageInstanceUpdateTopic(event);
             });
         });
     }
@@ -3900,23 +2475,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onThreadHidden(ThreadHiddenEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onThreadHidden(event);
-                    });
-                }
+                listener.onThreadHidden(event);
             });
         });
     }
@@ -3924,23 +2488,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onThreadMemberJoin(ThreadMemberJoinEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onThreadMemberJoin(event);
-                    });
-                }
+                listener.onThreadMemberJoin(event);
             });
         });
     }
@@ -3948,23 +2501,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onThreadMemberLeave(ThreadMemberLeaveEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onThreadMemberLeave(event);
-                    });
-                }
+                listener.onThreadMemberLeave(event);
             });
         });
     }
@@ -3972,23 +2514,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onThreadRevealed(ThreadRevealedEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onThreadRevealed(event);
-                    });
-                }
+                listener.onThreadRevealed(event);
             });
         });
     }
@@ -3996,23 +2527,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onUnavailableGuildJoined(UnavailableGuildJoinedEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuildId());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(AMGN.bot.getGuildById(event.getGuildId()));
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUnavailableGuildJoined(event);
-                    });
-                }
+                listener.onUnavailableGuildJoined(event);
             });
         });
     }
@@ -4020,23 +2540,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onUnavailableGuildLeave(UnavailableGuildLeaveEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuildId());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(AMGN.bot.getGuildById(event.getGuildId()));
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUnavailableGuildLeave(event);
-                    });
-                }
+                listener.onUnavailableGuildLeave(event);
             });
         });
     }
@@ -4044,23 +2553,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onUserActivityEnd(UserActivityEndEvent event)
     {        
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUserActivityEnd(event);
-                    });
-                }
+                listener.onUserActivityEnd(event);
             });
         });
     }
@@ -4068,23 +2566,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onUserActivityStart(UserActivityStartEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUserActivityStart(event);
-                    });
-                }
+                listener.onUserActivityStart(event);
             });
         });
     }
@@ -4101,23 +2588,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
         
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUserContextInteraction(event);
-                    });
-                }
+                listener.onUserContextInteraction(event);
             });
         });
     }
@@ -4134,23 +2610,12 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUserTyping(event);
-                    });
-                }
+                listener.onUserTyping(event);
             });
         });
     }
@@ -4158,23 +2623,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onUserUpdateActivities(UserUpdateActivitiesEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUserUpdateActivities(event);
-                    });
-                }
+                listener.onUserUpdateActivities(event);
             });
         });
     }
@@ -4182,23 +2636,12 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onUserUpdateActivityOrder(UserUpdateActivityOrderEvent event)
     {
-        HashMap<String, List<Long>> callevents = applyWhitelistBlacklist(event.getGuild());
-
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            //check to see if there are plugins we want to use
-            callevents.forEach((pluginname, guilds) ->
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //if there is
-                if(pluginname.equals(plugin.getName()))
-                {
-                    //for every listener, we want to pass this event to it
-                    listeners.forEach(listener ->
-                    {
-                        listener.onUserUpdateActivityOrder(event);
-                    });
-                }
+                listener.onUserUpdateActivityOrder(event);
             });
         });
     }
@@ -4248,183 +2691,60 @@ public class ListenerWrapper extends ListenerAdapter
         });
     }
 
-    public static final HashMap<String, List<Long>> applyWhitelistBlacklist(Guild g)
+    //figures out if a plugin should run in a guild, based on the whitelist/blacklist rules
+    public static final boolean pluginShouldRun(String plugin, Guild g)
     {
-        HashMap<String, List<Long>> callevents = new HashMap<String, List<Long>>();
-
-        if(!GuildNetwork.blacklist.isEmpty() && GuildNetwork.whitelist.isEmpty()) //if there is a blacklist but no whitelist
-        {
-            //add everything to the callevents
-            AMGN.plugin_listeners.keySet().forEach(plugin ->
-            {
-                List<Long> guild_id_list = new ArrayList<Long>();
-                AMGN.bot.getGuilds().forEach(guild -> {guild_id_list.add(guild.getIdLong());});
-                callevents.put(plugin.getName(), guild_id_list);
-            });
-
-            //then remove the blacklist items
-            GuildNetwork.blacklist.forEach((pluginname, guild_ids) ->
-            {
-                //for each plugin listed
-                //iterate through guilds listed
-                guild_ids.forEach(guildid ->
-                {
-                    //if listed guild matches the event's guild
-                    if(g.getIdLong() == guildid)
-                    {
-                        //remove from list of plugin events to call
-                        if(callevents.get(pluginname) != null)
-                            callevents.get(pluginname).remove(guildid);
-                    }
-                });
-            });
-
-            return callevents;
-        }
-        else if(!GuildNetwork.whitelist.isEmpty()) //if there is a whitelist
-        {
-            //start with an empty callevents and add the whitelist items
-            GuildNetwork.whitelist.forEach((pluginname, guild_ids) ->
-            {
-                //for each plugin listed
-                //iterate through guilds listed
-                guild_ids.forEach(guildid ->
-                {
-                    //if listed guild matches the event's guild
-                    if(g.getIdLong() == guildid)
-                    {
-                        //add to list of plugin events to call
-                        callevents.putIfAbsent(pluginname, new ArrayList<Long>());
-                        callevents.get(pluginname).add(guildid);
-                    }
-                });
-            });
-
-            //if there is also a blacklist
-            if(!GuildNetwork.blacklist.isEmpty())
-            {
-                //remove the blacklist items from callevents
-
-                GuildNetwork.blacklist.forEach((pluginname, guild_ids) ->
-                {
-                    //for each plugin listed
-                    //iterate through guilds listed
-                    guild_ids.forEach(guildid ->
-                    {
-                        //if listed guild matches the event's guild
-                        if(g.getIdLong() == guildid)
-                        {
-                            //remove from list of plugin events to call
-                            if(callevents.get(pluginname) != null)
-                                callevents.get(pluginname).remove(guildid);
-                        }
-                    });
-                });
-            }
-
-            return callevents;
-        }
-        else //if there is no blacklist or whitelist
-        {
-            //add everything to callevents
-            AMGN.plugin_listeners.keySet().forEach(plugin ->
-            {
-                List<Long> guild_id_list = new ArrayList<Long>();
-                AMGN.bot.getGuilds().forEach(guild -> {guild_id_list.add(guild.getIdLong());});
-                callevents.put(plugin.getName(), guild_id_list);
-            });
-
-            return callevents;
-        }
+        return applyWhitelistBlacklistRules(plugin, g);
     }
 
-    public static final HashMap<String, List<Long>> applyWhitelistBlacklist(String id)
+    //accepts a guild and returns a list of all plugins that make it through the whitelist/blacklsit rules
+    //to run in that guild
+    public static final List<Plugin> getRunningPlugins(Guild g)
     {
-        HashMap<String, List<Long>> callevents = new HashMap<String, List<Long>>();
+        ArrayList<Plugin> returnplugins = new ArrayList<Plugin>();
 
-        if(!GuildNetwork.blacklist.isEmpty() && GuildNetwork.whitelist.isEmpty()) //if there is a blacklist but no whitelist
+        AMGN.plugin_listeners.keySet().forEach(plugin ->
         {
-            //add everything to the callevents
-            AMGN.plugin_listeners.keySet().forEach(plugin ->
-            {
-                List<Long> guild_id_list = new ArrayList<Long>();
-                AMGN.bot.getGuilds().forEach(guild -> {guild_id_list.add(guild.getIdLong());});
-                callevents.put(plugin.getName(), guild_id_list);
-            });
+            if(applyWhitelistBlacklistRules(plugin.getName(), g))
+                returnplugins.add(plugin);
+        });
 
-            //then remove the blacklist items
-            GuildNetwork.blacklist.forEach((pluginname, guild_ids) ->
-            {
-                //for each plugin listed
-                //iterate through guilds listed
-                guild_ids.forEach(guildid ->
-                {
-                    //if listed guild matches the event's guild
-                    if(Long.parseLong(id) == guildid)
-                    {
-                        //remove from list of plugin events to call
-                        if(callevents.get(pluginname) != null)
-                            callevents.get(pluginname).remove(guildid);
-                    }
-                });
-            });
+        return returnplugins;
+    }
 
-            return callevents;
-        }
+    //accepts a plugin and returns a list of guilds that the plugin
+    //should run in, according to the whitelist/blacklist rules
+    public static final List<Guild> getGuildsToRunIn(Plugin plugin)
+    {
+        ArrayList<Guild> returnguilds = new ArrayList<Guild>();
+
+        AMGN.bot.getGuilds().forEach(g ->
+        {
+            if(applyWhitelistBlacklistRules(plugin.getName(), g))
+                returnguilds.add(g);
+        });
+
+        return returnguilds;
+    }
+
+    //look at a plugin and guild and apply whitelisting/blacklisting rules to determine if it should run or not
+    //this is the actual whitelisting/blacklisting logic
+    private static final boolean applyWhitelistBlacklistRules(String plugin, Guild g)
+    {
+        if(!GuildNetwork.blacklist.isEmpty() && GuildNetwork.whitelist.isEmpty()) //if there is a blacklist but no whitelist
+            return !GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>()).contains(g.getIdLong()); //if it is blacklisted, then we should return false otherwise true
         else if(!GuildNetwork.whitelist.isEmpty()) //if there is a whitelist
         {
-            //start with an empty callevents and add the whitelist items
-            GuildNetwork.whitelist.forEach((pluginname, guild_ids) ->
-            {
-                //for each plugin listed
-                //iterate through guilds listed
-                guild_ids.forEach(guildid ->
-                {
-                    //if listed guild matches the event's guild
-                    if(Long.parseLong(id) == guildid)
-                    {
-                        //add to list of plugin events to call
-                        callevents.putIfAbsent(pluginname, new ArrayList<Long>());
-                        callevents.get(pluginname).add(guildid);
-                    }
-                });
-            });
+            //if it is whitelisted, then we should return true
+            boolean shouldrun = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>()).contains(g.getIdLong());
 
-            //if there is also a blacklist
-            if(!GuildNetwork.blacklist.isEmpty())
-            {
-                //remove the blacklist items from callevents
+            //UNLESS it is also blacklisted, as the order we apply in is whitelist -> blacklist
+            if(!GuildNetwork.blacklist.isEmpty() && GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>()).contains(g.getIdLong()))
+                shouldrun = !GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>()).contains(g.getIdLong());
 
-                GuildNetwork.blacklist.forEach((pluginname, guild_ids) ->
-                {
-                    //for each plugin listed
-                    //iterate through guilds listed
-                    guild_ids.forEach(guildid ->
-                    {
-                        //if listed guild matches the event's guild
-                        if(Long.parseLong(id) == guildid)
-                        {
-                            //remove from list of plugin events to call
-                            if(callevents.get(pluginname) != null)
-                                callevents.get(pluginname).remove(guildid);
-                        }
-                    });
-                });
-            }
-
-            return callevents;
+            return shouldrun;
         }
         else //if there is no blacklist or whitelist
-        {
-            //add everything to callevents
-            AMGN.plugin_listeners.keySet().forEach(plugin ->
-            {
-                List<Long> guild_id_list = new ArrayList<Long>();
-                AMGN.bot.getGuilds().forEach(guild -> {guild_id_list.add(guild.getIdLong());});
-                callevents.put(plugin.getName(), guild_id_list);
-            });
-
-            return callevents;
-        }
+            return true; //run everything
     }
 }
