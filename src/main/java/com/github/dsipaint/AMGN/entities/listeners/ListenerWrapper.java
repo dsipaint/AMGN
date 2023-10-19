@@ -2085,14 +2085,17 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        //pass event to every plugin allowed to run
-        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
-        shouldrunhere.forEach(plugin ->
+        //iterate through all plugins
+        AMGN.plugin_listeners.forEach((plugin, listeners) ->
         {
-            AMGN.plugin_listeners.get(plugin).forEach(listener ->
+            boolean pluginshouldrun = pluginShouldRun(plugin.getName(), event.getGuild());
+
+            //go through all listeners
+            listeners.forEach(listener ->
             {
                 //pass to the event listener itself
-                listener.onMessageReceived(event);
+                if(pluginshouldrun)
+                    listener.onMessageReceived(event);
 
                 //also run as a command if it's a command to be run
                 if(listener instanceof Command)
@@ -2103,6 +2106,14 @@ public class ListenerWrapper extends ListenerAdapter
                     {
                         AMGN.logger.info("Member " + event.getMember().toString() + " is running command \""
                             + event.getMessage().getContentRaw().substring(1) + "\" in channel " + event.getChannel().toString());
+
+                        //if whitelisting/blacklisting doesn't allow, we want to let the user know and do nothing more
+                        if(!pluginshouldrun)
+                        {
+                            AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + event.getMessage().getContentRaw().substring(0) + "\""
+					            + " to be run in the guild " + event.getGuild().toString());
+                            return;
+                        }
 
                         if(cmd.hasPermission(event.getMember())) //check if the user has permission to run the command
                             cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));

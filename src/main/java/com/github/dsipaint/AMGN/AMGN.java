@@ -385,14 +385,21 @@ public class AMGN
 	public static final void runCommand(String cmdtxt, Member member, TextChannel tc)
 	{
 		AMGN.logger.info("Running command \"" + cmdtxt + "\"" + " as member " + member.toString()
-			+ " in channel " + tc.toString());
+			+ (tc != null ? " in channel " + tc.toString() : ""));
 
 		String[] args = cmdtxt.split(" ");
 
 		boolean cmd_found = false;
-		for(ArrayList<Listener> listeners : AMGN.plugin_listeners.values())
+		for(Plugin plugin : AMGN.plugin_listeners.keySet())
 		{
-			for(Listener listener : listeners)
+			if(tc != null && !ListenerWrapper.pluginShouldRun(plugin.getName(), tc.getGuild()))
+			{
+				AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + cmdtxt + "\""
+					+ " to be run in the guild " + tc.getGuild().toString());
+				continue;
+			}
+
+			for(Listener listener : AMGN.plugin_listeners.get(plugin))
 			{
 				if(listener instanceof Command)
 				{
