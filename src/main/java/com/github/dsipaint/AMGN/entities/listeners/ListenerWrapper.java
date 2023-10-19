@@ -2110,7 +2110,7 @@ public class ListenerWrapper extends ListenerAdapter
                         //if whitelisting/blacklisting doesn't allow, we want to let the user know and do nothing more
                         if(!pluginshouldrun)
                         {
-                            AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + event.getMessage().getContentRaw().substring(0) + "\""
+                            AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + event.getMessage().getContentRaw().substring(1) + "\""
 					            + " to be run in the guild " + event.getGuild().toString());
                             return;
                         }
