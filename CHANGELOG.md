@@ -2,7 +2,6 @@
 ~ AMGN will now continue to run when permissions.yml or whitelist.yml are missing
 ~ default whitelist.yml no longer includes a fake plugin, which could be annoying for setting up a whitelist
 - removed erroneous debug print from config getValue method
-+ Added logging for AMGN.runCommand, and a warning if the command is not found
 ~ fixed format of default permissions file
 ~ changed plugin initialise log messages to before loading rather than after (helps with plugin-debugging)
 ~ config methods no longer throw exceptions, this is captured internally and the exception messages should make clear that a config file is missing
@@ -13,7 +12,7 @@
 ~ Improve reliance on enabling and disabling plugins in GuildNetwork class, used in the enable disable and reload commands
 + Improve whitelist and blacklist helper methods to make them more intuitive. ListenerWrapper.java now has two methods that will tell you which guild has which plugins able to run, and which guilds a plugin can run in, based off the whitelisting rules.
 + Add convenience method that resolves an IMentionable Object from JDA when supplied with an ID (saves typing out code trying to figure out what an ID from a config file represents)
-+ Improve AMGN.runCommand logging to show whether a command was not found, or there were just insufficient permissions when a command is not run
++ Improve AMGN.runCommand logging to show command execution status, and add similar logging for generic command invocations
 
 
 

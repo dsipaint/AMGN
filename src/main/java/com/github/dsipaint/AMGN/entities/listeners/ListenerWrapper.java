@@ -2070,7 +2070,6 @@ public class ListenerWrapper extends ListenerAdapter
         });
     }
     
-    //TODO
     @Override
     public final void onMessageReceived(MessageReceivedEvent event)
     {
@@ -2086,25 +2085,32 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
-        //iterate through all plugins on network
-        AMGN.plugin_listeners.forEach((plugin, listeners) ->
+        //pass event to every plugin allowed to run
+        List<Plugin> shouldrunhere = getRunningPlugins(event.getGuild());
+        shouldrunhere.forEach(plugin ->
         {
-            if(pluginShouldRun(plugin.getName(), event.getGuild()))
+            AMGN.plugin_listeners.get(plugin).forEach(listener ->
             {
-                //for every listener, we want to pass this event to it
-                listeners.forEach(listener ->
+                //pass to the event listener itself
+                listener.onMessageReceived(event);
+
+                //also run as a command if it's a command to be run
+                if(listener instanceof Command)
                 {
-                    listener.onMessageReceived(event);
-                    if(listener instanceof Command)
+                    Command cmd = ((Command) listener);
+                    String[] args = event.getMessage().getContentRaw().split(" ");
+                    if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel()))
                     {
-                        Command cmd = ((Command) listener);
-                        String[] args = event.getMessage().getContentRaw().split(" ");
-                        if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel())
-                            && cmd.hasPermission(event.getMember())) //check if the user has permission to run the command
+                        AMGN.logger.info("Member " + event.getMember().toString() + " is running command \""
+                            + event.getMessage().getContentRaw().substring(1) + "\" in channel " + event.getChannel().toString());
+
+                        if(cmd.hasPermission(event.getMember())) //check if the user has permission to run the command
                             cmd.onCommand(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));
+                        else
+                            AMGN.logger.info("Member " + event.getMember().toString() + " does not have the permission to run command \"" + event.getMessage().getContentRaw().substring(1) + "\"");
                     }
-                });
-            }
+                }
+            });
         });
     }
      
