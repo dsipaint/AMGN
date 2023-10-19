@@ -86,10 +86,10 @@ public class AMGN
 			}
 
 			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.WHITELIST_PATH))
-				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				logger.warn("whitelist.yml did not exist- made a copy.");
 
 			if(IOHandler.copyFileToExternalPath("permissionsdefault.yml", GuildNetwork.PERMISSIONS_PATH))
-				logger.warn("permissions.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
+				logger.warn("permissions.yml did not exist- made a copy.");
 		}
 		catch(IOException e)
 		{
