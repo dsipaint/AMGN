@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.yaml.snakeyaml.DumperOptions;
@@ -60,7 +60,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class AMGN
 {
 	public static JDA bot;
-	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
+	public static Logger logger = LogManager.getLogger("AMGN");
 
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
