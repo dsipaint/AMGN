@@ -2085,6 +2085,23 @@ public class ListenerWrapper extends ListenerAdapter
             return;
         }
 
+        String[] args = event.getMessage().getContentRaw().split(" ");
+
+        //check default commands to be run
+        for(DefaultCommand cmd : DefaultCommand.values())
+        {
+            if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel()))
+            {
+                AMGN.logger.info("Member " + event.getMember().toString() + " is running command \""
+                    + event.getMessage().getContentRaw().substring(1) + "\" in channel " + event.getChannel().toString());
+
+                if(cmd.hasPermission(event.getMember()))
+                    cmd.getCommandAction().accept(new CommandEvent(event.getMessage().getContentRaw(), event.getMember(), (TextChannel) event.getChannel(), event.getMessage()));
+                else
+                    AMGN.logger.info("Member " + event.getMember().toString() + " does not have the permission to run command \"" + event.getMessage().getContentRaw().substring(1) + "\"");
+            }
+        }
+
         //iterate through all plugins
         AMGN.plugin_listeners.forEach((plugin, listeners) ->
         {
@@ -2101,7 +2118,6 @@ public class ListenerWrapper extends ListenerAdapter
                 if(listener instanceof Command)
                 {
                     Command cmd = ((Command) listener);
-                    String[] args = event.getMessage().getContentRaw().split(" ");
                     if(args[0].equalsIgnoreCase(GuildNetwork.getPrefix(event.getGuild().getIdLong()) + cmd.getLabel()))
                     {
                         AMGN.logger.info("Member " + event.getMember().toString() + " is running command \""

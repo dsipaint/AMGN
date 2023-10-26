@@ -24,26 +24,13 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ReloadListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.HelpListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaUpdateListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaViewListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.GroupsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.ListPermissionsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.PermissionAddRemoveListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningAllListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.BlacklistCommand;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.WhitelistCommand;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.JDA;
@@ -183,39 +170,12 @@ public class AMGN
 		});
 		
 		logger.info("Implementing intrinsic features..."); //prebuilt commands/features of the library go here
-
-		//help feature
-		bot.addEventListener(new HelpListener());
-		
-		//enable/disable plugin
-		bot.addEventListener(new EnableListener());
-		bot.addEventListener(new DisableListener());
-		bot.addEventListener(new ReloadListener());
-		
-		//closenetwork plugin
-		bot.addEventListener(new CloseListener());
-		
-		//metadata plugin
-		bot.addEventListener(new MetaViewListener());
-		bot.addEventListener(new MetaUpdateListener());
-		
-		//isrunning plugin
-		bot.addEventListener(new RunningListener());
-		bot.addEventListener(new RunningAllListener());
 		
 		//consistency plugin
 		bot.addEventListener(new ModlogsListener());
 		bot.addEventListener(new MenuDeleteListener());
 
-		//whitelist plugin
-		bot.addEventListener(new BlacklistCommand());
-		bot.addEventListener(new WhitelistCommand());
-
-		//permissions plugin
-		bot.addEventListener(new PermissionAddRemoveListener());
-		bot.addEventListener(new ListPermissionsListener());
-		bot.addEventListener(new GroupsListener());
-
+		//generic listening for commands/listeners
 		bot.addEventListener(new ListenerWrapper());
 		
 		
@@ -390,6 +350,21 @@ public class AMGN
 		String[] args = cmdtxt.split(" ");
 
 		boolean cmd_found = false;
+
+		//check and run default commands
+		for(DefaultCommand cmd : DefaultCommand.values())
+		{
+			if(args[0].equalsIgnoreCase(cmd.getLabel()))
+			{
+				cmd_found = true;
+				if(cmd.hasPermission(member))
+					cmd.getCommandAction().accept(new CommandEvent(cmdtxt, member, tc, null));
+				else
+					AMGN.logger.warn("Member " + member.toString()
+						+ " does not have permission to run command \"" + cmdtxt + "\"");
+			}	
+		}
+
 		for(Plugin plugin : AMGN.plugin_listeners.keySet())
 		{
 			if(tc != null && !ListenerWrapper.pluginShouldRun(plugin.getName(), tc.getGuild()))

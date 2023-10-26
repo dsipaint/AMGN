@@ -15,6 +15,7 @@
 + Improve AMGN.runCommand logging to show command execution status, and add similar logging for generic command invocations
 + AMGN.runCommand will now respect network whitelist/blacklist rules
 + Improve logging output and automatically store AMGN/plugin error output to `errors.log`
+~ Improve the way default commands are understood by the network- this now allows for more consistent behaviour, and DEFAULT COMMANDS CAN BE USED IN AMGN.runCommand()!!!
 
 
 
