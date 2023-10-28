@@ -1007,7 +1007,7 @@ public class WebpanelController
         return userinfo.getBody().get("id").asText();
     }
 
-    //will look at a request and see if this is a user who is authorised to view the webpanel
+    //will look at a request and see if this is a valid token
     public static boolean isAuthenticatedRequest(HttpServletRequest request)
     {
         AMGN.logger.info("Checking authentication of request");
