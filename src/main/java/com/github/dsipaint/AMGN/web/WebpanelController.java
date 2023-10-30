@@ -998,8 +998,9 @@ public class WebpanelController
         HttpHeaders userinfoheaders = new HttpHeaders();
         userinfoheaders.set("Authorization", "Bearer " + token);
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
-        return userinfo.getBody().get("id") != null ? 
-            userinfo.getBody().get("id").asText()
+        JsonNode body = userinfo.getBody();
+        return body.get("id") != null ? 
+            body.get("id").asText()
             :
             null;
     }
