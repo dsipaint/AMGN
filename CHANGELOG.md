@@ -16,7 +16,7 @@
 + AMGN.runCommand will now respect network whitelist/blacklist rules
 + Improve logging output and automatically store AMGN/plugin error output to `errors.log`
 ~ Improve the way default commands are understood by the network- this now allows for more consistent behaviour, and DEFAULT COMMANDS CAN BE USED IN AMGN.runCommand()!!!
-
+~ Cleaned up webpanel authentication- sessions may now persist across network restarts, and revoking the permission AMGN.webpanel.access will now properly revoke the user's access to the webpanel
 
 
 ## beta-1.4.2

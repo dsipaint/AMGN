@@ -55,7 +55,7 @@ public class WebpanelController
     static final String TOKEN_URL="https://discord.com/api/oauth2/token",
         API_URL = "https://discord.com/api/v10";
 
-    static List<String> TOKEN_CACHE = new ArrayList<String>(); //yes, this is a bad idea: change this in the future
+    static HashMap<String, Long> TOKEN_CACHE = new HashMap<String, Long>();
 
     @RequestMapping("/webpanel")
     public String getCustomWebpanel(Model model)
@@ -93,12 +93,6 @@ public class WebpanelController
         HttpHeaders userinfoheaders = new HttpHeaders();
         userinfoheaders.set("Authorization", "Bearer " + usertoken);
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
-
-        //if this is a valid authorised user and we don't know this user already:
-        if(canViewId(userinfo.getBody().get("id").asLong()) &&
-            !TOKEN_CACHE.contains(usertoken))
-            TOKEN_CACHE.add(usertoken);
-
 
         Cookie token = new Cookie("discord_token", usertoken);
         token.setPath("/webpanel");
@@ -1004,42 +998,42 @@ public class WebpanelController
         HttpHeaders userinfoheaders = new HttpHeaders();
         userinfoheaders.set("Authorization", "Bearer " + token);
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
-        return userinfo.getBody().get("id").asText();
+        return userinfo.getBody().get("id") != null ? 
+            userinfo.getBody().get("id").asText()
+            :
+            null;
     }
 
     //will look at a request and see if this is a valid token
+    //and if this user has permission to view the webpanel
+    //returns true if they can, false otherwise
     public static boolean isAuthenticatedRequest(HttpServletRequest request)
     {
         AMGN.logger.info("Checking authentication of request");
 
-        // check to see if we have a discord_token cookie, and if the value of it matches
-        // a token we have already deemed as authenticated in TOKEN_CACHE
-        for(Cookie c : request.getCookies())
+        String token = getTokenFromRequest(request);
+        long id;
+        //either retrieve id from token from the cache, or query the API for the id and then add that id to the cache 
+        if(TOKEN_CACHE.containsKey(token))
+            id = TOKEN_CACHE.get(token);
+        else
         {
-            if(c.getName().equals("discord_token")
-                && TOKEN_CACHE.contains(c.getValue()))
+            String id_str = resolveIdFromToken(token);
+            if(id_str == null)
             {
-                AMGN.logger.info("Token was found in the token cache");
-                return true;
+                AMGN.logger.error("Invalid token supplied to request, no ID was found from request token");
+                return false;
             }
+
+            id = Long.parseLong(id_str);
+            TOKEN_CACHE.put(token, id);
         }
 
-        AMGN.logger.error("User had no discord_token cookie or the discord_token cookie was not found in the token cache.");
-        return false;
-    }
 
-    //checks a token and checks if this discord user has the permission to view the webpanel
-    public static boolean canViewToken(String token)
-    {
-        return canViewId(Long.parseLong(resolveIdFromToken(token)));
-    }
 
-    //checks a user id and checks if this discord user has the permission to view the webpanel
-    public static boolean canViewId(long id)
-    {
         if(Permissions.hasPermission(AMGN.bot.getUserById(id), null, "AMGN.webpanel.access")
             || GuildNetwork.isOperator(AMGN.bot.getUserById(id)))
-            return true;
+                return true;
         return false;
     }
 
