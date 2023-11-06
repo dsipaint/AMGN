@@ -23,6 +23,26 @@ class GuildList extends React.Component
     async componentDidMount()
     {
         await $.get("/webpanel/api/guilds", this.updateGuildList);
+
+        $(document).on("click", (event) =>
+        {
+            if($(event.target).attr("id") !== undefined && $(event.target).attr("id").includes("guildselector"))
+                console.log(":D");
+
+            var parents = $(event.target).parents();
+            var inguildselector = false;
+            for(var i = 0; i < parents.length; i++)
+            {
+                if($(parents[i]).attr("id") !== undefined && $(parents[i]).attr("id").includes("guildselector"))
+                {
+                    inguildselector = true;
+                    break;
+                }
+            }
+
+            if(!inguildselector)
+                this.hideGuilds();
+        });
     }
 
     hideGuilds()
