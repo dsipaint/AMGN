@@ -307,6 +307,13 @@ input[type=text] {
     margin: 5px;
 }
 
+#buttondeck {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+    border: 2px solid red;
+}
+
 #nocontent {
     padding-left: 20px;
 }

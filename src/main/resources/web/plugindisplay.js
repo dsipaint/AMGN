@@ -179,7 +179,11 @@ class ObjectItem extends React.Component
                                 if(Array.isArray(item))
                                     return <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
                                 else
+                                {
+                                    if(item === undefined || item === null)
+                                        return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
                                     return <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                }
                                     
                             case "undefined":
                                 return;
@@ -791,7 +795,7 @@ class PluginConfig extends React.Component
                             }
                             {
                                 getSelectedGuild() == "global" ? "" :
-                                <div>
+                                <div id="buttondeck">
                                     {
                                         this.state.selectedplugin.whitelist ? 
                                             <div class="removesettings" onClick={this.removeFromWhitelist}>Remove from Whitelist</div>
