@@ -814,6 +814,13 @@ public class WebpanelController
         if(isAuthenticatedRequest(request))
         {
             AMGN.logger.info("Authenticated GET request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+
+            //global is always whitelisted
+            if(guild.equals("global"))
+            {
+                return new ObjectMapper().createObjectNode().put("result", true);
+            }
+
             if(GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>()).contains(Long.parseLong(guild)))
                 return new ObjectMapper().createObjectNode().put("result", true);
 
@@ -842,6 +849,13 @@ public class WebpanelController
         if(isAuthenticatedRequest(request))
         {
             AMGN.logger.info("Authenticated GET request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
+
+            //global is never blacklisted
+            if(guild.equals("global"))
+            {
+                return new ObjectMapper().createObjectNode().put("result", false);
+            }
+
             if(GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>()).contains(Long.parseLong(guild)))
                 return new ObjectMapper().createObjectNode().put("result", true);
 

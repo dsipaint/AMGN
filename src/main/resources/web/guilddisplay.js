@@ -26,9 +26,6 @@ class GuildList extends React.Component
 
         $(document).on("click", (event) =>
         {
-            if($(event.target).attr("id") !== undefined && $(event.target).attr("id").includes("guildselector"))
-                console.log(":D");
-
             var parents = $(event.target).parents();
             var inguildselector = false;
             for(var i = 0; i < parents.length; i++)
@@ -81,7 +78,7 @@ class GuildList extends React.Component
 
     selectGuild(id)
     {
-        hideGuilds();
+        this.hideGuilds();
 
         if(id == "global")
         {

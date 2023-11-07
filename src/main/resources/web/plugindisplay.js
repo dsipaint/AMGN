@@ -391,7 +391,7 @@ class PluginConfig extends React.Component
     {
         // event.stopPropagation();
         this.forceUpdate();
-        $.get("/webpanel/api/plugins", (data) => {this.selectPlugin(getSelectedGuild() == "global" ? "" : data[0])});
+        $.get("/webpanel/api/plugins", (data) => {this.selectPlugin(getSelectedGuild() == "global" ? "internal-network" : data[0])});
     }
 
     getPluginNames(data)
