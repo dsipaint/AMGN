@@ -564,7 +564,9 @@ class PluginConfig extends React.Component
                         </div>
                     }
                 </div>
-                <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+                <div id="buttondeck">
+                    <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+                </div>
             </div>);
         }
 
@@ -581,7 +583,9 @@ class PluginConfig extends React.Component
                         </div>
                     }
                 </div>
-                <div class="savesettings"  onClick={this.setPermissionInfo}>Save Settings</div>
+                <div id="buttondeck">
+                    <div class="savesettings"  onClick={this.setPermissionInfo}>Save Settings</div>
+                </div>
             </div>);
     }
 
@@ -780,36 +784,53 @@ class PluginConfig extends React.Component
                                     {this.state.selectedplugin.config.map(function(config, i){
                                         return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
                                     })}
-                                    <div class="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
-                                    {
-                                    getSelectedGuild() == "global" ? "" :
-                                        <div class="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
-                                    }
                                 </div>
                                 :
                                 <div>
                                     <h2>Sorry! This plugin has no config</h2>
-                                    <p>The selected guild has no config for this plugin. This means either this guild is using the Global Settings for this plugin, or this plugin has no config to edit. Either edit the Global Settings for this plugin, or add a local config for this guild using the button below.</p>
+                                    {
+                                        getSelectedGuild() == "global" ? 
+                                            <p>The selected guild has no config for this plugin. If this plugin is supposed to have a config, either try reloading the plugin or contacting the developer.</p>
+                                            : 
+                                            <p>The selected guild has no config for this plugin. This means either this guild is using the Global Settings for this plugin, or this plugin has no config to edit. Either edit the Global Settings for this plugin, or add a local config for this guild using the button below.</p>
+                                    }
+                                </div>
+                            }
+                            <div id="buttondeck">
+                                {
+                                    this.state.selectedplugin.config ?
+                                    <div class="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
+                                    :
+                                    ""
+                                }
+                                {
+                                    !this.state.selectedplugin.config ?
+                                    ""
+                                    :
+                                    getSelectedGuild() !== "global" ?
+                                    <div class="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
+                                    :
                                     <div class="savesettings" onClick={this.addConfigForPlugin}>Add Local Config</div>
-                                </div>
-                            }
-                            {
-                                getSelectedGuild() == "global" ? "" :
-                                <div id="buttondeck">
-                                    {
-                                        this.state.selectedplugin.whitelist ? 
-                                            <div class="removesettings" onClick={this.removeFromWhitelist}>Remove from Whitelist</div>
-                                            :
-                                            <div class="savesettings" onClick={this.addToWhitelist}>Add to Whitelist</div>
-                                    }
-                                    {
-                                        this.state.selectedplugin.blacklist ? 
-                                            <div class="removesettings" onClick={this.removeFromBlacklist}>Remove from Blacklist</div>
-                                            :
-                                            <div class="savesettings" onClick={this.addToBlacklist}>Add to Blacklist</div>
-                                    }
-                                </div>
-                            }
+                                }
+                                {
+                                    getSelectedGuild() == "global" ? 
+                                    ""
+                                    :
+                                    this.state.selectedplugin.whitelist ? 
+                                        <div class="removesettings" onClick={this.removeFromWhitelist}>Remove from Whitelist</div>
+                                        :
+                                        <div class="savesettings" onClick={this.addToWhitelist}>Add to Whitelist</div>
+                                }
+                                {
+                                    getSelectedGuild() == "global" ?
+                                    ""
+                                    :
+                                    this.state.selectedplugin.blacklist ? 
+                                        <div class="removesettings" onClick={this.removeFromBlacklist}>Remove from Blacklist</div>
+                                        :
+                                        <div class="savesettings" onClick={this.addToBlacklist}>Add to Blacklist</div>
+                                }
+                            </div>
                         </div>
                     </div>
                 }

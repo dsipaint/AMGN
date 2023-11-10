@@ -290,28 +290,31 @@ input[type=text] {
 }
 
 .savesettings {
-    float: right;
     background-color: rgb(19, 140, 19);
     padding: 10px;
     border-radius: 7px;
     cursor: pointer;
     margin: 5px;
+    border: 2px solid rgb(9, 72, 9);
 }
 
 .removesettings {
-    float: right;
     background-color:rgb(252, 70, 70);
     padding: 10px;
     border-radius: 7px;
     cursor: pointer;
     margin: 5px;
+    border: 2px solid rgb(153, 41, 41);
 }
 
 #buttondeck {
     position: fixed;
     bottom: 5%;
     right: 5%;
-    border: 2px solid red;
+}
+
+#buttondeck > * {
+    float: right;
 }
 
 #nocontent {
