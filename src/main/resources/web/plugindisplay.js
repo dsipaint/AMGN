@@ -86,10 +86,10 @@ class ListItem extends React.Component
 
     render()
     {
-        var removebutton = function (element)
+        var removebutton = function (element, shape)
         {
             return (
-                this.props.removemore == "true" ? <i class="fa-solid fa-xmark removeelement" onClick={() => {this.removeElement(element)}}></i> : ""
+                this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removeElement(element)}}></i> : ""
             );
         };
 
@@ -109,8 +109,8 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
+                                            {removebutton(item, "xmark")}
                                             <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore="true" removemore="true"/>
-                                            {removebutton(item)}
                                         </div>
                                     );
                                 }
@@ -118,8 +118,8 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
+                                            {removebutton(item, "xmark")}
                                             <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
-                                            {removebutton(item)}
                                         </div>
                                     );   
                                 }
@@ -131,7 +131,7 @@ class ListItem extends React.Component
                                 return (
                                     <div class="completelistitem">
                                         <NumberItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
-                                        {removebutton(item)}
+                                        {removebutton(item, "minus")}
                                     </div>
                                 );                                
 
@@ -139,7 +139,7 @@ class ListItem extends React.Component
                                 return (
                                     <div class="completelistitem">
                                         <DefaultItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
-                                        {removebutton(item)}
+                                        {removebutton(item, "minus")}
                                     </div>
                                 );
                         }
@@ -409,7 +409,6 @@ class PluginConfig extends React.Component
     {
         this.setState({
             selectedplugin: {
-                ...this.state.selectedplugin,
                 name: name
             }
         });
