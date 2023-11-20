@@ -237,7 +237,7 @@ h2{
     margin: 0px;
 }
 
-input[type=text] {
+input {
     background-color: rgb(45, 45, 45);
     color: white;
     font-weight: bold;
@@ -250,6 +250,10 @@ input[type=text] {
 .listinput {
     float: left;
     clear: left;
+}
+
+.listinput {
+    float: left;
 }
 
 .listinput:has(#addelement) {
@@ -266,7 +270,7 @@ input[type=text] {
     margin-bottom: 5px;
     border: 2px solid rgb(163, 163, 163);
     border-radius: 5px;
-    width: 50%;
+    width: 30%;
     padding: 10px;
 }
 
@@ -276,6 +280,15 @@ input[type=text] {
 
 .completelistitem > * > .listwrapper > h2 {
     font-size:large;
+}
+
+.addnew {
+    clear: left;
+    margin-bottom: 20px;
+}
+
+.addnew > span {
+    margin-right: 5px;
 }
 
 .addelement {

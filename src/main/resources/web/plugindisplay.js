@@ -55,20 +55,45 @@ class ListItem extends React.Component
 
     addElement()
     {
-        if($("#" + this.props.updatekey.replace("\.", "_")).val() == "")
-            return;
+        var updatekeyref = this.props.updatekey.replaceAll("\.", "_");
 
-        var updatekeyref = this.props.updatekey.replace("\.", "_");
-        ReactDOM.flushSync(() =>
+        if($("#" + updatekeyref).is("input"))
         {
-            this.setState({
-                list: [...this.state.list, $("#" + updatekeyref).val()]
+            ReactDOM.flushSync(() =>
+            {
+                this.setState({
+                    list: [...this.state.list, $("#" + updatekeyref).val()]
+                });
             });
-        });
 
-        this.props.updatehook(this.props.updatekey, this.state.list);
-        
-        $("#" + this.props.updatekey.replace("\.", "_")).val("");
+            this.props.updatehook(this.props.updatekey, this.state.list);
+            
+            $("#" + updatekeyref).val("");
+        }
+        else if($("#" + updatekeyref).hasClass("addobject"))
+        {
+            ReactDOM.flushSync(() =>
+            {
+                this.setState({
+                    list: [...this.state.list, {}]
+                });
+            });
+
+            this.props.updatehook(this.props.updatekey, this.state.list);
+        }
+        else if($("#" + updatekeyref).hasClass("addlist"))
+        {
+            ReactDOM.flushSync(() =>
+            {
+                this.setState({
+                    list: [...this.state.list, []]
+                });
+            });
+
+            this.props.updatehook(this.props.updatekey, this.state.list);
+        }
+
+        return "";
     }
 
     removeElement(element)
@@ -94,6 +119,62 @@ class ListItem extends React.Component
         };
 
         removebutton = removebutton.bind(this);
+
+        var addmoreinput = function()
+        {
+            switch(typeof this.state.list[this.state.list.length - 1])
+            {
+                case "object":
+                    if(Array.isArray(this.state.list[this.state.list.length - 1]))
+                        return (
+                            <div class="addnew">
+                                <span id={this.props.updatekey.replaceAll("\.", "_")} class="addlist">
+                                    new list
+                                </span>
+                                <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                            </div>
+                        );
+                    else
+                        return (
+                            <div class="addnew">
+                                <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
+                                    new object
+                                </span>
+                                <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                            </div>
+                        );
+
+                case "undefined":
+                    return (
+                        <div class="listinput">
+                            <div id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
+                                new object
+                            </div>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+                case "number":
+                    return (
+                        <div class="listinput">
+                            <input type="number" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+                default:
+                    return (
+                        <div class="listinput">
+                            <input type="text" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+            }
+            
+        }
+
+        addmoreinput = addmoreinput.bind(this);
+
         var updatehookref = this.props.updatehook;
         var updatekeyref = this.props.updatekey;
 
@@ -145,8 +226,12 @@ class ListItem extends React.Component
                         }
                     })
                     }
-                    {this.props.addmore == "true" ? <div class="listinput"><input type="text" id={this.props.updatekey.replace("\.", "_")}></input>
-                    <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i></div> : ""}
+                    {
+                        this.props.addmore == "true" ?
+                        addmoreinput()
+                        :
+                        ""
+                    }
                 </div>
             </div>
         );
@@ -333,7 +418,7 @@ class NumberItem extends React.Component
                 <div class="objectname">
                     {this.props.name ? this.props.name + ":" : ""}
                 </div>
-                <input type="text" id={this.state.id} class="listinput"></input>
+                <input type="number" id={this.state.id} class="listinput"></input>
             </div> 
         );
     }
