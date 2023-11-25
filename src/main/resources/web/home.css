@@ -247,13 +247,14 @@ input {
     clear: left;
 }
 
-.listinput {
-    float: left;
-    clear: left;
+.list {
+    border: 2px solid rgb(163, 163, 163);
+    border-radius: 5px;
+    width: fit-content;
 }
 
 .listinput {
-    float: left;
+    clear: left;
 }
 
 .listinput:has(#addelement) {
@@ -261,21 +262,40 @@ input {
 }
 
 .completelistitem{
-    float: left;
     clear: left;
+    padding: 5px;
 }
 
-
-.completelistitem:has(.objectdisplay) {
+.objectdisplay {
     margin-bottom: 5px;
     border: 2px solid rgb(163, 163, 163);
+    width: fit-content;
     border-radius: 5px;
-    width: 30%;
     padding: 10px;
 }
 
-.completelistitem:has(.objectdisplay) > i{
-    float: right;
+.objectdisplay > .inputwrapper {
+    width: 50%;
+}
+
+.addmoretoobject {
+    clear: left;
+    width: 50%;
+    margin-top: 5px;
+}
+
+.addmoretoobject > h4 {
+    margin: 0px;
+    font-style: italic;
+}
+
+.addmoretoobject > * {
+    margin-right: 5px;
+}
+
+select {
+    border: 1px solid rgb(163, 163, 163);
+    border-radius: 5px;
 }
 
 .completelistitem > * > .listwrapper > h2 {
@@ -288,7 +308,8 @@ input {
 }
 
 .addnew > span {
-    margin-right: 5px;
+    margin-right: 10px;
+    font-style: italic;
 }
 
 .addelement {
@@ -297,7 +318,7 @@ input {
 
 .inputwrapper {
     float: left;
-    clear: right;
+    clear: left;
     margin-bottom: 10px;
 }
 
@@ -307,13 +328,14 @@ input {
     float: left;
 }
 
-.objectdisplay {
-    width: 100%;
-    margin-bottom: 30px;
+.removeelement:has(+.objectdisplay){
+    float: right;
+    margin: 5px;
 }
 
-.objectdisplay > .inputwrapper {
-    width: 100%;
+.removeelement:has(+.listwrapper){
+    float: right;
+    margin: 5px;
 }
 
 .savesettings {

@@ -129,7 +129,7 @@ class ListItem extends React.Component
                         return (
                             <div class="addnew">
                                 <span id={this.props.updatekey.replaceAll("\.", "_")} class="addlist">
-                                    new list
+                                    &gt; new list
                                 </span>
                                 <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                             </div>
@@ -138,7 +138,7 @@ class ListItem extends React.Component
                         return (
                             <div class="addnew">
                                 <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
-                                    new object
+                                    &gt; new object
                                 </span>
                                 <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                             </div>
@@ -146,17 +146,17 @@ class ListItem extends React.Component
 
                 case "undefined":
                     return (
-                        <div class="listinput">
-                            <div id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
-                                new object
-                            </div>
+                        <div class="addnew">
+                            <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
+                                &gt; new object
+                            </span>
                             <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                         </div>
                     );
 
                 case "number":
                     return (
-                        <div class="listinput">
+                        <div class="addnew">
                             <input type="number" id={this.props.updatekey.replaceAll("\.", "_")}></input>
                             <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                         </div>
@@ -164,7 +164,7 @@ class ListItem extends React.Component
 
                 default:
                     return (
-                        <div class="listinput">
+                        <div class="addnew">
                             <input type="text" id={this.props.updatekey.replaceAll("\.", "_")}></input>
                             <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                         </div>
@@ -284,6 +284,97 @@ class ObjectItem extends React.Component
                         }
                     })
                 }
+                <div class="addmoretoobject">
+                    <h4>&gt; new field:</h4>
+                    <span class="addmorename">Name:</span>
+                    <input type="text" id={this.props.updatekey.replaceAll(".", "_") + "-addmorename"}></input>
+                    <select id={this.props.updatekey.replaceAll(".", "_") + "-select"}>
+                        <option>object</option>
+                        <option>true/false</option>
+                        <option>list</option>
+                        <option>number</option>
+                        <option>text</option>
+                    </select>
+                    <i class="fa-solid fa-plus addelement" onClick={() => {
+                        var name = $("#" + this.props.updatekey.replaceAll(".", "_") + "-addmorename").val();
+                        if(name === "" || name === undefined || name === null)
+                            return "";
+
+                        var value = $("#" + this.props.updatekey.replaceAll(".", "_") + "-select").val();
+                        switch(value)
+                        {
+                            case "object":
+                                ReactDOM.flushSync(() =>
+                                {
+                                    this.setState({
+                                        object: {
+                                            ...this.state.object,
+                                            [name]: {}
+                                        }
+                                    });
+                                });
+                    
+                                this.props.updatehook(this.props.updatekey, this.state.object);
+                                break;
+
+                            case "true/false":
+                                ReactDOM.flushSync(() =>
+                                {
+                                    this.setState({
+                                        object: {
+                                            ...this.state.object,
+                                            [name]: true
+                                        }
+                                    });
+                                });
+                    
+                                this.props.updatehook(this.props.updatekey, this.state.object);
+                                break;
+
+                            case "list":
+                                ReactDOM.flushSync(() =>
+                                {
+                                    this.setState({
+                                        object: {
+                                            ...this.state.object,
+                                            [name]: []
+                                        }
+                                    });
+                                });
+                    
+                                this.props.updatehook(this.props.updatekey, this.state.object);
+                                break;
+
+                            case "number":
+                                ReactDOM.flushSync(() =>
+                                {
+                                    this.setState({
+                                        object: {
+                                            ...this.state.object,
+                                            [name]: -1
+                                        }
+                                    });
+                                });
+                    
+                                this.props.updatehook(this.props.updatekey, this.state.object);
+                                break;
+
+                            case "text":
+                                ReactDOM.flushSync(() =>
+                                {
+                                    this.setState({
+                                        object: {
+                                            ...this.state.object,
+                                            [name]: ""
+                                        }
+                                    });
+                                });
+                    
+                                this.props.updatehook(this.props.updatekey, this.state.object);
+                                break;
+                        }
+                    }}></i>
+                </div>
             </div>
         );
     }
