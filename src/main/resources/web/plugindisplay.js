@@ -190,8 +190,8 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
-                                            {removebutton(item, "xmark")}
                                             <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore="true" removemore="true"/>
+                                            {removebutton(item, "xmark")}
                                         </div>
                                     );
                                 }
@@ -199,8 +199,8 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
-                                            {removebutton(item, "xmark")}
                                             <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                            {removebutton(item, "xmark")}
                                         </div>
                                     );   
                                 }
@@ -246,12 +246,118 @@ class ObjectItem extends React.Component
         this.state = {
             object: props.object
         }
+
+        this.addnewfield = this.addnewfield.bind(this);
+        this.removefield = this.removefield.bind(this);
+    }
+
+    removefield(name)
+    {
+        ReactDOM.flushSync(() =>{
+            var newobj = this.state.object;
+            delete newobj[name]
+            this.setState({
+                object: newobj
+            });
+        });
+
+        this.props.updatehook(this.props.updatekey, this.state.object);
+    }
+
+    addnewfield()
+    {
+        var name = $("#" + this.props.updatekey.replaceAll(".", "_") + "-addmorename").val();
+        if(name === "" || name === undefined || name === null)
+            return "";
+
+        var value = $("#" + this.props.updatekey.replaceAll(".", "_") + "-select").val();
+        switch(value)
+        {
+            case "object":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: {}
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "true/false":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: true
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "list":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: []
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "number":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: -1
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "text":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: ""
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+        }
     }
 
     render()
     {
         var updatehookref = this.props.updatehook;
         var updatekeyref = this.props.updatekey;
+
+        var removebutton = function (name, shape)
+        {
+            return (
+                // this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(element)}}></i> : ""
+                <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(name)}}></i>
+            );
+        };
+        removebutton = removebutton.bind(this);
 
         return (
             <div class="objectdisplay">
@@ -262,25 +368,57 @@ class ObjectItem extends React.Component
                         {
                             case "object":
                                 if(Array.isArray(item))
-                                    return <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
+                                {
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
+                                        </div>
+                                    );
+                                }
                                 else
                                 {
                                     if(item === undefined || item === null)
-                                        return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
-                                    return <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                    {
+                                        return (
+                                            <div class="completeobjectfield">
+                                                <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                        </div>
+                                    );
                                 }
                                     
                             case "undefined":
                                 return;
 
                             case "boolean":
-                                return <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                return (
+                                    <div class="completeobjectfield">
+                                        <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                        {removebutton(key, "minus")}
+                                    </div>
+                                );
 
                             case "number":
-                                return <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                return (
+                                    <div class="completeobjectfield">
+                                        <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                        {removebutton(key, "minus")}
+                                    </div>
+                                );
 
                             default:
-                                return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
+                                return (
+                                    <div class="completeobjectfield">
+                                        <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                        {removebutton(key, "minus")}
+                                    </div>
+                                );
                         }
                     })
                 }
@@ -295,85 +433,7 @@ class ObjectItem extends React.Component
                         <option>number</option>
                         <option>text</option>
                     </select>
-                    <i class="fa-solid fa-plus addelement" onClick={() => {
-                        var name = $("#" + this.props.updatekey.replaceAll(".", "_") + "-addmorename").val();
-                        if(name === "" || name === undefined || name === null)
-                            return "";
-
-                        var value = $("#" + this.props.updatekey.replaceAll(".", "_") + "-select").val();
-                        switch(value)
-                        {
-                            case "object":
-                                ReactDOM.flushSync(() =>
-                                {
-                                    this.setState({
-                                        object: {
-                                            ...this.state.object,
-                                            [name]: {}
-                                        }
-                                    });
-                                });
-                    
-                                this.props.updatehook(this.props.updatekey, this.state.object);
-                                break;
-
-                            case "true/false":
-                                ReactDOM.flushSync(() =>
-                                {
-                                    this.setState({
-                                        object: {
-                                            ...this.state.object,
-                                            [name]: true
-                                        }
-                                    });
-                                });
-                    
-                                this.props.updatehook(this.props.updatekey, this.state.object);
-                                break;
-
-                            case "list":
-                                ReactDOM.flushSync(() =>
-                                {
-                                    this.setState({
-                                        object: {
-                                            ...this.state.object,
-                                            [name]: []
-                                        }
-                                    });
-                                });
-                    
-                                this.props.updatehook(this.props.updatekey, this.state.object);
-                                break;
-
-                            case "number":
-                                ReactDOM.flushSync(() =>
-                                {
-                                    this.setState({
-                                        object: {
-                                            ...this.state.object,
-                                            [name]: -1
-                                        }
-                                    });
-                                });
-                    
-                                this.props.updatehook(this.props.updatekey, this.state.object);
-                                break;
-
-                            case "text":
-                                ReactDOM.flushSync(() =>
-                                {
-                                    this.setState({
-                                        object: {
-                                            ...this.state.object,
-                                            [name]: ""
-                                        }
-                                    });
-                                });
-                    
-                                this.props.updatehook(this.props.updatekey, this.state.object);
-                                break;
-                        }
-                    }}></i>
+                    <i class="fa-solid fa-plus addelement" onClick={this.addnewfield}></i>
                 </div>
             </div>
         );

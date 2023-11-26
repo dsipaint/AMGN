@@ -244,13 +244,14 @@ input {
     border: 1px solid white;
     border-radius: 5px;
     margin-right: 5px;
-    clear: left;
+    margin-bottom: 7px;
 }
 
 .list {
-    border: 2px solid rgb(163, 163, 163);
-    border-radius: 5px;
+    border-left: 1px solid rgb(163, 163, 163);
     width: fit-content;
+    height: fit-content;
+    padding: 7px;
 }
 
 .listinput {
@@ -263,7 +264,16 @@ input {
 
 .completelistitem{
     clear: left;
-    padding: 5px;
+    display: flex;
+}
+
+.completeobjectfield {
+    display: flex;
+}
+
+.completeobjectfield > .removeelement {
+    display: flex;
+    align-items: center;
 }
 
 .objectdisplay {
@@ -272,6 +282,7 @@ input {
     width: fit-content;
     border-radius: 5px;
     padding: 10px;
+
 }
 
 .objectdisplay > .inputwrapper {
@@ -304,7 +315,6 @@ select {
 
 .addnew {
     clear: left;
-    margin-bottom: 20px;
 }
 
 .addnew > span {
@@ -317,25 +327,20 @@ select {
 }
 
 .inputwrapper {
-    float: left;
-    clear: left;
-    margin-bottom: 10px;
+    width: fit-content;
 }
 
 .removeelement {
     cursor: pointer;
     color: rgb(252, 70, 70);
-    float: left;
 }
 
-.removeelement:has(+.objectdisplay){
-    float: right;
-    margin: 5px;
+.objectdisplay + .removeelement {
+    margin-left: 5px;
 }
 
-.removeelement:has(+.listwrapper){
-    float: right;
-    margin: 5px;
+.listwrapper + .removeelement {
+    margin-left: 5px;
 }
 
 .savesettings {
