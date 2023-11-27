@@ -201,7 +201,8 @@ public class WebpanelController
 
         if(name == null)
         {
-            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (no plugin specified) from user " + AMGN.bot.getUserById(userid));
+            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (no plugin specified) from user " + AMGN.bot.getUserById(userid)
+                + " (" + request.getRequestURI() + ")");
             response.setStatus(401);
             return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
         }
@@ -258,7 +259,8 @@ public class WebpanelController
                     }
                     catch(IOException e)
                     {
-                        AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (problem reading plugin info) from user " + AMGN.bot.getUserById(userid));
+                        AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (problem reading plugin info) from user " + AMGN.bot.getUserById(userid)
+                            + " (" + request.getRequestURI() + ")");
                         response.setStatus(500);
                         return new ObjectMapper().createObjectNode().put("error", "problem reading plugin info");
                     }
@@ -268,7 +270,8 @@ public class WebpanelController
                 }
             }
             
-            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (plugin " + name + "not found) from user " + AMGN.bot.getUserById(userid));
+            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (plugin " + name + "not found) from user " + AMGN.bot.getUserById(userid)
+                + " (" + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");  
         }
@@ -376,7 +379,8 @@ public class WebpanelController
             }
             catch(IOException e)
             {
-                AMGN.logger.error("Error writing network data for PUT /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
+                AMGN.logger.error("Error writing network data for PUT /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid)
+                    + " (" + request.getRequestURI() + ")");
                 response.setStatus(500);
                 return new ObjectMapper().createObjectNode().put("error", "problem writing network data");
             }
@@ -409,7 +413,8 @@ public class WebpanelController
 
         if(name == null)
         {
-            AMGN.logger.error("PUT request made to /webpanel/api/plugininfo failed (no plugin specified) from user " + AMGN.bot.getUserById(userid));
+            AMGN.logger.error("PUT request made to /webpanel/api/plugininfo failed (no plugin specified) from user " + AMGN.bot.getUserById(userid)
+                + " (" + request.getRequestURI() + ")");
             response.setStatus(401);
             return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
         }
@@ -444,7 +449,8 @@ public class WebpanelController
                 }
             }
 
-            AMGN.logger.error("Plugin not found for PUT request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid) + " with " + name);
+            AMGN.logger.error("Plugin not found for PUT request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid)
+                + "( " + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         }
@@ -509,7 +515,8 @@ public class WebpanelController
                         }
                         catch(IOException e)
                         {
-                            AMGN.logger.error("Error writing network data for POST /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
+                            AMGN.logger.error("Error writing network data for POST /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid)
+                                + " (" + request.getRequestURI() + ")");
                             e.printStackTrace();
                         }
                     }
@@ -518,7 +525,8 @@ public class WebpanelController
                 }
             }
 
-            AMGN.logger.error("Plugin not found for POST request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid) + " with " + name);
+            AMGN.logger.error("Plugin not found for POST request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid)
+                + "(" + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         }
@@ -563,7 +571,8 @@ public class WebpanelController
                         }
                         catch(IOException e)
                         {
-                            AMGN.logger.error("Error deleting local network data for DELETE /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
+                            AMGN.logger.error("Error deleting local network data for DELETE /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid)
+                                + "(" + request.getRequestURI() + ")");
                             e.printStackTrace();
                         }
                         
@@ -579,7 +588,8 @@ public class WebpanelController
                 }
             }
 
-            AMGN.logger.error("Plugin not found for DELETE request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid) + " with " + name);
+            AMGN.logger.error("Plugin not found for DELETE request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid)
+                + "(" + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         }
@@ -621,7 +631,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
-                    AMGN.logger.error("Error writing whitelist data for PUT /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+                    AMGN.logger.error("Error writing whitelist data for PUT /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -672,7 +683,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
-                    AMGN.logger.error("Error writing whitelist data for DELETE /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+                    AMGN.logger.error("Error writing whitelist data for DELETE /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid)
+                        + "(" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -725,7 +737,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
-                    AMGN.logger.error("Error writing whitelist data for PUT /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
+                    AMGN.logger.error("Error writing whitelist data for PUT /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -777,7 +790,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
-                    AMGN.logger.error("Error writing whitelist data for DELETE /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
+                    AMGN.logger.error("Error writing whitelist data for DELETE /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid)
+                        + "( " + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -897,7 +911,8 @@ public class WebpanelController
                 }
                 catch(JsonProcessingException | FileNotFoundException e)
                 {
-                    AMGN.logger.error("Error processing json response from " + AMGN.bot.getUserById(userid) + " in GET /webpanel/api/permissions");
+                    AMGN.logger.error("Error processing json response from " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
             }
@@ -985,7 +1000,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
-                    AMGN.logger.error("Error processing json response from " + AMGN.bot.getUserById(userid) + " in PUT /webpanel/api/permissions");
+                    AMGN.logger.error("Error processing json response from " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     response.setStatus(500);
                     return new ObjectMapper().createObjectNode().put("error", "problem writing permission data");
                 }
