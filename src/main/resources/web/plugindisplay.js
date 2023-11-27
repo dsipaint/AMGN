@@ -113,8 +113,9 @@ class ListItem extends React.Component
     {
         var removebutton = function (element, shape)
         {
+            var listname = updatekeyref.split(".")[updatekeyref.split(".").length - 1]
             return (
-                this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removeElement(element)}}></i> : ""
+                this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removeElement(element)}} title={"Remove item from " + listname}></i> : ""
             );
         };
 
@@ -354,7 +355,7 @@ class ObjectItem extends React.Component
         {
             return (
                 // this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(element)}}></i> : ""
-                <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(name)}}></i>
+                <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(name)}} title={"Remove " + name}></i>
             );
         };
         removebutton = removebutton.bind(this);
@@ -371,6 +372,7 @@ class ObjectItem extends React.Component
                                 {
                                     return (
                                         <div class="completeobjectfield">
+                                            {removebutton(key, "xmark")}
                                             <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
                                         </div>
                                     );
@@ -389,6 +391,7 @@ class ObjectItem extends React.Component
                                     return (
                                         <div class="completeobjectfield">
                                             <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "xmark")}
                                         </div>
                                     );
                                 }

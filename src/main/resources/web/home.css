@@ -271,9 +271,13 @@ input {
     display: flex;
 }
 
-.completeobjectfield > .removeelement {
+.completeobjectfield > .inputwrapper + .removeelement {
     display: flex;
     align-items: center;
+}
+
+.completeobjectfield > .removeelement:has(+.listwrapper) {
+    margin-right: 5px;
 }
 
 .objectdisplay {
