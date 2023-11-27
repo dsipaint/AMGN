@@ -183,7 +183,12 @@ class ListItem extends React.Component
 
         return (
             <div class="listwrapper">
-                <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1].replace(new RegExp("_", 'g'), " ") + ":"}</h2>
+                {
+                    this.props.name !== undefined ?
+                        <h2>{this.props.name.replaceAll("_", " ") + ":"}</h2>
+                        :
+                        ""
+                }
                 <div class="list">
                     {this.state.list.map(function(item, i){
                         switch(typeof item)
@@ -367,89 +372,97 @@ class ObjectItem extends React.Component
         removebutton = removebutton.bind(this);
 
         return (
-            <div class="objectdisplay">
+            <div class="objectwrapper">
                 {
-                    Object.keys(this.state.object).map((key) => {
-                        var item = this.state.object[key];
-                        switch(typeof item)
-                        {
-                            case "object":
-                                if(Array.isArray(item))
-                                {
-                                    return (
-                                        <div class="completeobjectfield">
-                                            {removebutton(key, "xmark")}
-                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore}/>
-                                        </div>
-                                    );
-                                }
-                                else
-                                {
-                                    if(item === undefined || item === null)
-                                    {
-                                        return (
-                                            <div class="completeobjectfield"> 
-                                                <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
-                                                {removebutton(key, "minus")}
-                                            </div>
-                                        );
-                                    }
-
-                                    return (
-                                        <div class="completeobjectfield">
-                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore}/>
-                                            {removebutton(key, "xmark")}
-                                        </div>
-                                    );
-                                }
-                                    
-                            case "undefined":
-                                return;
-
-                            case "boolean":
-                                return (
-                                    <div class="completeobjectfield">
-                                        <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
-                                        {removebutton(key, "minus")}
-                                    </div>
-                                );
-
-                            case "number":
-                                return (
-                                    <div class="completeobjectfield">
-                                        <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
-                                        {removebutton(key, "minus")}
-                                    </div>
-                                );
-
-                            default:
-                                return (
-                                    <div class="completeobjectfield">
-                                        <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
-                                        {removebutton(key, "minus")}
-                                    </div>
-                                );
-                        }
-                    })
-                }
-                {
-                    this.props.addmore == "true" ?
-                        <div class="addmoretoobject">
-                                <h4>&gt; new field:</h4>
-                                <span class="addmorename">Name:</span>
-                                <input type="text" id={this.props.updatekey.replaceAll(".", "_") + "-addmorename"}></input>
-                                <select id={this.props.updatekey.replaceAll(".", "_") + "-select"}>
-                                    <option>object</option>
-                                    <option>true/false</option>
-                                    <option>list</option>
-                                    <option>number</option>
-                                    <option>text</option>
-                                </select>
-                                <i class="fa-solid fa-plus addelement" onClick={this.addnewfield}></i>
-                        </div>
+                    this.props.name !== undefined ?
+                        <h2>{this.props.name.replaceAll("_", " ") + ":"}</h2>
                         :
                         ""
                 }
+                <div class="object">
+                    {
+                        Object.keys(this.state.object).map((key) => {
+                            var item = this.state.object[key];
+                            switch(typeof item)
+                            {
+                                case "object":
+                                    if(Array.isArray(item))
+                                    {
+                                        return (
+                                            <div class="completeobjectfield">
+                                                {removebutton(key, "xmark")}
+                                                <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore} name={key}/>
+                                            </div>
+                                        );
+                                    }
+                                    else
+                                    {
+                                        if(item === undefined || item === null)
+                                        {
+                                            return (
+                                                <div class="completeobjectfield"> 
+                                                    <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                                    {removebutton(key, "minus")}
+                                                </div>
+                                            );
+                                        }
+
+                                        return (
+                                            <div class="completeobjectfield">
+                                                <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore} name={key}/>
+                                                {removebutton(key, "xmark")}
+                                            </div>
+                                        );
+                                    }
+                                        
+                                case "undefined":
+                                    return;
+
+                                case "boolean":
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "minus")}
+                                        </div>
+                                    );
+
+                                case "number":
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "minus")}
+                                        </div>
+                                    );
+
+                                default:
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "minus")}
+                                        </div>
+                                    );
+                            }
+                        })
+                    }
+                    {
+                        this.props.addmore == "true" ?
+                            <div class="addmoretoobject">
+                                    <h4>&gt; new field:</h4>
+                                    <span class="addmorename">Name:</span>
+                                    <input type="text" id={this.props.updatekey.replaceAll(".", "_") + "-addmorename"}></input>
+                                    <select id={this.props.updatekey.replaceAll(".", "_") + "-select"}>
+                                        <option>object</option>
+                                        <option>true/false</option>
+                                        <option>list</option>
+                                        <option>number</option>
+                                        <option>text</option>
+                                    </select>
+                                    <i class="fa-solid fa-plus addelement" onClick={this.addnewfield}></i>
+                            </div>
+                            :
+                            ""
+                    }
+                </div>
             </div>
         );
     }
