@@ -663,6 +663,7 @@ public class ListenerWrapper extends ListenerAdapter
     @Override
     public final void onException(ExceptionEvent event)
     {
+        AMGN.logger.error(event.toString());
         AMGN.plugin_listeners.values().forEach(listeners ->
         {
             listeners.forEach(listener -> {listener.onException(event);});
