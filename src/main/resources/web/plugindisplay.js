@@ -352,6 +352,8 @@ class ObjectItem extends React.Component
     {
         var updatehookref = this.props.updatehook;
         var updatekeyref = this.props.updatekey;
+        var addmore = this.props.addmore;
+        var removemore = this.props.removemore;
 
         var removebutton = function (name, shape)
         {
@@ -377,7 +379,7 @@ class ObjectItem extends React.Component
                                     return (
                                         <div class="completeobjectfield">
                                             {removebutton(key, "xmark")}
-                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={this.props.addmore} removemore={this.props.removemore}/>
+                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore}/>
                                         </div>
                                     );
                                 }
@@ -395,7 +397,7 @@ class ObjectItem extends React.Component
 
                                     return (
                                         <div class="completeobjectfield">
-                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={this.props.addmore} removemore={this.props.removemore}/>
+                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore}/>
                                             {removebutton(key, "xmark")}
                                         </div>
                                     );
