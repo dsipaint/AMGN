@@ -59,15 +59,26 @@ class ListItem extends React.Component
 
         if($("#" + updatekeyref).is("input"))
         {
-            ReactDOM.flushSync(() =>
+            if($("#" + updatekeyref).attr("type") == "text")
             {
-                this.setState({
-                    list: [...this.state.list, $("#" + updatekeyref).val()]
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        list: [...this.state.list, $("#" + updatekeyref).val()]
+                    });
                 });
-            });
+            }
+            else if($("#" + updatekeyref).attr("type") == "checkbox")
+            {
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        list: [...this.state.list, $("#" + updatekeyref)[0].checked]
+                    });
+                });        
+            }
 
             this.props.updatehook(this.props.updatekey, this.state.list);
-            
             $("#" + updatekeyref).val("");
         }
         else if($("#" + updatekeyref).hasClass("addobject"))
@@ -98,10 +109,17 @@ class ListItem extends React.Component
 
     removeElement(element)
     {
+        var alreadyremoved = false;
         ReactDOM.flushSync(() =>{
             this.setState({
                 list: this.state.list.filter(function(item){
-                    return item !== element;
+                    if(item === element && !alreadyremoved)
+                    {
+                        alreadyremoved = true;
+                        return false;   
+                    }
+
+                    return true;
                 })
             });
         });
@@ -159,6 +177,15 @@ class ListItem extends React.Component
                     return (
                         <div class="addnew">
                             <input type="number" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+
+                case "boolean":
+                    return (
+                        <div class="addnew">
+                            <input type="checkbox" id={this.props.updatekey.replaceAll("\.", "_")}></input>
                             <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                         </div>
                     );
@@ -222,7 +249,15 @@ class ListItem extends React.Component
                                         <NumberItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
                                         {removebutton(item, "minus")}
                                     </div>
-                                );                                
+                                ); 
+                                
+                            case "boolean":
+                                return (
+                                    <div class="completelistitem">
+                                        <BooleanItem value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                        {removebutton(item, "minus")}
+                                    </div>
+                                );
 
                             default:
                                 return (

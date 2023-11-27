@@ -185,13 +185,13 @@ html {
 #pluginlist {
     width: 30%;
     margin: 0px;
+    border-right: 2px solid #4A4A4A;
 }
 
 #pluginsettings {
     margin: 0px;
     padding-left: 50px;
     width: 100%;
-    border-left: 2px solid #4A4A4A;
 }
 
 #plugintitle {
