@@ -1001,8 +1001,8 @@ class PluginConfig extends React.Component
     {
         var updatehookref = this.setPropertiesForChildren;
         return(
-            <div class="maxheight">
-                <div id="pluginlist" class="maxheight">
+            <div>
+                <div id="pluginlist">
                     {getSelectedGuild() == "global" ?
                         <div>
                             <div class="plugin" onClick={() => {this.selectPlugin("internal-network")}}>
@@ -1031,7 +1031,7 @@ class PluginConfig extends React.Component
                     :
 
                     //specific plugin settings
-                    <div id="pluginsettings" class="maxheight">
+                    <div id="pluginsettings">
                         <div id="plugintitle">
                             <img src={this.state.selectedplugin.picture} alt="plugin image" width="70" height="70"/>
                             <div id="plugintitletxt">
@@ -1040,7 +1040,7 @@ class PluginConfig extends React.Component
                             </div>
                         </div>
                         <p>{this.state.selectedplugin.description}</p>
-                        <div id="options" class="maxheight">
+                        <div id="options">
                             {
                                 this.state.selectedplugin.config ?
                                 <div>
