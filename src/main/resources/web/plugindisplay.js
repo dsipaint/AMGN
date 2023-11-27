@@ -35,7 +35,7 @@ class Config extends React.Component
         if(Array.isArray(this.props.item))
             return <ListItem list={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey} addmore="true" removemore="true"/>
         else
-            return <ObjectItem object={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+            return <ObjectItem object={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey} addmore="true" removemore="true"/>
             
     }
 }
@@ -178,6 +178,8 @@ class ListItem extends React.Component
 
         var updatehookref = this.props.updatehook;
         var updatekeyref = this.props.updatekey;
+        var addmore = this.props.addmore;
+        var removemore = this.props.removemore;
 
         return (
             <div class="listwrapper">
@@ -191,7 +193,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
-                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore="true" removemore="true"/>
+                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore={addmore} removemore={removemore}/>
                                             {removebutton(item, "xmark")}
                                         </div>
                                     );
@@ -200,7 +202,7 @@ class ListItem extends React.Component
                                 {
                                     return (
                                         <div class="completelistitem">
-                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore={addmore} removemore={removemore}/>
                                             {removebutton(item, "xmark")}
                                         </div>
                                     );   
@@ -354,8 +356,10 @@ class ObjectItem extends React.Component
         var removebutton = function (name, shape)
         {
             return (
-                // this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(element)}}></i> : ""
-                <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(name)}} title={"Remove " + name}></i>
+                this.props.removemore == "true" ? 
+                    <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(name)}} title={"Remove " + name}></i>
+                    :
+                    ""
             );
         };
         removebutton = removebutton.bind(this);
@@ -373,7 +377,7 @@ class ObjectItem extends React.Component
                                     return (
                                         <div class="completeobjectfield">
                                             {removebutton(key, "xmark")}
-                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
+                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={this.props.addmore} removemore={this.props.removemore}/>
                                         </div>
                                     );
                                 }
@@ -382,15 +386,16 @@ class ObjectItem extends React.Component
                                     if(item === undefined || item === null)
                                     {
                                         return (
-                                            <div class="completeobjectfield">
+                                            <div class="completeobjectfield"> 
                                                 <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                                {removebutton(key, "minus")}
                                             </div>
                                         );
                                     }
 
                                     return (
                                         <div class="completeobjectfield">
-                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={this.props.addmore} removemore={this.props.removemore}/>
                                             {removebutton(key, "xmark")}
                                         </div>
                                     );
@@ -425,19 +430,24 @@ class ObjectItem extends React.Component
                         }
                     })
                 }
-                <div class="addmoretoobject">
-                    <h4>&gt; new field:</h4>
-                    <span class="addmorename">Name:</span>
-                    <input type="text" id={this.props.updatekey.replaceAll(".", "_") + "-addmorename"}></input>
-                    <select id={this.props.updatekey.replaceAll(".", "_") + "-select"}>
-                        <option>object</option>
-                        <option>true/false</option>
-                        <option>list</option>
-                        <option>number</option>
-                        <option>text</option>
-                    </select>
-                    <i class="fa-solid fa-plus addelement" onClick={this.addnewfield}></i>
-                </div>
+                {
+                    this.props.addmore == "true" ?
+                        <div class="addmoretoobject">
+                                <h4>&gt; new field:</h4>
+                                <span class="addmorename">Name:</span>
+                                <input type="text" id={this.props.updatekey.replaceAll(".", "_") + "-addmorename"}></input>
+                                <select id={this.props.updatekey.replaceAll(".", "_") + "-select"}>
+                                    <option>object</option>
+                                    <option>true/false</option>
+                                    <option>list</option>
+                                    <option>number</option>
+                                    <option>text</option>
+                                </select>
+                                <i class="fa-solid fa-plus addelement" onClick={this.addnewfield}></i>
+                        </div>
+                        :
+                        ""
+                }
             </div>
         );
     }
@@ -817,7 +827,7 @@ class PluginConfig extends React.Component
                     {
                         this.state.permissioninfo === undefined ? "No permission settings to show" :
                         <div>
-                            <ObjectItem object={this.state.permissioninfo} updatehook={this.setPropertiesForChildren} updatekey="permissioninfo"/>
+                            <ObjectItem object={this.state.permissioninfo} updatehook={this.setPropertiesForChildren} updatekey="permissioninfo" addmore="true" removemore="true"/>
                         </div>
                     }
                 </div>
