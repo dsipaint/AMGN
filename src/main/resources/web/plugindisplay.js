@@ -1063,8 +1063,6 @@ class PluginConfig extends React.Component
 
     render()
     {
-        console.log("Render:");
-        console.log(this.state.selectedplugin.config);
         var updatehookref = this.setPropertiesForChildren;
         return(
             <div>
