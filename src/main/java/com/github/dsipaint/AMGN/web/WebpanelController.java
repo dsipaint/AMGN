@@ -500,25 +500,8 @@ public class WebpanelController
                         for(File file : configfiles)
                             plugin.getConfig().generateLocalResource(file.getName(), AMGN.bot.getGuildById(guild));
 
-                        //return this config
-                        try
-                        {
-                            for(File f : configfiles)
-                            {
-                                ObjectNode configobj = mapper.createObjectNode();
-                                JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
-                                configobj.put("file", f.getName().replace(".yml", ""));
-                                configobj.set("data", configdata);
-    
-                                confignode.add(configobj);
-                            }
-                        }
-                        catch(IOException e)
-                        {
-                            AMGN.logger.error("Error writing network data for POST /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid)
-                                + " (" + request.getRequestURI() + ")");
-                            e.printStackTrace();
-                        }
+                        //return config as json
+                        confignode = getConfigAsJson(plugin, guild);
                     }
 
                     return confignode;
@@ -597,6 +580,62 @@ public class WebpanelController
         AMGN.logger.error("Unauthenticated POST request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //reset a plugin config for a guild or even globally
+    @PostMapping(value = "/webpanel/api/resetpluginconfig", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode resetConfig(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        AMGN.logger.info("POST request made to /webpanel/api/resetpluginconfig");
+
+        if(request.getCookies() == null)
+        {
+            AMGN.logger.error("POST request made to /webpanel/api/resetpluginconfig failed (no cookies present)");
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+        if(isAuthenticatedRequest(request))
+        {
+            //look for plugin
+            for(Plugin p : AMGN.plugin_listeners.keySet())
+            {
+                if(p.getName().equalsIgnoreCase(plugin))
+                {
+                    //use global files as a reference
+                    File globalconfigdir = new File(p.getGlobalConfigPath());
+                    File[] configfiles = globalconfigdir.listFiles((file, name) ->{
+                        return name.endsWith(".yml");
+                    });
+
+                    if(guild.equalsIgnoreCase("global"))
+                    {
+                        for(File config : configfiles)
+                            p.getConfig().generateGlobalResource(config.getName());
+                    }
+                    else if(AMGN.bot.getGuildById(guild) != null)
+                    {
+                        for(File config : configfiles)
+                            p.getConfig().generateLocalResource(config.getName(), AMGN.bot.getGuildById(guild));
+                    }
+
+                    response.setStatus(200);
+                    return getConfigAsJson(p, guild);
+                }
+            }
+
+            AMGN.logger.error("Plugin not found for POST request at /webpanel/api/resetpluginconfig for user " + AMGN.bot.getUserById(userid)
+                + "(" + request.getRequestURI() + ")");
+            response.setStatus(404);
+            return new ObjectMapper().createObjectNode().put("error", "plugin not found");
+        }
+
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+
     }
 
     @PutMapping(value = "/webpanel/api/whitelist", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -1033,6 +1072,47 @@ public class WebpanelController
             body.get("id").asText()
             :
             null;
+    }
+
+    public static ArrayNode getConfigAsJson(Plugin plugin, String guild)
+    {
+        File configdir;
+        if(guild.equalsIgnoreCase("global")) //use global config if specified
+            configdir = new File(plugin.getGlobalConfigPath());
+        else if(guild.matches(GuildNetwork.ID_REGEX) && AMGN.bot.getGuildById(guild) != null) //else check if guild really exists
+            configdir = new File(plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild)));
+        else //otherwise return nothing
+            return new ObjectMapper().createArrayNode();
+        
+        File[] configfiles = configdir.listFiles((file, filename) -> {
+            return filename.endsWith(".yml");
+        });
+
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode confignode = mapper.createArrayNode();
+        if(configfiles != null)
+        {
+            //return this config
+            try
+            {
+                for(File f : configfiles)
+                {
+                    ObjectNode configobj = mapper.createObjectNode();
+                    JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
+                    configobj.put("file", f.getName().replace(".yml", ""));
+                    configobj.set("data", configdata);
+
+                    confignode.add(configobj);
+                }
+            }
+            catch(IOException e)
+            {
+                AMGN.logger.error("Error reading config for plugin " + plugin.getName() + " and guild " + guild + " in getConfigAsJson");
+                e.printStackTrace();
+            }
+        }
+
+        return confignode;
     }
 
     //will look at a request and see if this is a valid token

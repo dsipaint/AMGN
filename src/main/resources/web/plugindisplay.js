@@ -386,6 +386,8 @@ class ObjectItem extends React.Component
                 this.props.updatehook(this.props.updatekey, this.state.object);
                 break;
         }
+
+        $("#" + this.props.updatekey.replaceAll(".", "_") + "-addmorename").val("");
     }
 
     render()
@@ -670,6 +672,7 @@ class PluginConfig extends React.Component
 
         this.addConfigForPlugin = this.addConfigForPlugin.bind(this);
         this.deleteLocalConfig = this.deleteLocalConfig.bind(this);
+        this.resetConfig = this.resetConfig.bind(this);
 
         this.refreshConfig = this.refreshConfig.bind(this);
 
@@ -917,6 +920,32 @@ class PluginConfig extends React.Component
         });
     }
 
+    resetConfig()
+    {
+        this.setState({
+            selectedplugin: {
+                ...this.state.selectedplugin,
+                config: undefined
+            }
+        });
+
+        $.ajax({
+            method: "POST",
+            url: "/webpanel/api/resetpluginconfig?guild=" + getSelectedGuild() + "&plugin=" + this.state.selectedplugin.name,
+            success: (data) => {
+                this.setState({
+                    selectedplugin: {
+                        ...this.state.selectedplugin,
+                        config: data
+                    }
+                });
+            },
+            error: (err) => {
+                displayMessage("There was a problem resetting the config", false);
+            }
+        });
+    }
+
     addToWhitelist()
     {
         var updatefunc = function(data) {
@@ -1034,6 +1063,8 @@ class PluginConfig extends React.Component
 
     render()
     {
+        console.log("Render:");
+        console.log(this.state.selectedplugin.config);
         var updatehookref = this.setPropertiesForChildren;
         return(
             <div>
@@ -1127,6 +1158,12 @@ class PluginConfig extends React.Component
                                         <div class="removesettings" onClick={this.removeFromBlacklist}>Remove from Blacklist</div>
                                         :
                                         <div class="savesettings" onClick={this.addToBlacklist}>Add to Blacklist</div>
+                                }
+                                {
+                                    this.state.selectedplugin.config ? 
+                                    <div class="removesettings" onClick={this.resetConfig}>Reset Config</div>
+                                    :
+                                    ""
                                 }
                             </div>
                         </div>
