@@ -103,27 +103,56 @@ class ListItem extends React.Component
 
             this.props.updatehook(this.props.updatekey, this.state.list);
         }
+        else if(this.state.list.length == 0)
+        {
+            switch($("#" + updatekeyref).next().find(":selected").text())
+            {
+                case "object":
+                    this.setState({
+                        list: [{}]
+                    });
+                    break;
+                
+                case "true/false":
+                    this.setState({
+                        list: [true]
+                    });
+                    break;
+
+                case "list":
+                    this.setState({
+                        list: [[]]
+                    });
+                    break;
+
+                case "number":
+                    this.setState({
+                        list: [-1]
+                    });
+                    break;
+
+                case "text":
+                    this.setState({
+                        list: [""]
+                    });
+                    break;
+            }
+        }
 
         return "";
     }
 
     removeElement(element)
     {
-        var alreadyremoved = false;
+        var newlist = this.state.list.slice();
+        newlist.splice(newlist.indexOf(element), 1);
+
         ReactDOM.flushSync(() =>{
             this.setState({
-                list: this.state.list.filter(function(item){
-                    if(item === element && !alreadyremoved)
-                    {
-                        alreadyremoved = true;
-                        return false;   
-                    }
-
-                    return true;
-                })
+                list: newlist
             });
         });
-
+        
         this.props.updatehook(this.props.updatekey, this.state.list);
     }
 
@@ -141,6 +170,26 @@ class ListItem extends React.Component
 
         var addmoreinput = function()
         {
+            //if list is empty, let user select type of list
+            if(this.state.list.length == 0)
+            {
+                return (
+                    <div class="addnew">
+                        <span id={this.props.updatekey.replaceAll("\.", "_")} class="emptylist">
+                            &gt; new 
+                        </span>
+                        <select>
+                            <option>object</option>
+                            <option>true/false</option>
+                            <option>list</option>
+                            <option>number</option>
+                            <option>text</option>
+                        </select>
+                        <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                    </div>
+                );
+            }
+
             switch(typeof this.state.list[this.state.list.length - 1])
             {
                 case "object":
@@ -163,16 +212,6 @@ class ListItem extends React.Component
                             </div>
                         );
 
-                case "undefined":
-                    return (
-                        <div class="addnew">
-                            <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
-                                &gt; new object
-                            </span>
-                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
-                        </div>
-                    );
-
                 case "number":
                     return (
                         <div class="addnew">
@@ -186,6 +225,16 @@ class ListItem extends React.Component
                     return (
                         <div class="addnew">
                             <input type="checkbox" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+                case "undefined":
+                    return (
+                        <div class="addnew">
+                            <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
+                                &gt; new object
+                            </span>
                             <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
                         </div>
                     );
