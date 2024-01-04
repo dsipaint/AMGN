@@ -45,7 +45,7 @@ public final class UpdateMetaInfoCommand implements Consumer<CommandEvent>
 			
 			e.getTextChannel().sendMessage("New prefix for this guild was set to " + e.getArgs()[2]).queue();
 			GuildNetwork.sendToModlogs(guild_id, "New prefix for this guild was set to " + e.getArgs()[2]
-					+ " by " + e.getSender().getUser().getAsTag());
+					+ " by " + e.getSender().getUser().getName());
 			return;
 		}
 		
@@ -74,7 +74,7 @@ public final class UpdateMetaInfoCommand implements Consumer<CommandEvent>
 						
 						e.getTextChannel().sendMessage("Modlogs channel for server updated to "+ tc.getAsMention()).queue();
 						GuildNetwork.sendToModlogs(guild_id, "Modlogs channel for server updated to "+ tc.getAsMention()
-								+ " by " + e.getSender().getUser().getAsTag());
+								+ " by " + e.getSender().getUser().getName());
 						return;
 					}
 				}
@@ -102,7 +102,7 @@ public final class UpdateMetaInfoCommand implements Consumer<CommandEvent>
 				}
 				e.getTextChannel().sendMessage("Accept colour updated to " + e.getArgs()[2]).queue();
 				GuildNetwork.sendToModlogs(guild_id, "Accept colour updated to " + e.getArgs()[2]
-						+ " by " + e.getSender().getUser().getAsTag());
+						+ " by " + e.getSender().getUser().getName());
 				return;
 			}
 		}
@@ -126,7 +126,7 @@ public final class UpdateMetaInfoCommand implements Consumer<CommandEvent>
 				}
 				e.getTextChannel().sendMessage("Decline colour updated to " + e.getArgs()[2]).queue();
 				GuildNetwork.sendToModlogs(guild_id, "Decline colour updated to " + e.getArgs()[2]
-						+ " by " + e.getSender().getUser().getAsTag());
+						+ " by " + e.getSender().getUser().getName());
 				return;
 			}
 		}
@@ -150,7 +150,7 @@ public final class UpdateMetaInfoCommand implements Consumer<CommandEvent>
 				}
 				e.getTextChannel().sendMessage("Unique colour updated to " + e.getArgs()[2]).queue();
 				GuildNetwork.sendToModlogs(guild_id, "Unique colour updated to " + e.getArgs()[2]
-						+ " by " + e.getSender().getUser().getAsTag());
+						+ " by " + e.getSender().getUser().getName());
 				return;
 			}
 		}

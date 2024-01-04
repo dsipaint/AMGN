@@ -170,8 +170,8 @@ import net.dv8tion.jda.api.events.user.update.GenericUserPresenceEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivityOrderEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateAvatarEvent;
-import net.dv8tion.jda.api.events.user.update.UserUpdateDiscriminatorEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateFlagsEvent;
+import net.dv8tion.jda.api.events.user.update.UserUpdateGlobalNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -2690,15 +2690,6 @@ public class ListenerWrapper extends ListenerAdapter
     }
      
     @Override
-    public final void onUserUpdateDiscriminator(UserUpdateDiscriminatorEvent event)
-    {
-        AMGN.plugin_listeners.values().forEach(listeners ->
-        {
-            listeners.forEach(listener -> {listener.onUserUpdateDiscriminator(event);});
-        });
-    }
-     
-    @Override
     public final void onUserUpdateFlags(UserUpdateFlagsEvent event)
     {
         AMGN.plugin_listeners.values().forEach(listeners ->
@@ -2713,6 +2704,15 @@ public class ListenerWrapper extends ListenerAdapter
         AMGN.plugin_listeners.values().forEach(listeners ->
         {
             listeners.forEach(listener -> {listener.onUserUpdateName(event);});
+        });
+    }
+
+    @Override
+    public void onUserUpdateGlobalName(UserUpdateGlobalNameEvent event)
+    {
+        AMGN.plugin_listeners.values().forEach(listeners ->
+        {
+            listeners.forEach(listener -> {listener.onUserUpdateGlobalName(event);});
         });
     }
      

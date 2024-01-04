@@ -46,7 +46,7 @@ public final class EnableCommand implements Consumer<CommandEvent>
 						GuildNetwork.enablePlugin(plugin); //wrong reference, fix possibly
 						e.getTextChannel().sendMessage("Plugin was successfully enabled.").queue();
 						GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + plugin.getName() + " "
-								+ plugin.getVersion() + " enabled by " + e.getSender().getUser().getAsTag());
+								+ plugin.getVersion() + " enabled by " + e.getSender().getUser().getName());
 						return;
 					}
 				}

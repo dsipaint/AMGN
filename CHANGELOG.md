@@ -18,6 +18,8 @@
 ~ Improve the way default commands are understood by the network- this now allows for more consistent behaviour, and DEFAULT COMMANDS CAN BE USED IN AMGN.runCommand()!!!
 ~ Cleaned up webpanel authentication- sessions may now persist across network restarts, and revoking the permission AMGN.webpanel.access will now properly revoke the user's access to the webpanel
 + Fixed webpanel bugs and performance, added new webpanel buttons for more customisation and gave cosmetic upgrade to webpanel (fields can now be added or removed from config objects, the data type of a list can be chosen, objects and lists are now more clearly represented, reset config button was added, in short anything can now be added or removed from a config on the webpanel)
+~ AMGN.runCommand no longer access plugin listeners concurrently, breaking things, and is now more robust
+- no more references to old discord tags- all been replaced with new discord usernames
 
 
 ## beta-1.4.2

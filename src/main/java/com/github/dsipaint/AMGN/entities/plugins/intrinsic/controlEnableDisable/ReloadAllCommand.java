@@ -20,7 +20,7 @@ public class ReloadAllCommand implements Consumer<CommandEvent>
         });
         
         e.getTextChannel().sendMessage("All plugins were successfully reloaded.").queue();
-        GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "All plugins reloaded by " + e.getSender().getUser().getAsTag());
+        GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "All plugins reloaded by " + e.getSender().getUser().getName());
         return;
     }
 }

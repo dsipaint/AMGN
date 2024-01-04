@@ -20,7 +20,7 @@ public final class CloseCommand implements Consumer<CommandEvent>
 		
 		//log in modlogs
 		GuildNetwork.guild_data.keySet().forEach(guild_id -> {
-			GuildNetwork.sendToModlogs(guild_id, "Network shutdown by " + e.getSender().getUser().getAsTag());
+			GuildNetwork.sendToModlogs(guild_id, "Network shutdown by " + e.getSender().getUser().getName());
 		});
 		
 		e.getTextChannel().sendMessage("Disabled all plugins. Shutting down...").complete();

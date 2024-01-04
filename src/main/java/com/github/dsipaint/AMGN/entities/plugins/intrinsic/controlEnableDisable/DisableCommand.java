@@ -35,7 +35,7 @@ public final class DisableCommand implements Consumer<CommandEvent>
 			AMGN.plugin_listeners.remove(correct_plugin);
 			e.getTextChannel().sendMessage("Plugin was successfully disabled.").queue();
 			GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + correct_plugin.getName() + " "
-					+ correct_plugin.getVersion() + " disabled by " + e.getSender().getUser().getAsTag());
+					+ correct_plugin.getVersion() + " disabled by " + e.getSender().getUser().getName());
 		}
 		else
 			e.getTextChannel().sendMessage("No plugin found with this name.").queue();

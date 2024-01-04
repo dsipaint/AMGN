@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -58,6 +59,10 @@ public class AMGN
 		//SETUP
 		logger.info("Commencing setup...");
 		String token = "";
+		String membercachepolicy = null;
+
+		List<String> cacheflags;
+		List<CacheFlag> parsecacheflags = new ArrayList<CacheFlag>();
 
 		IOHandler.dumperopts = new DumperOptions();
 		IOHandler.dumperopts.setIndent(2);
@@ -89,6 +94,19 @@ public class AMGN
 			token = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "token");//read token from network.yml
 			if(token == null)
 				token = System.getenv("AMGN_TOKEN");
+
+			logger.info("Reading caching settings from network settings...");
+
+			membercachepolicy = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "membercachepolicy");
+			if(membercachepolicy == null)
+				membercachepolicy = "default"; //default cache policy value
+
+
+			cacheflags = (List<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "cacheflags");
+			if(cacheflags == null) //default cacheflags value
+				cacheflags = Arrays.asList("online_status", "activity");
+			for(String flag : cacheflags)
+				parsecacheflags.add(CacheFlag.valueOf(flag.toUpperCase()));
 		}
 		catch (IOException e)
 		{
@@ -101,11 +119,10 @@ public class AMGN
 		try
 		{
 			bot = JDABuilder.createDefault(token)
-					.enableIntents(EnumSet.allOf(GatewayIntent.class))
-					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.enableCache(CacheFlag.ONLINE_STATUS,
-						CacheFlag.ACTIVITY) //honestly I just need these here for one plugin rn
-					.build(); //TODO: change to a plugin-specific gateway intent system
+					.enableIntents(EnumSet.allOf(GatewayIntent.class)) //for now we just ask for all gateway intents- this could be a bad idea?
+					.setMemberCachePolicy(getMemberCachePolicy(membercachepolicy)) //parse in the membercachepolicy from network.yml
+					.enableCache(parsecacheflags) //parse in the cacheflags
+					.build();
 		}
 		catch(InvalidTokenException | IllegalArgumentException e1)
 		{
@@ -349,14 +366,14 @@ public class AMGN
 
 		String[] args = cmdtxt.split(" ");
 
-		boolean cmd_found = false;
-
+		boolean[] cmd_found = {false}; //written like this for pass-by-reference to use in the lambda below
+		
 		//check and run default commands
 		for(DefaultCommand cmd : DefaultCommand.values())
 		{
 			if(args[0].equalsIgnoreCase(cmd.getLabel()))
 			{
-				cmd_found = true;
+				cmd_found[0] = true;
 				if(cmd.hasPermission(member))
 					cmd.getCommandAction().accept(new CommandEvent(cmdtxt, member, tc, null));
 				else
@@ -365,23 +382,24 @@ public class AMGN
 			}	
 		}
 
-		for(Plugin plugin : AMGN.plugin_listeners.keySet())
+		HashMap<Plugin, ArrayList<Listener>> plugin_listener_clone = (HashMap<Plugin, ArrayList<Listener>>) AMGN.plugin_listeners.clone();
+		plugin_listener_clone.forEach((plugin, listeners) ->
 		{
 			if(tc != null && !ListenerWrapper.pluginShouldRun(plugin.getName(), tc.getGuild()))
 			{
 				AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + cmdtxt + "\""
 					+ " to be run in the guild " + tc.getGuild().toString());
-				continue;
+				return;
 			}
 
-			for(Listener listener : AMGN.plugin_listeners.get(plugin))
+			for(Listener listener : listeners)
 			{
 				if(listener instanceof Command)
 				{
 					Command cmd = ((Command) listener);
 					if(args[0].equalsIgnoreCase(cmd.getLabel()))
 					{
-						cmd_found = true;
+						cmd_found[0] = true;
 						if(cmd.hasPermission(member))
 							cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
 						else
@@ -390,10 +408,44 @@ public class AMGN
 					}
 				}
 			}
-		}
+		});
 
-		if(!cmd_found)
+		if(!cmd_found[0])
 			AMGN.logger.warn("Command " + args[0] + " was not found, so the command \""
 				+ cmdtxt + "\" was not executed");
+	}
+
+	public static final MemberCachePolicy getMemberCachePolicy(String policy)
+	{
+		switch(policy)
+		{
+			case "all":
+				return MemberCachePolicy.ALL;
+
+			case "booster":
+				return MemberCachePolicy.BOOSTER;
+
+			case "default":
+				return MemberCachePolicy.DEFAULT;
+
+			case "none":
+				return MemberCachePolicy.NONE;
+
+			case "online":
+				return MemberCachePolicy.ONLINE;
+
+			case "owner":
+				return MemberCachePolicy.OWNER;
+
+			case "pending":
+				return MemberCachePolicy.PENDING;
+
+			case "voice":
+				return MemberCachePolicy.VOICE;
+
+			default:
+				AMGN.logger.error("Caching policy could not be correctly parsed- defaulting to DEFAULT.");
+				return MemberCachePolicy.DEFAULT;
+		}
 	}
 }

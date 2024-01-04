@@ -67,7 +67,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                 EmbedBuilder eb = new EmbedBuilder()
                     .setTitle("Permissions for " + 
                         (e.getGuild().getMemberById(e.getArgs()[1]) != null ? 
-                            e.getGuild().getMemberById(e.getArgs()[1]).getUser().getAsTag()
+                            e.getGuild().getMemberById(e.getArgs()[1]).getUser().getName()
                             : 
                             (e.getGuild().getRoleById(e.getArgs()[1]) != null ?
                                 e.getGuild().getRoleById(e.getArgs()[1]).getName()

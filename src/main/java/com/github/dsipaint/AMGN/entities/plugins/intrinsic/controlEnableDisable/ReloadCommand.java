@@ -25,7 +25,7 @@ public class ReloadCommand implements Consumer<CommandEvent>
 				
 				e.getTextChannel().sendMessage("Plugin was successfully reloaded.").queue();
 				GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + plugin.getName() + " "
-						+ plugin.getVersion() + " reloaded by " + e.getSender().getUser().getAsTag());
+						+ plugin.getVersion() + " reloaded by " + e.getSender().getUser().getName());
 				return;
 			}
 		}
