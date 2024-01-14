@@ -35,7 +35,7 @@ public enum DefaultCommand
 	//originally from the intrinsic plugins, now are just hard-coded commands, this is where their metadata is stored
 	
 	HELP("help", "^help, or ^help {command/plugin}", "Returns information on one or all commands of the network", new String[]{"AMGN.commands.*", "AMGN.commands.help"}, new HelpCommand()),
-	METAUPDATE("updatemetainfo", "^updatemetainfo {prefix/modlogs/modrole/acceptcol/declinecol/uniquecol} {new value}", "Update the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.*", "AMGN.commands.updatemetainfo"}, new UpdateMetaInfoCommand()),
+	METAUPDATE("updatemetainfo", "^updatemetainfo {prefix/modlogs/acceptcol/declinecol/uniquecol} {new value}", "Update the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.*", "AMGN.commands.updatemetainfo"}, new UpdateMetaInfoCommand()),
 	METAVIEW("viewmetainfo", "^viewmetainfo {prefix/modlogs/modrole}", "View the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.*", "AMGN.commands.viewmetainfo"}, new ViewMetaInfoCommand()),
 	RUNNING("showplugins", "^showplugins", "Displays all active plugins in this guild (only shows plugins that can act in this guild according to the whitelist/blacklist)", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.showplugins"}, new ShowPluginsCommand()),
 	ENABLE("enable", "^enable {plugin name}", "Enable plugins from your discord client!", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.enable"}, new EnableCommand()),

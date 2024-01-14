@@ -3,89 +3,12 @@
 ## What is AMGN?
 This project was designed to make being a discord bot dev easier- especially if you want to build a large-scale bot serving many many servers. With this system, developers can write plugins for your discord network without needing to know the bot's token. The advantage of plugins is that on a large scale, this provides the flexibility of managing bot features independently, helping to minimise downtime. I used this in the server I code for, of 330,000 users, and it improved the efficiency of our bot by about 600%. Bot features are managed independently, whilst also being controlled centrally by a central repository. This provides complete control without compromising flexibility. This library extends the JDA library, and knowledge of JDA is required to use this library.
 
-## Howto
-## Build latest version:
-- clone this repo
-- run `mvn package`
-
-## Add as a dependency:
-- clone this repo
-- run dependency.sh
-
-### Preparing the network:
-Before running the network, the network needs to know a bit about the users and servers it will work with. The network
-accesses this data by reading "./network.yml". Without this file, the network will not run. This file contains 
-crucial information for your bot, and takes this form:
-```yaml
-token: 1234567890afdlfjfkadadsfnkfasd
-
-use_webpanel: false
-clientid: 127348349832489324
-clientsecret: 127348349832489324
-redirecturi: "https://localhost/redirect"
-port: 9999
-
-guild_data:
-  - guild_id: 12345
-    prefix: "^"
-    modlogs: 12345
-	accept_col: "##4287f5"
-  
-  - guild_id: 634667687233978388
-    prefix: "&"
-    modlogs: 634667687233978390
-	decline_col: "#eb4034"
-    
-  - guild_id: 123456789
-    prefix: ":"
-    modlogs: 23456455
-	unique_col: "#32a852"
-	
-```
-| Variable | Required | Type |Default | Description |
-| -------- | -------- | ---- | ------ | ----------- |
-| token | yes | string | N/A | your bot's token |
-| use_webpanel | no | boolean | true | If this is set to `false`, the webpanel will not be activated for your installation of AMGN. If this is true, the webpanel will be used. |
-| clientid | no | string | | The client ID for your application if you wish to use the webpanel |
-| clientsecret | no | string | | The client secret for your application if you wish to use the webpanel |
-| redirecturi | no | string | | The redirect URI for your application if you wish to use the webpanel |
-| port | no | int | 8080 | The desired port to host your webpanel on |
-| guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
-| guild_id | no | long | GuildNetwork.DEFAULT_ID (-1) | id of a guild you wish to specify metadata for |
-| prefix | no | string | "^" | prefix for commands in the aforementioned guild |
-| modlogs | no | long | GuildNetwork.DEFAULT_ID (-1) | channel id for modlogs to be theoretically sent to by AMGN and its plugins |
-| accept_col | no | string of hex | GuildNetwork.GREEN_EMBED_COLOUR (65280) | colour that will be used in this guild for "accepted"-coloured embeds e.g. a successful log |
-| decline_col | no | string of hex | GuildNetwork.RED_EMBED_COLOUR (16073282) | colour that will be used in this guild for "declined"-coloured embeds e.g. an UNsuccessful log |
-| unique_col | no | string of hex | GuildNetwork.PURPLE_EMBED_COLOUR (11023006) | colour that will be used in this guild for unique-event embeds e.g. something unexpected or special |
-
-
-Each `guild_data` object of the array represents a single guild and the metadata associated with it.
-
-`network.yml` must be in the same directory as the network jar, have the correct name (network.yml) and contain the required fields, in the above format, or the network will close. Otherwise, you are now able to run the network by simply running the jar file as normal.
-
-The variables `token`, `clientid`, `clientsecret` and `redirecturi` can also not be set, in which case AMGN will attempt to use environment variables for these values rather than setting the values in `network.yml`. The corresponding environment variables if you choose this method are as follows:
-
-| Network.yml | Environment Variable |
-| ----------- | -------------------- |
-| token | AMGN_TOKEN |
-| clientid | AMGN_CLIENTID |
-| clientsecret | AMGN_CLIENTSECRET |
-| redirecturi | AMGN_REDIRECT |
-
-i.e. if in `network.yml`, you write the following:
-```yaml
-token: "env"
-```
-then for example in linux, you need to have run `export AMGN_TOKEN=thisismytoken`.
+There are 2 ways to use this code, and I have written guides for both:
+[Run AMGN as a bot owner]()
+[Use AMGN as a development dependency, plugin development]()
 
 ## Plugins:
 Included in this API are intrinsic plugins, adding quality-of-life commands and features that a plugin outside of this library may struggle to facilitate for. This includes handling external plugins and the network metadata. For more info, use the help command in a guild with your network's bot in, when you launch the network with no external plugins.
-
-## Running AMGN with plugins
-If you simply wish to run AMGN with some custom plugins, make sure you have the AMGN jar and `network.yml` set up as specified above. Then make a `plugins` directory if one is not already there and add an AMGN plugin jar into this directory. When plugins are loaded for the first time, any config files that allow you to customise the plugin can be found in the plugins directory in a directory with the same name as the plugin. Change the values in these files to customise the way your plugin behaves. You can acquire plugin jars by asking me for some, or making some yourself.
-
-### Customising AMGN plugins
-AMGN plugin developers may allow you to customise a plugin for tailored usage. This may be done via commands, which will probably be explained by the developer, or by editing the plugin's config files (which the developer should probably also explain). Config files are YAML files which can usually be found in the `plugins/{plugin name}/` directory. Often there is one `config.yml`, but there can be multiple config files with different names. change the values in here as you need to customise your plugin.
 
 ## Developing plugins for AMGN
 I have hinted at intrinsic and external plugins. As a developer, you are able to make external plugins for this network,
@@ -325,24 +248,6 @@ Finally, it is possible a config file does not exist for a plugin yet. Developer
             this.getConfig().generateResource("config.yml");
 ```
 Here we can see that AMGN provides a way to generate a config file that doesn't exist. Just call the `Config.generateResource` method, passing the name of the file you need to generate. How does AMGN know how to generate this file? In the `resources` folder, where you defined the `plugin.yml` file, you create the file here with the same name you wish to generate. Then in the file, write a default config you wish to exist when the file is generated by the plugin. When you call the generateResource method, AMGN will copy your template in `resources` inside the compiled jar, to the config filepath for your plugin. You can then normally use the methods to call and use values from this config. As of now, AMGN cannot write new values to existing configs.
-
-## Plugin whitelisting/blaclisting
-As of beta-1.1, AMGN now supports plugin blacklisting and whitelisting! Operators are able to specify that certain plugins do NOT operate in certain guilds, or ONLY operate in certain guilds. This is done with a blacklist or a whitelist. To use this feature, there are a few ways:
-
-### edit whitelist.yml
-Edit whitelist.yml and add guilds/plugins to the whitelists and blacklists as needed
-
-### use pwhitelist and pblacklist commands
-A new intrinsic plugin has been added for whitelisting and blacklisting- running this command in the guild you want to specify will whitelist or blacklist the plugin you specify. Use the help command for more details
-
-### use the webpanel
-This method is similar to editing whitelist.yml, except doing it via the webpanel.
-
-> note that whitelist is applied first, and then the blacklist. So in the case that a guild/plugin is present in both lists, it'll first be whitelisted and then be blacklisted- effectively the same as if it was just written in the blacklist.
-
-> also note that guild/plugin whitelisting/blacklisting can only work for listeners/features that occur inside a guild. Therefore events like private channel messages being sent cannot be whitelisted or blacklisted. This may be considered more in the future.
-
-> also note that plugin settings will still appear in the webpanel even if the plugin is not being used in this server.
 
 ## The webpanel
 The purpose of AMGN is to simplify being a bot developer- if you are a bot developer there's a good chance you'd want to include a webpanel for users to configure your bot for their server or network. This is why AMGN comes pre-packaged with an auto-generated webpanel. The website is hosted on the address the bot is run on, on port 8080. You can see this by running the jar locally and visiting `localhost:8080/webpanel`. There are a number of options you will see here.
