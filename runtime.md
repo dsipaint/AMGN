@@ -4,7 +4,7 @@ This project is designed to make running your own personal discord bot very easy
 
 ## Preparing the environment
 1. Build AMGN:
- - clone this repo, run `git clone `
+ - clone this repo, run `git clone`
  - run `mvn clean package` to build out the AMGN jar. You will find this jar in the `target` directory as `AMGN-1.0-jar-with-dependencies.jar`. You can then move it wherever you want to have your bot. I recommend having a dedicated directory for it
 
 2. Add AMGN as a plugin dependency
@@ -96,6 +96,7 @@ AMGN comes with some pre-packaged commands and features to make managing your bo
 | listpermissions {user id/role id/plugin (optional)} | Show all permissions that have been granted to a certain user, discord role, or pre-defined group of users |
 | groups {create/destroy/add/remove/addperm/removeperm/list} | create or modify a group of discord users- put a group of discord users under one single group-name so it is easier to configure permissions for them |
 
+For more information about any of these commands, or plugin-commands, remember the help command can provide more information.
 
 ## Configuring plugin whitelists/blacklists
 It is simple enough to add a plugin to your bot with AMGN, but you may not want this plugin to be able to be used in every guild that the bot sits in. AMGN allows this to be specified with plugin whitelists/blacklists. There are 2 ways to do that
@@ -175,7 +176,7 @@ These are the permissions you need to use in the commands e.g. `permission add 4
 ## The Webpanel
 
 AMGN also comes pre-packaged with a webpanel to easily configure all of these aforementioned settings, and plugin settings from 3rd party plugins. This is optional, and is specified in `network.yml`, as are the variables needed to make the webpanel functional.
-This webpanel will be hosted on your bot's host's IP address, and by default on port 8080 (though this can be changed in `network.yml`). The webpanel lives under the path /webpanel. So if hosting this locally, you can visit your bot's webpanel at localhost:8080/webpanel.
+This webpanel will be hosted on your bot's host's IP address, and by default on port 8080 (though this can be changed in `network.yml`). The webpanel lives under the path /webpanel. So if hosting this locally, you can visit your bot's webpanel at http://localhost:8080/webpanel.
 This webpanel will let you changed all of the previously mentioned settings, `network.yml`, `permissions.yml` and `whitelist.yml`. Except for settings which you would need to restart the whole bot for, i.e. the webpanel settings.
 To use this, a user needs the `AMGN.webpanel.access` permission. They then log in- the login is handled by discord OAuth.
 

@@ -4,8 +4,8 @@
 This project was designed to make being a discord bot dev easier- especially if you want to build a large-scale bot serving many many servers. With this system, developers can write plugins for your discord network without needing to know the bot's token. The advantage of plugins is that on a large scale, this provides the flexibility of managing bot features independently, helping to minimise downtime. I used this in the server I code for, of 330,000 users, and it improved the efficiency of our bot by about 600%. Bot features are managed independently, whilst also being controlled centrally by a central repository. This provides complete control without compromising flexibility. This library extends the JDA library, and knowledge of JDA is required to use this library.
 
 There are 2 ways to use this code, and I have written guides for both:
-[Run AMGN as a bot owner]()
-[Use AMGN as a development dependency, plugin development]()
+[Run AMGN as a bot owner](https://github.com/dsipaint/AMGN/runtime.md)
+[Use AMGN as a development dependency, plugin development](https://github.com/dsipaint/AMGN/plugindevelopment.md)
 
 ## Plugins:
 Included in this API are intrinsic plugins, adding quality-of-life commands and features that a plugin outside of this library may struggle to facilitate for. This includes handling external plugins and the network metadata. For more info, use the help command in a guild with your network's bot in, when you launch the network with no external plugins.
