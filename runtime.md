@@ -28,6 +28,7 @@ crucial information for your bot, and is written in YAML. This file will be auto
 | membercachepolicy | no | string | JDA "default" | The policy the bot will use to cache users |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 
+> To find your bot's token, you will need to go to [the discord developer portal](https://discord.com/developers/applications) and create a new application if you have not done so already. Create a bot if you also haven't done so, and under the bot tab you should see an option for resetting or copying the token. This is how you can grab your token.
 
 Each `guild_data` object of the array represents a single guild and the metadata associated with it. Here are the fields for each object in a `guild_data` array entry:
 
@@ -179,5 +180,7 @@ AMGN also comes pre-packaged with a webpanel to easily configure all of these af
 This webpanel will be hosted on your bot's host's IP address, and by default on port 8080 (though this can be changed in `network.yml`). The webpanel lives under the path /webpanel. So if hosting this locally, you can visit your bot's webpanel at http://localhost:8080/webpanel.
 This webpanel will let you changed all of the previously mentioned settings, `network.yml`, `permissions.yml` and `whitelist.yml`. Except for settings which you would need to restart the whole bot for, i.e. the webpanel settings.
 To use this, a user needs the `AMGN.webpanel.access` permission. They then log in- the login is handled by discord OAuth.
+
+For the webpanel to work, you need to provide `clientid`, `clientsecret` and `redirecturl` in your `network.yml`. These can be found in [the discord developer portal](https://discord.com/developers/applications) by finding your bot and clicking on "OAuth2". You will have options to copy/reset your client secret and id from here. You will then need to set a redirect here to point at the address you are hosting your bot on, followed by `/webpanel/redirect`. This will allow users to log in to your webpanel. This value needs to be set to the same value in `network.yml`.
 
 This is probably the easiest way to configure anything about your bot or a plugin. The global network settings and all installed plugins will appear on the left panel, and you can specify global settings or a specific guild at the top using the guild-selector. When you click on a plugin you will see all the options to configure the plugin, including whitelisting/blacklisting it in the guild, or switching to global or local settings.

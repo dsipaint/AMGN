@@ -7,9 +7,6 @@ There are 2 ways to use this code, and I have written guides for both:
 [Run AMGN as a bot owner](https://github.com/dsipaint/AMGN/runtime.md)
 [Use AMGN as a development dependency, plugin development](https://github.com/dsipaint/AMGN/plugindevelopment.md)
 
-## Plugins:
-Included in this API are intrinsic plugins, adding quality-of-life commands and features that a plugin outside of this library may struggle to facilitate for. This includes handling external plugins and the network metadata. For more info, use the help command in a guild with your network's bot in, when you launch the network with no external plugins.
-
 ## Developing plugins for AMGN
 I have hinted at intrinsic and external plugins. As a developer, you are able to make external plugins for this network,
 as is the entire point of this project. This jar not only runs the network, but contains the API to make a plugin.
