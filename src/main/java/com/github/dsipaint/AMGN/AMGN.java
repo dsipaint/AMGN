@@ -3,6 +3,8 @@ package com.github.dsipaint.AMGN;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -296,7 +298,18 @@ public class AMGN
 				{
 					logger.info("Enabling " + p.getName() + " " + p.getVersion());
 					//enable these classes/plugins with GuildNetwork.enablePlugin
-					GuildNetwork.enablePlugin(p);
+					try
+					{
+						GuildNetwork.enablePlugin(p);
+					}
+					catch(Exception e)
+					{
+						StringWriter sw = new StringWriter();
+						PrintWriter pw = new PrintWriter(sw);
+						e.printStackTrace(pw);
+						logger.error(sw.toString());
+						continue;
+					}
 				}
 			}
 		}
