@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
@@ -97,7 +98,7 @@ public abstract class Command extends Listener
 		{
 			if(id.equalsIgnoreCase("groups")) //only deal with IDs here, we check groups above
 				continue;
-
+			
 			if(m.getId().equals(id) ||
 				(m.getGuild().getRoleById(id) != null && m.getRoles().contains(m.getGuild().getRoleById(id)))
 				|| m.getGuild().getId().equals(id))
