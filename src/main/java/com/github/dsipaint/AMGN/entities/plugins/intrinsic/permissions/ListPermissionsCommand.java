@@ -66,8 +66,8 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                 perms = new Yaml().load(new FileReader(new File(GuildNetwork.PERMISSIONS_PATH)));
                 EmbedBuilder eb = new EmbedBuilder()
                     .setTitle("Permissions for " + 
-                        (e.getGuild().getMemberById(e.getArgs()[1]) != null ? 
-                            e.getGuild().getMemberById(e.getArgs()[1]).getUser().getName()
+                        (e.getGuild().retrieveMemberById(e.getArgs()[1]).complete() != null ? 
+                            e.getGuild().retrieveMemberById(e.getArgs()[1]).complete().getUser().getName()
                             : 
                             (e.getGuild().getRoleById(e.getArgs()[1]) != null ?
                                 e.getGuild().getRoleById(e.getArgs()[1]).getName()
@@ -85,7 +85,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                 for(String perm : perms.getOrDefault(e.getArgs()[1], new ArrayList<String>()))
                     listperms.add(perm + "\n");
 
-                boolean isUserId = AMGN.bot.getUserById(e.getArgs()[1]) != null;
+                boolean isUserId = AMGN.bot.retrieveUserById(e.getArgs()[1]).complete() != null;
                 //then if this is a user ID, find perms inherited by having a role with the perms
                 if(isUserId)
                 {
@@ -97,8 +97,8 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                         //if this is a role and the user has this role
                         Role r = AMGN.bot.getRoleById(id);
                         if(r != null
-                            && r.getGuild().getMembersWithRoles(r)
-                                .contains(r.getGuild().getMemberById(e.getArgs()[1])))
+                            && r.getGuild().retrieveMemberById(e.getArgs()[1]).complete()
+                                .getRoles().contains(r))
                         {
                             //append these permissions
                             ((List<String>) perms.get(id)).forEach(perm ->

@@ -175,10 +175,9 @@ public class AMGN
 			e.printStackTrace();
 		}
 		
-		logger.info("Loading guild members, adding default guild settings for missing network.yml guilds...");
+		logger.info("Adding default guild settings for missing network.yml guilds...");
 		bot.getGuilds().forEach(guild ->
 		{
-			guild.loadMembers();//good idea???
 			//add default guild data NOTE: this won't save this data to network.yml- this must be done manually if you want actual values
 			if(!GuildNetwork.guild_data.containsKey(guild.getIdLong()))
 			{

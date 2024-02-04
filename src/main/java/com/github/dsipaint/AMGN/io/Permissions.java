@@ -12,6 +12,7 @@ import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
@@ -37,6 +38,10 @@ public class Permissions
 		if(GuildNetwork.isOperator(u))
 			return true;
 
+		Member m = null;
+		if(context != null)
+			m = context.retrieveMember(u).complete();
+
 		//read permissions.yml
 		Map<String, List<String>> perms = new HashMap<String, List<String>>();
 		try
@@ -60,13 +65,15 @@ public class Permissions
 
 		//check to see if an id is either a member, or a role the member has (in this guild!!)
 		//if this ID has been given the specified permission, return true
+
+		//TODO see below- is there a more efficient way to do this??
 		for(String id : perms.keySet())
 		{
 			if(id.equalsIgnoreCase("groups"))
 				continue;
 
 			if(u.getId().equals(id) ||
-				(context != null && context.getRoleById(id) != null && context.getMember(u) != null && context.getMember(u).getRoles().contains(context.getRoleById(id)))
+				(context != null && context.getRoleById(id) != null && m != null && m.getRoles().contains(context.getRoleById(id)))
 				|| (context != null && context.getId().equals(id)))
 			{
 				for(String commandperm : perms.get(id))
@@ -110,6 +117,8 @@ public class Permissions
 
 		//check to see if an id is either a member, or a role the member has (in this guild!!)
 		//if this ID has been given the specified permission, return true
+
+		//TODO this seems unoptimal- can't you just do "perms.get(r.getId())" followed by "perms.get(r.getGuild().getId())" ??
 		for(String id : perms.keySet())
 		{
 			if(id.equalsIgnoreCase("groups"))
@@ -184,14 +193,14 @@ public class Permissions
 
 						//check if this is a role ID, and if the id is a member of this role
 						if(AMGN.bot.getRoleById(groupmember) != null
-							&& AMGN.bot.getRoleById(groupmember).getGuild().getMembersWithRoles(AMGN.bot.getRoleById(groupmember))
-								.contains(AMGN.bot.getRoleById(groupmember).getGuild().getMemberById(id)))
+							&& AMGN.bot.getRoleById(groupmember).getGuild().retrieveMemberById(id).complete()
+								.getRoles().contains(AMGN.bot.getRoleById(groupmember)))
 								return true;
 
 						//check if this is a guild ID, and if the id is a role or a member of this guild
 						if(AMGN.bot.getGuildById(groupmember) != null
 							&& (AMGN.bot.getGuildById(groupmember).getRoleById(id) != null
-								|| AMGN.bot.getGuildById(groupmember).getMemberById(id) != null))
+								|| AMGN.bot.getGuildById(groupmember).retrieveMemberById(id).complete() != null))
 							return true;
 					}
 

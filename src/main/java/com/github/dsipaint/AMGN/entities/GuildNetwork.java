@@ -76,7 +76,7 @@ public class GuildNetwork
 
 		//check to see if an id is either a member, or a role the member has (in any guild)
 		//if this ID has been given the specified permission, return true
-		
+		//TODO see todo's listen in Permissions.java- feels like there could be a more efficient way to do this...
 		for(String id : perms.keySet())
 		{
 			if(id.equalsIgnoreCase("groups"))
@@ -88,8 +88,8 @@ public class GuildNetwork
 			//if this is a role ID and the user has this role
 			if(u.getId().equals(id)
 				|| (AMGN.bot.getRoleById(id) != null
-						&& AMGN.bot.getRoleById(id).getGuild().getMembersWithRoles(AMGN.bot.getRoleById(id))
-						.contains(AMGN.bot.getRoleById(id).getGuild().getMember(u)))
+						&& AMGN.bot.getRoleById(id).getGuild().retrieveMember(u).complete()
+							.getRoles().contains(AMGN.bot.getRoleById(id)))
 				|| (u.getMutualGuilds().contains(AMGN.bot.getGuildById(id))))
 			{
 				//if this role has op perms, return true
