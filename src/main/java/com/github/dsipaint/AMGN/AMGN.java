@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -101,12 +100,12 @@ public class AMGN
 
 			membercachepolicy = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "membercachepolicy");
 			if(membercachepolicy == null)
-				membercachepolicy = "default"; //default cache policy value
+				membercachepolicy = GuildNetwork.DEFAULT_MEMBERCACHEPOLICY;
 
 
 			cacheflags = (List<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "cacheflags");
-			if(cacheflags == null) //default cacheflags value
-				cacheflags = Arrays.asList("online_status", "activity");
+			if(cacheflags == null)
+				cacheflags = GuildNetwork.DEFAULT_CACHEFLAGS;
 			for(String flag : cacheflags)
 				parsecacheflags.add(CacheFlag.valueOf(flag.toUpperCase()));
 		}

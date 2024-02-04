@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,9 @@ public class GuildNetwork
 	public static final String WHITELIST_PATH = "./whitelist.yml"; //whitelist file path
 	public static final String WEB_PATH = "./web"; //path for all web assets
 	public static final String PERMISSIONS_PATH = "./permissions.yml"; //for the permissions file
+
+	public static final String DEFAULT_MEMBERCACHEPOLICY = "default"; //default member cache policy
+	public static final List<String> DEFAULT_CACHEFLAGS = Arrays.asList("online_status", "activity"); //default cache-flags
 
 	public static final String ID_REGEX = "\\d{17,19}";
 

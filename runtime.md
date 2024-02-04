@@ -24,8 +24,8 @@ crucial information for your bot, and is written in YAML. This file will be auto
 | redirecturi | yes if use_webpanel=true | `string` | | The redirect URI for your application if you wish to use the webpanel |
 | port | no | `int` | `8080` | The desired port to host your webpanel on |
 | load_order | no | list of strings | empty list (no order) | A list of plugin names in the order you need them to be loaded in |
-| cacheflags | no | list of strings | `["online_status", "activity"]` | Which elements of users will be cached when users are cached (this can conflict with gateway intents) |
-| membercachepolicy | no | string | JDA "default" | The policy the bot will use to cache users |
+| cacheflags | no | list of strings | GuildNetwork.DEFAULT_CACHEFLAGS `["online_status", "activity"]` | Which elements of users will be cached when users are cached (this can conflict with gateway intents) |
+| membercachepolicy | no | string | GuildNetwork.DEFAULT_MEMBERCACHEPOLICY "default" | The policy the bot will use to cache users |
 | guild_data | no | list of objects (fields follow ) | N/A | metadata for a guild on the network |
 
 > To find your bot's token, you will need to go to [the discord developer portal](https://discord.com/developers/applications) and create a new application if you have not done so already. Create a bot if you also haven't done so, and under the bot tab you should see an option for resetting or copying the token. This is how you can grab your token.
