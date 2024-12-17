@@ -1,4 +1,4 @@
 #!/bin/bash
 # RUN THIS TO ADD  AMGN AS A DEPENDENCY
-mvn package
-mvn install:install-file -Dfile=target/AMGN-beta-1.4.2-jar-with-dependencies.jar -DgroupId=com.github.dsipaint -DartifactId=AMGN -Dversion=beta-1.4.2 -Dpackaging=jar -DgeneratePom=true
+mvn clean package
+mvn install:install-file -Dfile=target/AMGN-1.0-jar-with-dependencies.jar -DgroupId=com.github.dsipaint -DartifactId=AMGN -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true

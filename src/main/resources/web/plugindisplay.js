@@ -35,93 +35,291 @@ class Config extends React.Component
         if(Array.isArray(this.props.item))
             return <ListItem list={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey} addmore="true" removemore="true"/>
         else
-            return <ObjectItem object={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey}/>
+            return <ObjectItem object={this.props.item} updatehook={this.props.updatehook} updatekey={this.props.updatekey} addmore="true" removemore="true"/>
             
     }
 }
 
 class ListItem extends React.Component
 {
+    globalidcounter = 0;
+
     constructor(props)
     {
         super(props);
+
+        var parsedlist = []
+        for(var i = 0; i < props.list.length; i++)
+        {
+            parsedlist.push({
+                id: this.globalidcounter,
+                item: props.list[i]
+            });
+
+            this.globalidcounter++;
+        }
+
         this.state = {
-            list: props.list
+            list: parsedlist
         }
 
         this.addElement = this.addElement.bind(this);
         this.removeElement = this.removeElement.bind(this);
     }
 
-    addElement()
+    formatListForState(oldlist)
     {
-        if($("#" + this.props.updatekey.replace("\.", "_")).val() == "")
-            return;
-
-        var updatekeyref = this.props.updatekey.replace("\.", "_");
-        ReactDOM.flushSync(() =>
+        var newlist = []
+        for(var i = 0; i < oldlist.length; i++)
         {
-            this.setState({
-                list: [...this.state.list, $("#" + updatekeyref).val()]
-            });
-        });
+            newlist.push(oldlist[i].item)
+        }
 
-        this.props.updatehook(this.props.updatekey, this.state.list);
-        
-        $("#" + this.props.updatekey.replace("\.", "_")).val("");
+        return newlist;
     }
 
-    removeElement(element)
+    addElement()
     {
-        ReactDOM.flushSync(() =>{
+        var updatekeyref = this.props.updatekey.replaceAll("\.", "_");
+
+        var newchild = {
+            id: this.globalidcounter,
+            item: null
+        }
+        this.globalidcounter++;
+
+        if($("#" + updatekeyref).is("input"))
+        {
+            if($("#" + updatekeyref).attr("type") == "text")
+                newchild.item = $("#" + updatekeyref).val();
+            else if($("#" + updatekeyref).attr("type") == "checkbox")
+                newchild.item = $("#" + updatekeyref)[0].checked
+
+            ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        list: [...this.state.list, newchild]
+                    });
+                }
+            );
+
+            this.props.updatehook(this.props.updatekey, this.formatListForState(this.state.list));
+            $("#" + updatekeyref).val("");
+        }
+        else if($("#" + updatekeyref).hasClass("addobject"))
+        {
+            newchild.item = {};
+            ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        list: [...this.state.list, newchild]
+                    });
+                }
+            );
+
+            this.props.updatehook(this.props.updatekey, this.formatListForState(this.state.list));
+        }
+        else if($("#" + updatekeyref).hasClass("addlist"))
+        {
+            newchild.item = []
+            ReactDOM.flushSync(() =>
+            {
+                this.setState({
+                    list: [...this.state.list, newchild]
+                });
+            });
+
+            this.props.updatehook(this.props.updatekey, this.formatListForState(this.state.list));
+        }
+        else if(this.state.list.length == 0)
+        {
+            switch($("#" + updatekeyref).next().find(":selected").text())
+            {
+                case "object":
+                    newchild.item = {};
+                    this.setState({
+                        list: [newchild]
+                    });
+                    break;
+                
+                case "true/false":
+                    newchild.item = true;
+                    this.setState({
+                        list: [newchild]
+                    });
+                    break;
+
+                case "list":
+                    newchild.item = [];
+                    this.setState({
+                        list: [newchild]
+                    });
+                    break;
+
+                case "number":
+                    newchild.item = -1;
+                    this.setState({
+                        list: [newchild]
+                    });
+                    break;
+
+                case "text":
+                    newchild.item = "";
+                    this.setState({
+                        list: [newchild]
+                    });
+                    break;
+            }
+        }
+
+        return "";
+    }
+
+    removeElement(index)
+    {
+        var newlist = this.state.list.slice();
+        newlist.splice(index, 1)
+
+        ReactDOM.flushSync(() => {
             this.setState({
-                list: this.state.list.filter(function(item){
-                    return item !== element;
-                })
+                list: newlist
             });
         });
-
-        this.props.updatehook(this.props.updatekey, this.state.list);
+        
+        this.props.updatehook(this.props.updatekey, this.formatListForState(this.state.list));
     }
 
     render()
     {
-        var removebutton = function (element)
+        var removebutton = function (index, shape)
         {
+            var listname = updatekeyref.split(".")[updatekeyref.split(".").length - 1]
             return (
-                this.props.removemore == "true" ? <i class="fa-solid fa-xmark removeelement" onClick={() => {this.removeElement(element)}}></i> : ""
+                this.props.removemore == "true" ? <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removeElement(index)}} title={"Remove item from " + listname}></i> : ""
             );
         };
 
         removebutton = removebutton.bind(this);
+
+        var addmoreinput = function()
+        {
+            //if list is empty, let user select type of list
+            if(this.state.list.length == 0)
+            {
+                return (
+                    <div class="addnew">
+                        <span id={this.props.updatekey.replaceAll("\.", "_")} class="emptylist">
+                            &gt; new 
+                        </span>
+                        <select>
+                            <option>object</option>
+                            <option>true/false</option>
+                            <option>list</option>
+                            <option>number</option>
+                            <option>text</option>
+                        </select>
+                        <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                    </div>
+                );
+            }
+
+            switch(typeof this.state.list[this.state.list.length - 1].item)
+            {
+                case "object":
+                    if(Array.isArray(this.state.list[this.state.list.length - 1].item))
+                        return (
+                            <div class="addnew">
+                                <span id={this.props.updatekey.replaceAll("\.", "_")} class="addlist">
+                                    &gt; new list
+                                </span>
+                                <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                            </div>
+                        );
+                    else
+                        return (
+                            <div class="addnew">
+                                <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
+                                    &gt; new object
+                                </span>
+                                <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                            </div>
+                        );
+
+                case "number":
+                    return (
+                        <div class="addnew">
+                            <input type="number" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+
+                case "boolean":
+                    return (
+                        <div class="addnew">
+                            <input type="checkbox" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+                case "undefined":
+                    return (
+                        <div class="addnew">
+                            <span id={this.props.updatekey.replaceAll("\.", "_")} class="addobject">
+                                &gt; new object
+                            </span>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+
+                default:
+                    return (
+                        <div class="addnew">
+                            <input type="text" id={this.props.updatekey.replaceAll("\.", "_")}></input>
+                            <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i>
+                        </div>
+                    );
+            }
+            
+        }
+
+        addmoreinput = addmoreinput.bind(this);
+
         var updatehookref = this.props.updatehook;
         var updatekeyref = this.props.updatekey;
+        var addmore = this.props.addmore;
+        var removemore = this.props.removemore;
 
         return (
             <div class="listwrapper">
-                <h2>{updatekeyref.split(".")[updatekeyref.split(".").length - 1].replace(new RegExp("_", 'g'), " ") + ":"}</h2>
+                {
+                    this.props.name !== undefined ?
+                        <h2>{this.props.name.replaceAll("_", " ") + ":"}</h2>
+                        :
+                        ""
+                }
                 <div class="list">
-                    {this.state.list.map(function(item, i){
-                        switch(typeof item)
+                    {this.state.list.map(function(listchild, i){
+                        switch(typeof listchild.item)
                         {
                             case "object":
-                                if(Array.isArray(item))
+                                if(Array.isArray(listchild.item))
                                 {
                                     return (
-                                        <div class="completelistitem">
-                                            <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore="true" removemore="true"/>
-                                            {removebutton(item)}
+                                        <div class="completelistitem" key={listchild.id}>
+                                            <ListItem list={listchild.item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore={addmore} removemore={removemore}/>
+                                            {removebutton(i, "xmark")}
                                         </div>
                                     );
                                 }
                                 else
                                 {
                                     return (
-                                        <div class="completelistitem">
-                                            <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
-                                            {removebutton(item)}
+                                        <div class="completelistitem" key={listchild.id}>
+                                            <ObjectItem object={listchild.item} updatehook={updatehookref} updatekey={updatekeyref + "." + i} addmore={addmore} removemore={removemore}/>
+                                            {removebutton(i, "xmark")}
                                         </div>
-                                    );   
+                                    );
                                 }
                             
                             case "undefined":
@@ -129,24 +327,36 @@ class ListItem extends React.Component
 
                             case "number":
                                 return (
-                                    <div class="completelistitem">
-                                        <NumberItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
-                                        {removebutton(item)}
+                                    <div class="completelistitem" key={listchild.id}>
+                                        <NumberItem item={listchild.item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                        {removebutton(i, "minus")}
                                     </div>
-                                );                                
+                                ); 
+                                
+                            case "boolean":
+                                return (
+                                    <div class="completelistitem" key={listchild.id}>
+                                        <BooleanItem value={listchild.item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                        {removebutton(i, "minus")}
+                                    </div>
+                                );
 
                             default:
                                 return (
-                                    <div class="completelistitem">
-                                        <DefaultItem item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
-                                        {removebutton(item)}
+                                    <div class="completelistitem" key={listchild.id}>
+                                        <DefaultItem item={listchild.item} updatehook={updatehookref} updatekey={updatekeyref + "." + i}/>
+                                        {removebutton(i, "minus")}
                                     </div>
                                 );
                         }
                     })
                     }
-                    {this.props.addmore == "true" ? <div class="listinput"><input type="text" id={this.props.updatekey.replace("\.", "_")}></input>
-                    <i id="addelement" class="fa-solid fa-plus addelement" onClick={this.addElement}></i></div> : ""}
+                    {
+                        this.props.addmore == "true" ?
+                        addmoreinput()
+                        :
+                        ""
+                    }
                 </div>
             </div>
         );
@@ -161,40 +371,217 @@ class ObjectItem extends React.Component
         this.state = {
             object: props.object
         }
+
+        this.addnewfield = this.addnewfield.bind(this);
+        this.removefield = this.removefield.bind(this);
+    }
+
+    removefield(name)
+    {
+        ReactDOM.flushSync(() =>{
+            var newobj = this.state.object;
+            delete newobj[name]
+            this.setState({
+                object: newobj
+            });
+        });
+
+        this.props.updatehook(this.props.updatekey, this.state.object);
+    }
+
+    addnewfield()
+    {
+        var name = $("#" + this.props.updatekey.replaceAll(".", "_") + "-addmorename").val();
+        if(name === "" || name === undefined || name === null)
+            return "";
+
+        var value = $("#" + this.props.updatekey.replaceAll(".", "_") + "-select").val();
+        switch(value)
+        {
+            case "object":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: {}
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "true/false":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: true
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "list":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: []
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "number":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: -1
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+
+            case "text":
+                ReactDOM.flushSync(() =>
+                {
+                    this.setState({
+                        object: {
+                            ...this.state.object,
+                            [name]: ""
+                        }
+                    });
+                });
+    
+                this.props.updatehook(this.props.updatekey, this.state.object);
+                break;
+        }
+
+        $("#" + this.props.updatekey.replaceAll(".", "_") + "-addmorename").val("");
     }
 
     render()
     {
         var updatehookref = this.props.updatehook;
         var updatekeyref = this.props.updatekey;
+        var addmore = this.props.addmore;
+        var removemore = this.props.removemore;
+
+        var removebutton = function (name, shape)
+        {
+            return (
+                this.props.removemore == "true" ? 
+                    <i class={"fa-solid fa-" + shape + " removeelement"} onClick={() => {this.removefield(name)}} title={"Remove " + name}></i>
+                    :
+                    ""
+            );
+        };
+        removebutton = removebutton.bind(this);
 
         return (
-            <div class="objectdisplay">
+            <div class="objectwrapper">
                 {
-                    Object.keys(this.state.object).map((key) => {
-                        var item = this.state.object[key];
-                        switch(typeof item)
-                        {
-                            case "object":
-                                if(Array.isArray(item))
-                                    return <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore="true" removemore="true"/>
-                                else
-                                    return <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
-                                    
-                            case "undefined":
-                                return;
-
-                            case "boolean":
-                                return <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
-
-                            case "number":
-                                return <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
-
-                            default:
-                                return <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>;
-                        }
-                    })
+                    this.props.name !== undefined ?
+                        <h2>{this.props.name.replaceAll("_", " ") + ":"}</h2>
+                        :
+                        ""
                 }
+                <div class="object">
+                    {
+                        Object.keys(this.state.object).map((key) => {
+                            var item = this.state.object[key];
+                            switch(typeof item)
+                            {
+                                case "object":
+                                    if(Array.isArray(item))
+                                    {
+                                        return (
+                                            <div class="completeobjectfield">
+                                                {removebutton(key, "xmark")}
+                                                <ListItem list={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore} name={key}/>
+                                            </div>
+                                        );
+                                    }
+                                    else
+                                    {
+                                        if(item === undefined || item === null)
+                                        {
+                                            return (
+                                                <div class="completeobjectfield"> 
+                                                    <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                                    {removebutton(key, "minus")}
+                                                </div>
+                                            );
+                                        }
+
+                                        return (
+                                            <div class="completeobjectfield">
+                                                <ObjectItem object={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key} addmore={addmore} removemore={removemore} name={key}/>
+                                                {removebutton(key, "xmark")}
+                                            </div>
+                                        );
+                                    }
+                                        
+                                case "undefined":
+                                    return;
+
+                                case "boolean":
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <BooleanItem name={key.replace(new RegExp("_", 'g'), " ")} value={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "minus")}
+                                        </div>
+                                    );
+
+                                case "number":
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <NumberItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "minus")}
+                                        </div>
+                                    );
+
+                                default:
+                                    return (
+                                        <div class="completeobjectfield">
+                                            <DefaultItem name={key.replace(new RegExp("_", 'g'), " ")} item={item} updatehook={updatehookref} updatekey={updatekeyref + "." + key}/>
+                                            {removebutton(key, "minus")}
+                                        </div>
+                                    );
+                            }
+                        })
+                    }
+                    {
+                        this.props.addmore == "true" ?
+                            <div class="addmoretoobject">
+                                    <h4>&gt; new field:</h4>
+                                    <span class="addmorename">Name:</span>
+                                    <input type="text" id={this.props.updatekey.replaceAll(".", "_") + "-addmorename"}></input>
+                                    <select id={this.props.updatekey.replaceAll(".", "_") + "-select"}>
+                                        <option>object</option>
+                                        <option>true/false</option>
+                                        <option>list</option>
+                                        <option>number</option>
+                                        <option>text</option>
+                                    </select>
+                                    <i class="fa-solid fa-plus addelement" onClick={this.addnewfield}></i>
+                            </div>
+                            :
+                            ""
+                    }
+                </div>
             </div>
         );
     }
@@ -329,7 +716,7 @@ class NumberItem extends React.Component
                 <div class="objectname">
                     {this.props.name ? this.props.name + ":" : ""}
                 </div>
-                <input type="text" id={this.state.id} class="listinput"></input>
+                <input type="number" id={this.state.id} class="listinput"></input>
             </div> 
         );
     }
@@ -367,6 +754,7 @@ class PluginConfig extends React.Component
 
         this.addConfigForPlugin = this.addConfigForPlugin.bind(this);
         this.deleteLocalConfig = this.deleteLocalConfig.bind(this);
+        this.resetConfig = this.resetConfig.bind(this);
 
         this.refreshConfig = this.refreshConfig.bind(this);
 
@@ -391,7 +779,7 @@ class PluginConfig extends React.Component
     {
         // event.stopPropagation();
         this.forceUpdate();
-        $.get("/webpanel/api/plugins", (data) => {this.selectPlugin(getSelectedGuild() == "global" ? "" : data[0])});
+        $.get("/webpanel/api/plugins", (data) => {this.selectPlugin(getSelectedGuild() == "global" ? "internal-network" : data[0])});
     }
 
     getPluginNames(data)
@@ -405,7 +793,6 @@ class PluginConfig extends React.Component
     {
         this.setState({
             selectedplugin: {
-                ...this.state.selectedplugin,
                 name: name
             }
         });
@@ -560,7 +947,9 @@ class PluginConfig extends React.Component
                         </div>
                     }
                 </div>
-                <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+                <div id="buttondeck">
+                    <div class="savesettings"  onClick={this.setNetworkInfo}>Save Settings</div>
+                </div>
             </div>);
         }
 
@@ -573,11 +962,13 @@ class PluginConfig extends React.Component
                     {
                         this.state.permissioninfo === undefined ? "No permission settings to show" :
                         <div>
-                            <ObjectItem object={this.state.permissioninfo} updatehook={this.setPropertiesForChildren} updatekey="permissioninfo"/>
+                            <ObjectItem object={this.state.permissioninfo} updatehook={this.setPropertiesForChildren} updatekey="permissioninfo" addmore="true" removemore="true"/>
                         </div>
                     }
                 </div>
-                <div class="savesettings"  onClick={this.setPermissionInfo}>Save Settings</div>
+                <div id="buttondeck">
+                    <div class="savesettings"  onClick={this.setPermissionInfo}>Save Settings</div>
+                </div>
             </div>);
     }
 
@@ -607,6 +998,32 @@ class PluginConfig extends React.Component
                         config: undefined
                     }
                 });
+            }
+        });
+    }
+
+    resetConfig()
+    {
+        this.setState({
+            selectedplugin: {
+                ...this.state.selectedplugin,
+                config: undefined
+            }
+        });
+
+        $.ajax({
+            method: "POST",
+            url: "/webpanel/api/resetpluginconfig?guild=" + getSelectedGuild() + "&plugin=" + this.state.selectedplugin.name,
+            success: (data) => {
+                this.setState({
+                    selectedplugin: {
+                        ...this.state.selectedplugin,
+                        config: data
+                    }
+                });
+            },
+            error: (err) => {
+                displayMessage("There was a problem resetting the config", false);
             }
         });
     }
@@ -760,7 +1177,7 @@ class PluginConfig extends React.Component
                     :
 
                     //specific plugin settings
-                    <div id="pluginsettings">  
+                    <div id="pluginsettings">
                         <div id="plugintitle">
                             <img src={this.state.selectedplugin.picture} alt="plugin image" width="70" height="70"/>
                             <div id="plugintitletxt">
@@ -776,36 +1193,59 @@ class PluginConfig extends React.Component
                                     {this.state.selectedplugin.config.map(function(config, i){
                                         return <Config item={config.data} updatehook={updatehookref} updatekey={"selectedplugin.config." + i + ".data"}/>;
                                     })}
-                                    <div class="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
-                                    {
-                                    getSelectedGuild() == "global" ? "" :
-                                        <div class="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
-                                    }
                                 </div>
                                 :
                                 <div>
                                     <h2>Sorry! This plugin has no config</h2>
-                                    <p>The selected guild has no config for this plugin. This means either this guild is using the Global Settings for this plugin, or this plugin has no config to edit. Either edit the Global Settings for this plugin, or add a local config for this guild using the button below.</p>
+                                    {
+                                        getSelectedGuild() == "global" ? 
+                                            <p>The selected guild has no config for this plugin. If this plugin is supposed to have a config, either try reloading the plugin or contacting the developer.</p>
+                                            : 
+                                            <p>The selected guild has no config for this plugin. This means either this guild is using the Global Settings for this plugin, or this plugin has no config to edit. Either edit the Global Settings for this plugin, or add a local config for this guild using the button below.</p>
+                                    }
+                                </div>
+                            }
+                            <div id="buttondeck">
+                                {
+                                    this.state.selectedplugin.config ?
+                                    <div class="savesettings"  onClick={this.setPluginInfo}>Save Settings</div>
+                                    :
+                                    ""
+                                }
+                                {
+                                    !this.state.selectedplugin.config ?
+                                    ""
+                                    :
+                                    getSelectedGuild() !== "global" ?
+                                    <div class="removesettings" onClick={this.deleteLocalConfig}>Use Global Settings</div>
+                                    :
                                     <div class="savesettings" onClick={this.addConfigForPlugin}>Add Local Config</div>
-                                </div>
-                            }
-                            {
-                                getSelectedGuild() == "global" ? "" :
-                                <div>
-                                    {
-                                        this.state.selectedplugin.whitelist ? 
-                                            <div class="removesettings" onClick={this.removeFromWhitelist}>Remove from Whitelist</div>
-                                            :
-                                            <div class="savesettings" onClick={this.addToWhitelist}>Add to Whitelist</div>
-                                    }
-                                    {
-                                        this.state.selectedplugin.blacklist ? 
-                                            <div class="removesettings" onClick={this.removeFromBlacklist}>Remove from Blacklist</div>
-                                            :
-                                            <div class="savesettings" onClick={this.addToBlacklist}>Add to Blacklist</div>
-                                    }
-                                </div>
-                            }
+                                }
+                                {
+                                    getSelectedGuild() == "global" ? 
+                                    ""
+                                    :
+                                    this.state.selectedplugin.whitelist ? 
+                                        <div class="removesettings" onClick={this.removeFromWhitelist}>Remove from Whitelist</div>
+                                        :
+                                        <div class="savesettings" onClick={this.addToWhitelist}>Add to Whitelist</div>
+                                }
+                                {
+                                    getSelectedGuild() == "global" ?
+                                    ""
+                                    :
+                                    this.state.selectedplugin.blacklist ? 
+                                        <div class="removesettings" onClick={this.removeFromBlacklist}>Remove from Blacklist</div>
+                                        :
+                                        <div class="savesettings" onClick={this.addToBlacklist}>Add to Blacklist</div>
+                                }
+                                {
+                                    this.state.selectedplugin.config ? 
+                                    <div class="removesettings" onClick={this.resetConfig}>Reset Config</div>
+                                    :
+                                    ""
+                                }
+                            </div>
                         </div>
                     </div>
                 }

@@ -203,6 +203,8 @@ public class IOHandler
                             return true; //if so, the plugin does exist
 					}
 				}
+
+				potential_plugin_jar.close();
 			}
 			catch (IOException e1)
 			{

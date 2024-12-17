@@ -1,6 +1,39 @@
+# 1.0!!!
+~ AMGN will now continue to run when permissions.yml or whitelist.yml are missing
+~ default whitelist.yml no longer includes a fake plugin, which could be annoying for setting up a whitelist
+- removed erroneous debug print from config getValue method
+~ fixed format of default permissions file
+~ changed plugin initialise log messages to before loading rather than after (helps with plugin-debugging)
+~ config methods no longer throw exceptions, this is captured internally and the exception messages should make clear that a config file is missing
++ add convenience methods setGlobalConfig, setGuildConfig, setConfig, setGlobalValue, setGuildValue and setValue for easily writing back to config files
++ add a plugin load order to network.yml. This allows bot owners to decide what order plugins are loaded in, if one plugin must be loaded before another for example.
+~ Previously when retrieving a config value, AMGN would actually search recursively for values, in nested objects and lists. This behaviour is weird, and has been removed. No recursive-searching now happens in configs.
+~ Configs and webpanel now have better reliance on helper methods in GuildNetwork and IOHandler classes
+~ Improve reliance on enabling and disabling plugins in GuildNetwork class, used in the enable disable and reload commands
++ Improve whitelist and blacklist helper methods to make them more intuitive. ListenerWrapper.java now has two methods that will tell you which guild has which plugins able to run, and which guilds a plugin can run in, based off the whitelisting rules.
++ Add convenience method that resolves an IMentionable Object from JDA when supplied with an ID (saves typing out code trying to figure out what an ID from a config file represents)
++ Improve AMGN.runCommand logging to show command execution status, and add similar logging for generic command invocations
++ AMGN.runCommand will now respect network whitelist/blacklist rules
++ Improve logging output and automatically store AMGN/plugin error output to `errors.log`
+~ Improve the way default commands are understood by the network- this now allows for more consistent behaviour, and DEFAULT COMMANDS CAN BE USED IN AMGN.runCommand()!!!
+~ Cleaned up webpanel authentication- sessions may now persist across network restarts, and revoking the permission AMGN.webpanel.access will now properly revoke the user's access to the webpanel
++ Fixed webpanel bugs and performance, added new webpanel buttons for more customisation and gave cosmetic upgrade to webpanel (fields can now be added or removed from config objects, the data type of a list can be chosen, objects and lists are now more clearly represented, reset config button was added, in short anything can now be added or removed from a config on the webpanel)
+~ AMGN.runCommand no longer access plugin listeners concurrently, breaking things, and is now more robust
+- no more references to old discord tags- all been replaced with new discord usernames
++ add more caching options to network.yml
++ internal network operations will no longer expect users to be cached
+~ directory paths referenced within AMGN (i.e. found in the GuildNetwork class) are now absolute, and AMGN can now be run without needing to be in the base AMGN directory.
++ Guilds that the bot joins will now *write* the newly generated guild settings to network.yml immediately. This behaviour has also been updated for guilds joined during runtime, not just in downtime.
+~ listpermissions plugin now handles role IDs, this was previously broken
+~ commands now support guild-specific prefixes in the usage parameter, by the use of a ${PREFIX} placeholder value
++ Inbuilt "listing" commands e.g. help, listpermissions, listgroups, will now display results alphabetically, and with a less invasive scroll-style menu
++ Inbuilt support for scroll-style menu templates is now included
++ Menus can now have automatic timeouts after which they will cease to function. Actions can be scheduled to occur whenever menus are destroyed or softdestroyed
+~ Fixed/improved permission checks and contexts
+~ Fixed bug in the webpanel where updating lists will update the config files properly, but display incorrect changes on the GUI. 
+
 ## beta-1.4.2
 ~ Changed the way that config getValue methods work. Previously the only requirement to return a value before deferring down the config hierarchy (local -> global -> default) was for the config file to exist. This caused null values to be returned when they shouldn't have been. Now, if the value is null, this will not be returned and we continue down the hierarchy.
-
 ~ Fixed the methods Config.getDefaultConfig and Config.getDefaultValue
 
 ## beta-1.4.1

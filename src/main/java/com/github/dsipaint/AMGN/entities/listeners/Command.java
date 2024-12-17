@@ -1,9 +1,6 @@
 package com.github.dsipaint.AMGN.entities.listeners;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +8,9 @@ import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.io.Permissions;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
 public abstract class Command extends Listener
@@ -57,62 +54,14 @@ public abstract class Command extends Listener
 	 */
 	//returns true if this member has permission to run this command, as specified in plugin.yml
 	//this uses guild-specific "members" because commands are always used in a guild-context
-	@SuppressWarnings("unchecked")
 	public final boolean hasPermission(Member m)
 	{
-		//operators always have permission
-		if(GuildNetwork.isOperator(m.getUser()))
-			return true;
-		
-		//read permissions.yml
-		Map<String, List<String>> perms = new HashMap<String, List<String>>();
-		try
+		for(String perm : this.getPerms())
 		{
-			//check all groups and see if a group has the permission
-			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
-			for(String groupname : groups.keySet())
-			{
-				if(Permissions.isInGroup(m.getId(), groupname))
-				{
-					for(String permission : this.permissions)
-					{
-						if(Permissions.hasPermission(groupname, permission))
-							return true;
-					}
-				}
-			}
-
-
-			perms = new Yaml().load(
-				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
-		}
-		catch(FileNotFoundException e)
-		{
-			e.printStackTrace();
+			if(Permissions.userHasPermission(m.getUser(), m.getGuild(), perm))
+				return true; 
 		}
 
-		//check to see if an id is either a member, or a role the member has (in this guild!!)
-		//if this ID has been given any of this command's permissions, return true
-		for(String id : perms.keySet())
-		{
-			if(id.equalsIgnoreCase("groups")) //only deal with IDs here, we check groups above
-				continue;
-
-			if(m.getId().equals(id) ||
-				(m.getGuild().getRoleById(id) != null && m.getRoles().contains(m.getGuild().getRoleById(id)))
-				|| m.getGuild().getId().equals(id))
-			{
-				for(String commandperm : this.permissions)
-				{
-					for(String permission : perms.get(id))
-					{
-						if(commandperm.equals(permission))
-							return true;
-					}
-				}
-			}
-		}
-		
 		return false;
 	}
 	
@@ -129,9 +78,14 @@ public abstract class Command extends Listener
 	/** 
 	 * @return String
 	 */
-	public final String getUsage()
+	public final String getUsage(Guild g)
 	{
-		return usage;
+		if(g == null)
+			return usage;
+
+		return usage == null ? usage
+			:
+			usage.replace("${PREFIX}", GuildNetwork.getPrefix(g.getIdLong()));
 	}
 
 	

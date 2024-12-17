@@ -2,6 +2,7 @@ package com.github.dsipaint.AMGN.entities.listeners.menu;
 
 import java.util.function.Consumer;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
@@ -34,36 +35,35 @@ public class Button extends Listener
 
         this.message = message;
 
-        GuildNetwork.registerListener(this, plugin); //register these listeners to the plugin they came from
+        if(this.plugin != null)
+            GuildNetwork.registerListener(this, plugin); //register these listeners to the plugin they came from
+        else
+            AMGN.bot.addEventListener(this); //null plugins allow the intrinsic plugins to make use of menus
     }
 
     public void onMessageReactionAdd(MessageReactionAddEvent e)
     {
-        if(e.getUser().equals(e.getJDA().getSelfUser()))
+        if(e.retrieveUser().complete().equals(e.getJDA().getSelfUser()))
             return;
         
-
-        if(e.getReaction().getEmoji().getType().equals(Type.CUSTOM)
-            && e.getEmoji().getAsReactionCode().equals(this.emoji.getAsReactionCode())
+        if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
             && e.getMessageId().equals(this.message.getId()))
-            press.accept(new MenuButtonClickEvent(e.getMember(), message, this, true));
-        else if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
-            && e.getMessageId().equals(this.message.getId()))
-            press.accept(new MenuButtonClickEvent(e.getMember(), message, this, true));
+            press.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, true));
     }
 
+    @Override
     public void onMessageReactionRemove(MessageReactionRemoveEvent e)
     {
-        if(e.getUser().equals(e.getJDA().getSelfUser()))
+        if(e.retrieveUser().complete().equals(e.getJDA().getSelfUser()))
             return;
         
         if(e.getReaction().getEmoji().getType().equals(Type.CUSTOM)
             && e.getEmoji().getAsReactionCode().equals(this.emoji.getAsReactionCode())
             && e.getMessageId().equals(this.message.getId()))
-            unpress.accept(new MenuButtonClickEvent(e.getMember(), message, this, false));
+            unpress.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, false));
         else if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
             && e.getMessageId().equals(this.message.getId()))
-            unpress.accept(new MenuButtonClickEvent(e.getMember(), message, this, false));
+            unpress.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, false));
     }
 
     public class MenuButtonClickEvent

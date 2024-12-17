@@ -2,7 +2,6 @@ package com.github.dsipaint.AMGN.web;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
-import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -57,7 +55,7 @@ public class WebpanelController
     static final String TOKEN_URL="https://discord.com/api/oauth2/token",
         API_URL = "https://discord.com/api/v10";
 
-    static List<String> TOKEN_CACHE = new ArrayList<String>(); //yes, this is a bad idea: change this in the future
+    static HashMap<String, Long> TOKEN_CACHE = new HashMap<String, Long>();
 
     @RequestMapping("/webpanel")
     public String getCustomWebpanel(Model model)
@@ -72,6 +70,8 @@ public class WebpanelController
     @RequestMapping("/webpanel/redirect")
     public String handleloginredirect(Model model, HttpServletResponse response, @RequestParam(name="code") String code)
     {
+        AMGN.logger.info("Authorization attempt on webpanel");
+
         //add login cookies
         RestTemplate template = new RestTemplate();
         StringBuilder authparams = new StringBuilder()
@@ -94,15 +94,11 @@ public class WebpanelController
         userinfoheaders.set("Authorization", "Bearer " + usertoken);
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
 
-        //if this is a valid authorised user and we don't know this user already:
-        if(canViewId(userinfo.getBody().get("id").asLong()) &&
-            !TOKEN_CACHE.contains(usertoken))
-            TOKEN_CACHE.add(usertoken);
-
-
         Cookie token = new Cookie("discord_token", usertoken);
         token.setPath("/webpanel");
         response.addCookie(token);
+
+        AMGN.logger.info("User " + userinfo.getBody().get("id").asText() + " authenticated via the webpanel");
 
         //return a redirect page
         return "redirect";
@@ -113,19 +109,26 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotGuilds(HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/guilds");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/guilds failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/guilds from user " + AMGN.bot.getUserById(userid));
+
             ObjectMapper mapper = new ObjectMapper();
             ArrayNode guild_data = mapper.createArrayNode();
 
             AMGN.bot.getGuilds().forEach(guild -> {
-                if(GuildNetwork.isOperator(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request)))) || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                if(GuildNetwork.isOperator(AMGN.bot.getUserById(userid)) || guild.getMemberById(Long.parseLong(userid)) != null)
                 {
                     ObjectNode objectnode = mapper.createObjectNode();
                     objectnode.put("id", guild.getId());
@@ -139,6 +142,7 @@ public class WebpanelController
             return guild_data;
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/guilds from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -148,14 +152,21 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getBotPlugins(HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/plugins");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/plugins failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/plugins from user " + AMGN.bot.getUserById(userid));
+
             ObjectMapper mapper = new ObjectMapper();
             ArrayNode plugin_data = mapper.createArrayNode();
             AMGN.plugin_listeners.keySet().forEach(plugin ->
@@ -167,6 +178,7 @@ public class WebpanelController
             return plugin_data;
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/plugins from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -176,20 +188,29 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getPluginInfo(@RequestParam(name="name") String name, @RequestParam(name="guild", defaultValue="global") String guild, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/plugininfo");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+
         if(name == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (no plugin specified) from user " + AMGN.bot.getUserById(userid)
+                + " (" + request.getRequestURI() + ")");
             response.setStatus(401);
             return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
         }
 
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
+
             ObjectMapper mapper = new ObjectMapper();
             for(Plugin plugin : AMGN.plugin_listeners.keySet())
             {
@@ -238,6 +259,8 @@ public class WebpanelController
                     }
                     catch(IOException e)
                     {
+                        AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (problem reading plugin info) from user " + AMGN.bot.getUserById(userid)
+                            + " (" + request.getRequestURI() + ")");
                         response.setStatus(500);
                         return new ObjectMapper().createObjectNode().put("error", "problem reading plugin info");
                     }
@@ -246,11 +269,14 @@ public class WebpanelController
                     return obj;
                 }
             }
-
+            
+            AMGN.logger.error("GET request made to /webpanel/api/plugininfo failed (plugin " + name + "not found) from user " + AMGN.bot.getUserById(userid)
+                + " (" + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");  
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -261,14 +287,20 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getNetworkInfo(HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/networkinfo");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/networkinfo failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
+
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode network_data = mapper.createObjectNode();
             boolean isoperator = GuildNetwork.isOperator(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))));
@@ -295,6 +327,7 @@ public class WebpanelController
             return network_data;
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -305,14 +338,20 @@ public class WebpanelController
     @ResponseBody
     public JsonNode putNetworkInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("PUT request made to /webpanel/api/networkinfo");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("PUT request made to /webpanel/api/networkinfo failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated PUT request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
+
             boolean isoperator = GuildNetwork.isOperator(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))));
 
             ArrayNode guild_data = body.withArray("guild_data");
@@ -340,6 +379,8 @@ public class WebpanelController
             }
             catch(IOException e)
             {
+                AMGN.logger.error("Error writing network data for PUT /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid)
+                    + " (" + request.getRequestURI() + ")");
                 response.setStatus(500);
                 return new ObjectMapper().createObjectNode().put("error", "problem writing network data");
             }
@@ -348,6 +389,7 @@ public class WebpanelController
             return new ObjectMapper().createObjectNode().put("success", "network data saved");
         }
 
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -358,64 +400,62 @@ public class WebpanelController
     @ResponseBody
     public JsonNode putPluginConfigInfo(@RequestParam(name="name") String name, @RequestParam(defaultValue = "global") String guild, @RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("PUT request made to /webpanel/api/plugininfo");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("PUT request made to /webpanel/api/plugininfo failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+
         if(name == null)
         {
+            AMGN.logger.error("PUT request made to /webpanel/api/plugininfo failed (no plugin specified) from user " + AMGN.bot.getUserById(userid)
+                + " (" + request.getRequestURI() + ")");
             response.setStatus(401);
             return new ObjectMapper().createObjectNode().put("error", "no plugin specified");         
         }
 
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated PUT request made to /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
+
             ObjectMapper mapper = new ObjectMapper();
             for(Plugin plugin : AMGN.plugin_listeners.keySet())
             {
                 if(plugin.getName().equalsIgnoreCase(name))
                 {
-                    try
+                    //we go through the returned data in the following format (as is given to the user originally in the get method)
+                    //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
+                    //then for each config file, we write the data
+                    for(JsonNode config : body)
                     {
-                        //we go through the returned data in the following format (as is given to the user originally in the get method)
-                        //[{file: "config", data: {...whatever}}, {file: "names", data: {...more whatever}}, {file: "winners", data: {...even more whatever}}]
-                        //then for each config file, we write the data
-                        //TODO: add formal config-writing
-                        Yaml yaml_out = new Yaml(IOHandler.dumperopts);
-                        for(JsonNode config : body)
-                        {
-                            Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
-                            yaml_out.dump(result, new FileWriter(new File((guild.equalsIgnoreCase("global") ? plugin.getGlobalConfigPath() : plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild))) + "/" + config.get("file").asText() + ".yml")));
-                        }
-                    }
-                    catch(IOException e)
-                    {
-                        response.setStatus(500);
-                        return new ObjectMapper().createObjectNode().put("error", "problem writing data");
+                        Map<String, Object> result = mapper.convertValue(config.get("data"), new TypeReference<Map<String, Object>>(){});
+                        if(guild.equalsIgnoreCase("global"))
+                            plugin.getConfig().setGlobalConfig(config.get("file").asText() + ".yml", result);
+                        else
+                            plugin.getConfig().setGuildConfig(config.get("file").asText() + ".yml", result, AMGN.bot.getGuildById(guild));
                     }
 
                     //reload plugin
-                    plugin.onDisable(); //disable plugin
-                    AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
-                    AMGN.menucache.forEach(menu ->
-                    {
-                        if(menu.getPlugin().equals(plugin))
-                            menu.softDestroy();
-                    });
-                    AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
-                    plugin.onEnable(); //re-enable plugin
+                    GuildNetwork.disablePlugin(plugin);
+                    GuildNetwork.enablePlugin(plugin);
 
                     response.setStatus(201);
                     return new ObjectMapper().createObjectNode().put("success", "plugin config saved");
                 }
             }
 
+            AMGN.logger.error("Plugin not found for PUT request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid)
+                + "( " + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         }
 
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -426,14 +466,21 @@ public class WebpanelController
     @ResponseBody
     public JsonNode requestLocalConfig(@RequestParam(name="name") String name, @RequestParam(name="guild") String guild, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("POST request made to /webpanel/api/plugininfo");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("POST request made to /webpanel/api/plugininfo failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated POST request made to /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
+
             //check to see if there is a config for this plugin
             for(Plugin plugin : AMGN.plugin_listeners.keySet())
             {
@@ -453,33 +500,21 @@ public class WebpanelController
                         for(File file : configfiles)
                             plugin.getConfig().generateLocalResource(file.getName(), AMGN.bot.getGuildById(guild));
 
-                        //return this config
-                        try
-                        {
-                            for(File f : configfiles)
-                            {
-                                ObjectNode configobj = mapper.createObjectNode();
-                                JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
-                                configobj.put("file", f.getName().replace(".yml", ""));
-                                configobj.set("data", configdata);
-    
-                                confignode.add(configobj);
-                            }
-                        }
-                        catch(IOException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        //return config as json
+                        confignode = getConfigAsJson(plugin, guild);
                     }
 
                     return confignode;
                 }
             }
 
+            AMGN.logger.error("Plugin not found for POST request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid)
+                + "(" + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         }
 
+        AMGN.logger.error("Unauthenticated POST request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -490,14 +525,20 @@ public class WebpanelController
     @ResponseBody
     public JsonNode deleteLocalConfig(@RequestParam(name="name") String name, @RequestParam(name="guild") String guild, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("DELETE request made to /webpanel/api/plugininfo");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("DELETE request made to /webpanel/api/plugininfo failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated DELETE request made to /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid));
+
             //check to see if there is a config for this plugin
             for(Plugin plugin : AMGN.plugin_listeners.keySet())
             {
@@ -513,6 +554,8 @@ public class WebpanelController
                         }
                         catch(IOException e)
                         {
+                            AMGN.logger.error("Error deleting local network data for DELETE /webpanel/api/plugininfo from user " + AMGN.bot.getUserById(userid)
+                                + "(" + request.getRequestURI() + ")");
                             e.printStackTrace();
                         }
                         
@@ -521,34 +564,100 @@ public class WebpanelController
                     }
                     else
                     {
+                        AMGN.logger.info("Success, local config already deleted for DELETE at /webpanel/api/plugininfo for " + AMGN.bot.getUserById(userid) + " with " + name);
                         response.setStatus(201);
                         return new ObjectMapper().createObjectNode().put("success", "local config already deleted");
                     }
                 }
             }
 
+            AMGN.logger.error("Plugin not found for DELETE request at /webpanel/api/plugininfo for user " + AMGN.bot.getUserById(userid)
+                + "(" + request.getRequestURI() + ")");
             response.setStatus(404);
             return new ObjectMapper().createObjectNode().put("error", "plugin not found");
         }
 
+        AMGN.logger.error("Unauthenticated POST request made to /webpanel/api/networkinfo from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
+    }
+
+    //reset a plugin config for a guild or even globally
+    @PostMapping(value = "/webpanel/api/resetpluginconfig", produces=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JsonNode resetConfig(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
+    {
+        AMGN.logger.info("POST request made to /webpanel/api/resetpluginconfig");
+
+        if(request.getCookies() == null)
+        {
+            AMGN.logger.error("POST request made to /webpanel/api/resetpluginconfig failed (no cookies present)");
+            response.setStatus(403);
+            return new ObjectMapper().createObjectNode().put("error", "invalid token");
+        }
+
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
+        if(isAuthenticatedRequest(request))
+        {
+            //look for plugin
+            for(Plugin p : AMGN.plugin_listeners.keySet())
+            {
+                if(p.getName().equalsIgnoreCase(plugin))
+                {
+                    //use global files as a reference
+                    File globalconfigdir = new File(p.getGlobalConfigPath());
+                    File[] configfiles = globalconfigdir.listFiles((file, name) ->{
+                        return name.endsWith(".yml");
+                    });
+
+                    if(guild.equalsIgnoreCase("global"))
+                    {
+                        for(File config : configfiles)
+                            p.getConfig().generateGlobalResource(config.getName());
+                    }
+                    else if(AMGN.bot.getGuildById(guild) != null)
+                    {
+                        for(File config : configfiles)
+                            p.getConfig().generateLocalResource(config.getName(), AMGN.bot.getGuildById(guild));
+                    }
+
+                    response.setStatus(200);
+                    return getConfigAsJson(p, guild);
+                }
+            }
+
+            AMGN.logger.error("Plugin not found for POST request at /webpanel/api/resetpluginconfig for user " + AMGN.bot.getUserById(userid)
+                + "(" + request.getRequestURI() + ")");
+            response.setStatus(404);
+            return new ObjectMapper().createObjectNode().put("error", "plugin not found");
+        }
+
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+        response.setStatus(403);
+        return new ObjectMapper().createObjectNode().put("error", "invalid token");
+
     }
 
     @PutMapping(value = "/webpanel/api/whitelist", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JsonNode addGuildToWhitelist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("PUT request made to /webpanel/api/whietlist");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("PUT request made to /webpanel/api/whitelist failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated PUT request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+
             //also need permission AMGN.commands.whitelist
-            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
+            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
             {
                 List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
                 if(!newlist.contains(Long.parseLong(guild)))
@@ -561,6 +670,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
+                    AMGN.logger.error("Error writing whitelist data for PUT /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -569,12 +680,13 @@ public class WebpanelController
             }
             else
             {
-               
-        response.setStatus(403);
-        return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.whitelist"); 
+                AMGN.logger.error("User " + AMGN.bot.getUserById(userid) + "does not have permission to use PUT on /webpanel/api/whitelist");
+                response.setStatus(403);
+                return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.whitelist"); 
             }
         }
 
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -583,16 +695,21 @@ public class WebpanelController
     @ResponseBody
     public JsonNode removeGuildFromWhitelist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("DELETE request made to /webpanel/api/whietlist");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("DELETE request made to /webpanel/api/whitelist failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated DELETE request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
             //also need permission AMGN.commands.whitelist
-            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
+            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
             {
                 List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
                 if(newlist.contains(Long.parseLong(guild)))
@@ -605,6 +722,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
+                    AMGN.logger.error("Error writing whitelist data for DELETE /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid)
+                        + "(" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -613,11 +732,13 @@ public class WebpanelController
             }
             else
             {
+                AMGN.logger.error("User " + AMGN.bot.getUserById(userid) + "does not have permission to use DELETE on /webpanel/api/whitelist");
                 response.setStatus(403);
                 return new ObjectMapper().createObjectNode().put("error", "invalid token");
             }
         }
         
+        AMGN.logger.error("Unauthenticated DELETE request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -626,16 +747,22 @@ public class WebpanelController
     @ResponseBody
     public JsonNode addGuildToBlacklist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("PUT request made to /webpanel/api/blacklist");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("PUT request made to /webpanel/api/blacklist failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated PUT request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
+
             //also need permission AMGN.commands.blacklist
-            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
+            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
             {
                 List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
                 if(!newlist.contains(Long.parseLong(guild)))
@@ -649,6 +776,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
+                    AMGN.logger.error("Error writing whitelist data for PUT /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -657,11 +786,13 @@ public class WebpanelController
             }
             else
             {
+                AMGN.logger.error("User " + AMGN.bot.getUserById(userid) + "does not have permission to use PUT on /webpanel/api/blacklist");
                 response.setStatus(403);
                 return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.blacklist");
             }
         }
         
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -670,16 +801,22 @@ public class WebpanelController
     @ResponseBody
     public JsonNode removeGuildFromBlacklist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("DELETE request made to /webpanel/api/blacklist");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("DELETE request made to /webpanel/api/blacklist failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated DELETE request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
+
             //also need permission AMGN.commands.blacklist
-            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
+            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
             {
                 List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
                 if(newlist.contains(Long.parseLong(guild)))
@@ -692,6 +829,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
+                    AMGN.logger.error("Error writing whitelist data for DELETE /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid)
+                        + "( " + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
     
@@ -700,11 +839,13 @@ public class WebpanelController
             }
             else
             {
+                AMGN.logger.error("User " + AMGN.bot.getUserById(userid) + "does not have permission to use DELETE on /webpanel/api/blacklist");
                 response.setStatus(403);
                 return new ObjectMapper().createObjectNode().put("error", "user is missing permission AMGN.commands.blacklist"); 
             }
         }
         
+        AMGN.logger.error("Unauthenticated DELETE request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -713,20 +854,33 @@ public class WebpanelController
     @ResponseBody
     public JsonNode isInWhitelist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/whitelist");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/whitelist failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
+
+            //global is always whitelisted
+            if(guild.equals("global"))
+            {
+                return new ObjectMapper().createObjectNode().put("result", true);
+            }
+
             if(GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>()).contains(Long.parseLong(guild)))
                 return new ObjectMapper().createObjectNode().put("result", true);
 
             return new ObjectMapper().createObjectNode().put("result", false);
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -735,20 +889,33 @@ public class WebpanelController
     @ResponseBody
     public JsonNode isInBlacklist(@RequestParam String guild, @RequestParam String plugin, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/blacklist");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/blacklist failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
+
+            //global is never blacklisted
+            if(guild.equals("global"))
+            {
+                return new ObjectMapper().createObjectNode().put("result", false);
+            }
+
             if(GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>()).contains(Long.parseLong(guild)))
                 return new ObjectMapper().createObjectNode().put("result", true);
 
             return new ObjectMapper().createObjectNode().put("result", false);
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -758,16 +925,22 @@ public class WebpanelController
     @ResponseBody
     public JsonNode getPermissions(HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("GET request made to /webpanel/api/permissions");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("GET request made to /webpanel/api/permissions failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated GET request made to /webpanel/api/permissions from user " + AMGN.bot.getUserById(userid));
+
             //must also have AMGN.commands.listpermissions to get this info
-            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.listpermissions"))
+            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.listpermissions"))
             {
                 try
                 {
@@ -777,16 +950,20 @@ public class WebpanelController
                 }
                 catch(JsonProcessingException | FileNotFoundException e)
                 {
+                    AMGN.logger.error("Error processing json response from " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     e.printStackTrace();
                 }
             }
             else
             {
+                AMGN.logger.error("User " + AMGN.bot.getUserById(userid) + " does not have permission to use GET /webpanel/api/permissions");
                 response.setStatus(403);
                 return new ObjectMapper().createObjectNode().put("error", "this user is missing permission AMGN.commands.listpermissions");
             }
         }
 
+        AMGN.logger.error("Unauthenticated GET request made to /webpanel/api/permissions from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -795,17 +972,22 @@ public class WebpanelController
     @ResponseBody
     public JsonNode putPermissionInfo(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response)
     {
+        AMGN.logger.info("PUT request made to /webpanel/api/permissions");
+
         if(request.getCookies() == null)
         {
+            AMGN.logger.error("PUT request made to /webpanel/api/permissions failed (no cookies present)");
             response.setStatus(403);
             return new ObjectMapper().createObjectNode().put("error", "invalid token");
         }
 
+        String userid = resolveIdFromToken(getTokenFromRequest(request));
         if(isAuthenticatedRequest(request))
         {
+            AMGN.logger.info("Authenticated PUT request made to /webpanel/api/permissions from user " + AMGN.bot.getUserById(userid));
             //must also have AMGN.commands.groups and AMGN.commands.permission to do this
-            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.groups")
-                && Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.permission"))
+            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.groups")
+                && Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.permission"))
             {
                 HashMap<String, Object> parsed_json = new HashMap<String, Object>();
                 //parse the json and turn it into a hashmap
@@ -857,6 +1039,8 @@ public class WebpanelController
                 }
                 catch(IOException e)
                 {
+                    AMGN.logger.error("Error processing json response from " + AMGN.bot.getUserById(userid)
+                        + " (" + request.getRequestURI() + ")");
                     response.setStatus(500);
                     return new ObjectMapper().createObjectNode().put("error", "problem writing permission data");
                 }
@@ -866,12 +1050,13 @@ public class WebpanelController
             }
             else
             {
+                AMGN.logger.error("User " + AMGN.bot.getUserById(userid) + " does not have permission to use PUT /webpanel/api/permissions");
                 response.setStatus(403);
                 return new ObjectMapper().createObjectNode().put("error", "user must have both permissions AMGN.commands.groups and AMGN.commands.permission");
             }
-
         }
 
+        AMGN.logger.error("Unauthenticated PUT request made to /webpanel/api/permissions from user " + AMGN.bot.getUserById(userid));
         response.setStatus(403);
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
@@ -882,35 +1067,83 @@ public class WebpanelController
         HttpHeaders userinfoheaders = new HttpHeaders();
         userinfoheaders.set("Authorization", "Bearer " + token);
         ResponseEntity<JsonNode> userinfo = template.exchange(API_URL + "/users/@me", HttpMethod.GET, new HttpEntity<>("", userinfoheaders), JsonNode.class);
-        return userinfo.getBody().get("id").asText();
+        JsonNode body = userinfo.getBody();
+        return body.get("id") != null ? 
+            body.get("id").asText()
+            :
+            null;
     }
 
-    //will look at a request and see if this is a user who is authorised to view the webpanel
+    public static ArrayNode getConfigAsJson(Plugin plugin, String guild)
+    {
+        File configdir;
+        if(guild.equalsIgnoreCase("global")) //use global config if specified
+            configdir = new File(plugin.getGlobalConfigPath());
+        else if(guild.matches(GuildNetwork.ID_REGEX) && AMGN.bot.getGuildById(guild) != null) //else check if guild really exists
+            configdir = new File(plugin.getGuildConfigPath(AMGN.bot.getGuildById(guild)));
+        else //otherwise return nothing
+            return new ObjectMapper().createArrayNode();
+        
+        File[] configfiles = configdir.listFiles((file, filename) -> {
+            return filename.endsWith(".yml");
+        });
+
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode confignode = mapper.createArrayNode();
+        if(configfiles != null)
+        {
+            //return this config
+            try
+            {
+                for(File f : configfiles)
+                {
+                    ObjectNode configobj = mapper.createObjectNode();
+                    JsonNode configdata = mapper.reader().readTree(mapper.writeValueAsString(plugin.getConfig().getConfig(f.getName())));
+                    configobj.put("file", f.getName().replace(".yml", ""));
+                    configobj.set("data", configdata);
+
+                    confignode.add(configobj);
+                }
+            }
+            catch(IOException e)
+            {
+                AMGN.logger.error("Error reading config for plugin " + plugin.getName() + " and guild " + guild + " in getConfigAsJson");
+                e.printStackTrace();
+            }
+        }
+
+        return confignode;
+    }
+
+    //will look at a request and see if this is a valid token
+    //and if this user has permission to view the webpanel
+    //returns true if they can, false otherwise
     public static boolean isAuthenticatedRequest(HttpServletRequest request)
     {
-        // check to see if we have a discord_token cookie, and if the value of it matches
-        // a token we have already deemed as authenticated in TOKEN_CACHE
-        for(Cookie c : request.getCookies())
+        AMGN.logger.info("Checking authentication of request");
+
+        String token = getTokenFromRequest(request);
+        long id;
+        //either retrieve id from token from the cache, or query the API for the id and then add that id to the cache 
+        if(TOKEN_CACHE.containsKey(token))
+            id = TOKEN_CACHE.get(token);
+        else
         {
-            if(c.getName().equals("discord_token")
-                && TOKEN_CACHE.contains(c.getValue()))
-                return true;
+            String id_str = resolveIdFromToken(token);
+            if(id_str == null)
+            {
+                AMGN.logger.error("Invalid token supplied to request, no ID was found from request token");
+                return false;
+            }
+
+            id = Long.parseLong(id_str);
+            TOKEN_CACHE.put(token, id);
         }
-        return false;
-    }
 
-    //checks a token and checks if this discord user has the permission to view the webpanel
-    public static boolean canViewToken(String token)
-    {
-        return canViewId(Long.parseLong(resolveIdFromToken(token)));
-    }
 
-    //checks a user id and checks if this discord user has the permission to view the webpanel
-    public static boolean canViewId(long id)
-    {
-        if(Permissions.hasPermission(AMGN.bot.getUserById(id), null, "AMGN.webpanel.access")
-            || GuildNetwork.isOperator(AMGN.bot.getUserById(id)))
-            return true;
+
+        if(Permissions.userHasPermission(AMGN.bot.getUserById(id), null, "AMGN.webpanel.access"))
+                return true;
         return false;
     }
 

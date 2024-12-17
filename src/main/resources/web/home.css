@@ -1,7 +1,7 @@
 body {
-    background-color: #555;
-    color: white;
-    font-family:Arial, Helvetica, sans-serif;
+    background-color: #212121;
+    color: rgb(221, 221, 221);
+    font-family: 'Roboto', sans-serif;
     padding: 0px;
     margin: 0px;
     height: 100%;
@@ -12,12 +12,13 @@ html {
 }
 
 #success_err_msg {
-    position:absolute;
-    display:none;
+    position: fixed;
+    display: none;
     width: 100%;
     height: 30px;
     text-align: center;
     padding-top: 10px;
+    z-index: 10;
 }
 
 #topbanner {
@@ -25,7 +26,7 @@ html {
     padding-left: 20px;
     padding-top: 20px;
     height: 10%;
-    border-bottom: 2px solid #92C5D6;
+    border-bottom: 2px solid #4A4A4A;
 }
 
 #topbanner > img {
@@ -76,6 +77,7 @@ html {
     border: 2px solid #4A4A4A;
     border-radius: 5px;
     cursor: pointer;
+    background-color: rgb(21, 21, 21);
 }
 
 #guildselector {
@@ -83,13 +85,21 @@ html {
     border-radius: 5px;
     padding: 0px;
     cursor: pointer;
-    width: fit-content;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 25px;
+    height: 35px;
+    z-index: 1;
+    overflow: hidden;
+    transition: height 0.5s;
+    background-color: rgb(21, 21, 21);
 }
 
 #guildselector > div {
     margin: 0px;
     padding: 0px;
-    width: 100%;
+    height: 100%;
 }
 
 #selectedguild{
@@ -99,8 +109,21 @@ html {
 
 #selectedguild > div {
     margin: 0px;
-    padding: 0px;
+    padding: 5px;
     height: 30px;
+    width: 300px;
+}
+
+#selectedguild > div > img {
+    margin-right: 10px;
+}
+
+#selectedguild > div > div > i {
+    float: right;
+    margin: 10px;
+    transform: translateY(-50%);
+    transition: all 0.5s;
+    transform-origin: center;
 }
 
 #selectedguildimg {
@@ -110,11 +133,10 @@ html {
 
 .guild {
     margin: 0px;
-    margin-top: 5px;
     height: 35px;
-    background-color: #555;
+    padding-top: 3px;
+    padding-bottom: 3px;
     transition: background-color 0.3s;
-    display: none;
 }
 
 .guild:hover {
@@ -124,6 +146,9 @@ html {
 .guild > div {
     margin: 0px;
     float: left;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .guild > img {
@@ -152,36 +177,31 @@ html {
 }
 
 #content > div {
-    width: 100%;
     margin: 0px;
     padding: 0px;
-}
-
-.maxheight {
-    height: 100%;
+    display: flex;
 }
 
 #pluginlist {
-    width: 20%;
-    float: left;
-    clear: left;
+    width: 30%;
+    margin: 0px;
     border-right: 2px solid #4A4A4A;
 }
 
 #pluginsettings {
-    float: left;
-    width: 76%;
     margin: 0px;
-    padding-left: 10px;
+    padding-left: 50px;
+    width: 100%;
 }
 
 #plugintitle {
-    height: 100px;
+    height: 70px;
 }
 
 #plugintitletxt {
     margin: 0px;
     padding: 0px;
+    height: 100%;
     float: left;
 }
 
@@ -198,8 +218,9 @@ html {
 
 #pluginsettings > p {
     margin: 0px;
-    margin-bottom: 20px;
-    font-style: italic;
+    margin-bottom: 30px;
+    width: 100%;
+    clear: left;
 }
 
 ul {
@@ -211,32 +232,99 @@ h2{
     margin: 0px;
 }
 
-input[type=text] {
-    background-color: #4A4A4A;
+input {
+    background-color: rgb(45, 45, 45);
     color: white;
+    font-weight: bold;
     border: 1px solid white;
     border-radius: 5px;
     margin-right: 5px;
-    float: left;
-    clear: left;
+}
+
+.list {
+    border-left: 1px solid rgb(163, 163, 163);
+    width: fit-content;
+    height: fit-content;
+    padding: 7px;
+}
+
+.listwrapper {
+    margin-bottom: 10px;
+}
+
+.objectwrapper {
+    margin-bottom: 10px;
 }
 
 .listinput {
-    float: left;
     clear: left;
-}
-
-.listinput:has(#addelement) {
-    margin-bottom: 20px;
 }
 
 .completelistitem{
-    float: left;
+    clear: left;
+    display: flex;
+}
+
+.completeobjectfield {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.completeobjectfield > .inputwrapper + .removeelement {
+    display: flex;
+    align-items: center;
+}
+
+.completeobjectfield > .removeelement:has(+.listwrapper) {
+    margin-right: 5px;
+}
+
+.object {
+    border: 2px solid rgb(163, 163, 163);
+    width: fit-content;
+    border-radius: 5px;
+    padding: 10px;
+
+}
+
+.object > .inputwrapper {
+    width: 50%;
+}
+
+.addmoretoobject {
+    clear: left;
+    width: 50%;
+    margin-top: 5px;
+}
+
+.addmoretoobject > h4 {
+    margin: 0px;
+    font-style: italic;
+}
+
+.addmoretoobject > * {
+    margin-right: 5px;
+}
+
+select {
+    border: 1px solid rgb(163, 163, 163);
+    border-radius: 5px;
+}
+
+.completelistitem > * > .listwrapper > h2 {
+    font-size:large;
+}
+
+.addnew {
     clear: left;
 }
 
-.completelistitem:has(.objectdisplay) {
-    margin-bottom: 20px;
+.addnew > * {
+    margin-right: 10px;
+}
+
+.addnew > span {
+    font-style: italic;
 }
 
 .addelement {
@@ -244,40 +332,48 @@ input[type=text] {
 }
 
 .inputwrapper {
-    float: left;
-    clear: right;
-    margin-bottom: 10px;
+    width: fit-content;
 }
 
 .removeelement {
     cursor: pointer;
     color: rgb(252, 70, 70);
-    float: left;
 }
 
-.objectdisplay {
-    width: 100%;
-    margin-bottom: 30px;
+.objectwrapper + .removeelement {
+    margin-left: 5px;
 }
 
-.objectdisplay > .inputwrapper {
-    width: 100%;
+.listwrapper + .removeelement {
+    margin-left: 5px;
 }
 
 .savesettings {
-    float: right;
     background-color: rgb(19, 140, 19);
     padding: 10px;
     border-radius: 7px;
     cursor: pointer;
+    margin: 5px;
+    border: 2px solid rgb(9, 72, 9);
 }
 
 .removesettings {
-    float: right;
     background-color:rgb(252, 70, 70);
     padding: 10px;
     border-radius: 7px;
     cursor: pointer;
+    margin: 5px;
+    border: 2px solid rgb(153, 41, 41);
+}
+
+#buttondeck {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+}
+
+#buttondeck > * {
+    float: right;
 }
 
 #nocontent {
