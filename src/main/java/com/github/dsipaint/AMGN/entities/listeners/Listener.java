@@ -161,19 +161,14 @@ import net.dv8tion.jda.api.events.user.update.GenericUserPresenceEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivityOrderEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateAvatarEvent;
-import net.dv8tion.jda.api.events.user.update.UserUpdateDiscriminatorEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateFlagsEvent;
+import net.dv8tion.jda.api.events.user.update.UserUpdateGlobalNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class Listener implements EventListener
+public class Listener extends ListenerAdapter
 {
-    public void onEvent(GenericEvent e)
-    {
-        
-    }
-
     public void onButtonInteraction(ButtonInteractionEvent event)
     {
         
@@ -979,11 +974,6 @@ public class Listener implements EventListener
 
     }
      
-    public void onUserUpdateDiscriminator(UserUpdateDiscriminatorEvent event)
-    {
-
-    }
-     
     public void onUserUpdateFlags(UserUpdateFlagsEvent event)
     {
 
@@ -992,6 +982,11 @@ public class Listener implements EventListener
     public void onUserUpdateName(UserUpdateNameEvent event)
     {
 
+    }
+
+    public void onUserUpdateGlobalName(UserUpdateGlobalNameEvent event)
+    {
+        
     }
      
     public void onUserUpdateOnlineStatus(UserUpdateOnlineStatusEvent event)

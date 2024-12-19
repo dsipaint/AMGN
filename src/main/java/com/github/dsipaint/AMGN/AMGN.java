@@ -1,18 +1,22 @@
 package com.github.dsipaint.AMGN;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.yaml.snakeyaml.DumperOptions;
@@ -22,26 +26,13 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
+import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
 import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.ReloadListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.help.HelpListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaUpdateListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.metadata.MetaViewListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.GroupsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.ListPermissionsListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.permissions.PermissionAddRemoveListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningAllListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.running.RunningListener;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.BlacklistCommand;
-import com.github.dsipaint.AMGN.entities.plugins.intrinsic.whitelist.WhitelistCommand;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 import net.dv8tion.jda.api.JDA;
@@ -58,7 +49,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class AMGN
 {
 	public static JDA bot;
-	public static Logger logger = LoggerFactory.getLogger("AMGN"); //logger
+	public static Logger logger = LogManager.getLogger("AMGN");
 
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
@@ -69,6 +60,10 @@ public class AMGN
 		//SETUP
 		logger.info("Commencing setup...");
 		String token = "";
+		String membercachepolicy = null;
+
+		List<String> cacheflags;
+		List<CacheFlag> parsecacheflags = new ArrayList<CacheFlag>();
 
 		IOHandler.dumperopts = new DumperOptions();
 		IOHandler.dumperopts.setIndent(2);
@@ -84,21 +79,17 @@ public class AMGN
 			}
 
 			if(IOHandler.copyFileToExternalPath("whitelistdefault.yml", GuildNetwork.WHITELIST_PATH))
-			{
-				logger.warn("whitelist.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
-				System.exit(0);
-			}
+				logger.warn("whitelist.yml did not exist- made a copy.");
 
 			if(IOHandler.copyFileToExternalPath("permissionsdefault.yml", GuildNetwork.PERMISSIONS_PATH))
-			{
-				logger.warn("permissions.yml did not exist- made a copy. Please edit this file and restart AMGN to run properly");
-				System.exit(0);
-			}
+				logger.warn("permissions.yml did not exist- made a copy.");
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
+
+		MemberCachePolicy parsecachepolicy = null;
 
 		try
 		{
@@ -106,6 +97,26 @@ public class AMGN
 			token = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "token");//read token from network.yml
 			if(token == null)
 				token = System.getenv("AMGN_TOKEN");
+
+			logger.info("Reading caching settings from network settings...");
+
+			membercachepolicy = (String) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "membercachepolicy");
+			if(membercachepolicy == null)
+				membercachepolicy = GuildNetwork.DEFAULT_MEMBERCACHEPOLICY;
+
+
+			parsecachepolicy = getMemberCachePolicy(membercachepolicy);
+			//parse in "cache_limit" if exists
+			Integer cache_limit = (Integer) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "cache_limit");
+			if(cache_limit != null) //if it does exist, update the cahce policy
+				parsecachepolicy = parsecachepolicy.or(MemberCachePolicy.lru(cache_limit));
+
+
+			cacheflags = (List<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "cacheflags");
+			if(cacheflags == null)
+				cacheflags = GuildNetwork.DEFAULT_CACHEFLAGS;
+			for(String flag : cacheflags)
+				parsecacheflags.add(CacheFlag.valueOf(flag.toUpperCase()));
 		}
 		catch (IOException e)
 		{
@@ -118,11 +129,10 @@ public class AMGN
 		try
 		{
 			bot = JDABuilder.createDefault(token)
-					.enableIntents(EnumSet.allOf(GatewayIntent.class))
-					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.enableCache(CacheFlag.ONLINE_STATUS,
-						CacheFlag.ACTIVITY) //honestly I just need these here for one plugin rn
-					.build(); //TODO: change to a plugin-specific gateway intent system
+					.enableIntents(EnumSet.allOf(GatewayIntent.class)) //for now we just ask for all gateway intents- this could be a bad idea?
+					.setMemberCachePolicy(parsecachepolicy) //parse in the membercachepolicy from network.yml
+					.enableCache(parsecacheflags) //parse in the cacheflags
+					.build();
 		}
 		catch(InvalidTokenException | IllegalArgumentException e1)
 		{
@@ -165,7 +175,7 @@ public class AMGN
 
 		try
 		{
-			logger.info("Reading operators and guild data from network settings...");
+			logger.info("Reading guild data from network settings...");
 			GuildNetwork.guild_data = IOHandler.readGuildData(); //read guild data from network.yml
 		}
 		catch(IOException e)
@@ -173,53 +183,33 @@ public class AMGN
 			e.printStackTrace();
 		}
 		
-		logger.info("Loading guild members, adding default guild settings for missing network.yml guilds...");
+		logger.info("Adding default guild settings for missing network.yml guilds...");
 		bot.getGuilds().forEach(guild ->
 		{
-			guild.loadMembers();//good idea???
-			//add default guild data NOTE: this won't save this data to network.yml- this must be done manually if you want actual values
-			if(!GuildNetwork.guild_data.containsKey(guild.getIdLong()))
+			try
 			{
-				logger.warn("Guild " + guild + " has no settings in network.json- using default values-this won't save this data to network.json- this must be done manually if you want actual values");
-				GuildNetwork.guild_data.put(guild.getIdLong(), new Guild(guild.getIdLong()));
+				//add default guild data
+				if(!GuildNetwork.guild_data.containsKey(guild.getIdLong()))
+				{
+					logger.warn("Guild " + guild + " has no settings in network.json");
+					GuildNetwork.guild_data.put(guild.getIdLong(), new Guild(guild.getIdLong()));
+					IOHandler.writeNetworkData(GuildNetwork.guild_data, GuildNetwork.NETWORKINFO_PATH);
+				}
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
 			}
 			
 		});
 		
 		logger.info("Implementing intrinsic features..."); //prebuilt commands/features of the library go here
-
-		//help feature
-		bot.addEventListener(new HelpListener());
-		
-		//enable/disable plugin
-		bot.addEventListener(new EnableListener());
-		bot.addEventListener(new DisableListener());
-		bot.addEventListener(new ReloadListener());
-		
-		//closenetwork plugin
-		bot.addEventListener(new CloseListener());
-		
-		//metadata plugin
-		bot.addEventListener(new MetaViewListener());
-		bot.addEventListener(new MetaUpdateListener());
-		
-		//isrunning plugin
-		bot.addEventListener(new RunningListener());
-		bot.addEventListener(new RunningAllListener());
 		
 		//consistency plugin
 		bot.addEventListener(new ModlogsListener());
 		bot.addEventListener(new MenuDeleteListener());
 
-		//whitelist plugin
-		bot.addEventListener(new BlacklistCommand());
-		bot.addEventListener(new WhitelistCommand());
-
-		//permissions plugin
-		bot.addEventListener(new PermissionAddRemoveListener());
-		bot.addEventListener(new ListPermissionsListener());
-		bot.addEventListener(new GroupsListener());
-
+		//generic listening for commands/listeners
 		bot.addEventListener(new ListenerWrapper());
 		
 		
@@ -229,8 +219,8 @@ public class AMGN
 		logger.info("applying whitelist...");
 		try
 		{
-			GuildNetwork.whitelist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "whitelist");
-			GuildNetwork.blacklist = (HashMap<String, List<Long>>) IOHandler.readYamlData("whitelist.yml", "blacklist");
+			GuildNetwork.whitelist = (HashMap<String, List<Long>>) IOHandler.readYamlData(GuildNetwork.WHITELIST_PATH, "whitelist");
+			GuildNetwork.blacklist = (HashMap<String, List<Long>>) IOHandler.readYamlData(GuildNetwork.WHITELIST_PATH, "blacklist");
 			if(GuildNetwork.whitelist == null)
 				GuildNetwork.whitelist = new HashMap<String, List<Long>>();
 			if(GuildNetwork.blacklist == null)
@@ -241,13 +231,15 @@ public class AMGN
 			e.printStackTrace();
 		}
 		
-		logger.info("Enabling plugins...");
-		
-		File plugins = new File(GuildNetwork.PLUGIN_PATH);
-		plugins.mkdir(); //folder for plugins
-		
 		try
 		{
+			logger.info("Finding plugins...");
+		
+			File plugins = new File(GuildNetwork.PLUGIN_PATH);
+			plugins.mkdir(); //folder for plugins
+			
+			LinkedList<Plugin> loadorder = new LinkedList<Plugin>();
+			ArrayList<Plugin> foundplugins = new ArrayList<Plugin>();
 			if(!plugins.createNewFile()) //create the folder if one doesn't exist- if it did, do this:
 			{
 				//a list of only the jars found directly in the plugins directory
@@ -267,10 +259,8 @@ public class AMGN
 							logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
 							continue;
 						}
-						
-						//enable these classes/plugins with GuildNetwork.enablePlugin
-						if(GuildNetwork.enablePlugin(p))
-							logger.info("Enabled " + p.getName() + " " + p.getVersion());
+
+						foundplugins.add(p);
 					}
 					catch(Exception e)
 					{
@@ -280,6 +270,63 @@ public class AMGN
 			}
 			else
 				logger.info("No plugins folder found. Created a plugins folder.");
+
+			if(foundplugins.isEmpty())
+				logger.info("AMGN has been started with no plugins.");
+			else
+			{
+				logger.info("Applying plugin load order...");
+				//check network.yml for a load order
+				//this should be a list of strings in the order we want to load
+				ArrayList<String> parseloadorder = (ArrayList<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "load_order");
+				LinkedList<String> userloadorder;
+				if(parseloadorder != null)
+					userloadorder = new LinkedList<String>(parseloadorder);
+				else
+					userloadorder = new LinkedList<String>();
+				
+				// if(userloadorder == null)
+				// 	userloadorder = new LinkedList<String>(); //default to no order if value is missing
+				
+				//iterate through user's requested loading order
+				for(String pluginname : userloadorder)
+				{
+					//if we have a plugin from the order that we found,
+					for(int i = 0; i < foundplugins.size(); i++)
+					{
+						if(foundplugins.get(i).getName().equalsIgnoreCase(pluginname))
+						{
+							//remove that plugin from our list of plugins
+							//and add that plugin to the load order
+							loadorder.add(foundplugins.remove(i));
+							break;
+						}
+					}
+				}
+
+				//then just add whatever is left, onto the load order, we don't care what order that bit is in
+				loadorder.addAll(foundplugins);
+
+				//finally, enable all those plugins
+				logger.info("Enabling plugins...");
+				for(Plugin p : loadorder)
+				{
+					logger.info("Enabling " + p.getName() + " " + p.getVersion());
+					//enable these classes/plugins with GuildNetwork.enablePlugin
+					try
+					{
+						GuildNetwork.enablePlugin(p);
+					}
+					catch(Exception e)
+					{
+						StringWriter sw = new StringWriter();
+						PrintWriter pw = new PrintWriter(sw);
+						e.printStackTrace(pw);
+						logger.error(sw.toString());
+						continue;
+					}
+				}
+			}
 		}
 		catch (IOException e)
 		{
@@ -342,19 +389,105 @@ public class AMGN
 
 	public static final void runCommand(String cmdtxt, Member member, TextChannel tc)
 	{
-		AMGN.plugin_listeners.values().forEach(listeners ->
+		AMGN.logger.info("Running command \"" + cmdtxt + "\"" + " as member " + member.toString()
+			+ (tc != null ? " in channel " + tc.toString() : ""));
+
+		String[] args = cmdtxt.split(" ");
+
+		boolean[] cmd_found = {false}; //written like this for pass-by-reference to use in the lambda below
+		
+		//check and run default commands
+		for(DefaultCommand cmd : DefaultCommand.values())
 		{
-			listeners.forEach(listener ->
+			if(args[0].equalsIgnoreCase(cmd.getLabel()))
+			{
+				cmd_found[0] = true;
+				if(cmd.hasPermission(member))
+					cmd.getCommandAction().accept(new CommandEvent(cmdtxt, member, tc, null));
+				else
+					AMGN.logger.warn("Member " + member.toString()
+						+ " does not have permission to run command \"" + cmdtxt + "\"");
+			}	
+		}
+
+		HashMap<Plugin, ArrayList<Listener>> plugin_listener_clone = (HashMap<Plugin, ArrayList<Listener>>) AMGN.plugin_listeners.clone();
+		plugin_listener_clone.forEach((plugin, listeners) ->
+		{
+			if(tc != null && !ListenerWrapper.pluginShouldRun(plugin.getName(), tc.getGuild()))
+			{
+				AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + cmdtxt + "\""
+					+ " to be run in the guild " + tc.getGuild().toString());
+				return;
+			}
+
+			for(Listener listener : listeners)
 			{
 				if(listener instanceof Command)
 				{
 					Command cmd = ((Command) listener);
-					String[] args = cmdtxt.split(" ");
-					if(args[0].equalsIgnoreCase(cmd.getLabel())
-						&& cmd.hasPermission(member))
-						cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
+					if(args[0].equalsIgnoreCase(cmd.getLabel()))
+					{
+						cmd_found[0] = true;
+						if(cmd.hasPermission(member))
+							cmd.onCommand(new CommandEvent(cmdtxt, member, tc, null));
+						else
+							AMGN.logger.warn("Member " + member.toString()
+								+ " does not have permission to run command \"" + cmdtxt + "\"");
+					}
 				}
-			});
-		});	
+			}
+		});
+
+		if(!cmd_found[0])
+			AMGN.logger.warn("Command " + args[0] + " was not found, so the command \""
+				+ cmdtxt + "\" was not executed");
+	}
+
+	public static final MemberCachePolicy getMemberCachePolicy(String policy)
+	{
+		switch(policy)
+		{
+			case "all":
+				return MemberCachePolicy.ALL;
+
+			case "booster":
+				return MemberCachePolicy.BOOSTER;
+
+			case "default":
+				return MemberCachePolicy.DEFAULT;
+
+			case "none":
+				return MemberCachePolicy.NONE;
+
+			case "online":
+				return MemberCachePolicy.ONLINE;
+
+			case "owner":
+				return MemberCachePolicy.OWNER;
+
+			case "pending":
+				return MemberCachePolicy.PENDING;
+
+			case "voice":
+				return MemberCachePolicy.VOICE;
+
+			default:
+				AMGN.logger.error("Caching policy could not be correctly parsed- defaulting to DEFAULT.");
+				return MemberCachePolicy.DEFAULT;
+		}
+	}
+
+	public static String getWorkingDirectory()
+	{
+		try
+		{
+			return new File(GuildNetwork.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+		}
+		catch(URISyntaxException e)
+		{
+			e.printStackTrace();
+		}
+
+		return ".";
 	}
 }

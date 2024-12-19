@@ -1,22 +1,18 @@
 package com.github.dsipaint.AMGN.entities;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
-import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.io.Permissions;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
@@ -28,11 +24,14 @@ public class GuildNetwork
 	public static String clientid, clientsecret, redirecturi;
 	public static Map<String, List<Long>> whitelist, blacklist;
 	
-	public static final String PLUGIN_PATH = "./plugins"; //default plugin path
-	public static final String NETWORKINFO_PATH = "./network.yml"; //guild info path
-	public static final String WHITELIST_PATH = "./whitelist.yml"; //whitelist file path
-	public static final String WEB_PATH = "./web"; //path for all web assets
-	public static final String PERMISSIONS_PATH = "./permissions.yml"; //for the permissions file
+	public static final String PLUGIN_PATH = AMGN.getWorkingDirectory() + "/plugins"; //default plugin path
+	public static final String NETWORKINFO_PATH = AMGN.getWorkingDirectory() + "/network.yml"; //guild info path
+	public static final String WHITELIST_PATH = AMGN.getWorkingDirectory() + "/whitelist.yml"; //whitelist file path
+	public static final String WEB_PATH = AMGN.getWorkingDirectory() + "/web"; //path for all web assets
+	public static final String PERMISSIONS_PATH = AMGN.getWorkingDirectory() + "/permissions.yml"; //for the permissions file
+
+	public static final String DEFAULT_MEMBERCACHEPOLICY = "default"; //default member cache policy
+	public static final List<String> DEFAULT_CACHEFLAGS = Arrays.asList("online_status", "activity"); //default cache-flags
 
 	public static final String ID_REGEX = "\\d{17,19}";
 
@@ -40,117 +39,14 @@ public class GuildNetwork
 	 * @param m member to check operator status of
 	 * @return boolean true if member is an operator, or has any role that has operator perms, false otherwise
 	 */
-	@SuppressWarnings("unchecked")
 	public static final boolean isOperator(User u)
 	{
-		//we must manually check operator status, because Command.hasPermission relies
-		//on this method. Re-using Command.hasPermission will cause unwanted recursion.
-		//read permissions.yml
-		Map<String, List<String>> perms = new HashMap<String, List<String>>();
-		try
-		{
-			//check all groups and see if a group has the permission
-			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
-			for(String groupname : groups.keySet())
-			{
-				HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
-				//if this is the user's id or a role the user has
-				if(Permissions.isInGroup(u.getId(), groupname))
-				{
-					for(String perm : groupdata.get("permissions"))
-					{
-						if(perm.equalsIgnoreCase("AMGN.operator"))
-							return true;
-					}
-				}
-			}
-
-			perms = new Yaml().load(
-				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
-		}
-		catch(FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
-		//check to see if an id is either a member, or a role the member has (in any guild)
-		//if this ID has been given the specified permission, return true
-		
-		for(String id : perms.keySet())
-		{
-			if(id.equalsIgnoreCase("groups"))
-				continue;
-
-			//we must check every role that the user may have,
-			//if it has operator perms, they are a global operator
-
-			//if this is a role ID and the user has this role
-			if(u.getId().equals(id)
-				|| (AMGN.bot.getRoleById(id) != null
-						&& AMGN.bot.getRoleById(id).getGuild().getMembersWithRoles(AMGN.bot.getRoleById(id))
-						.contains(AMGN.bot.getRoleById(id).getGuild().getMember(u)))
-				|| (u.getMutualGuilds().contains(AMGN.bot.getGuildById(id))))
-			{
-				//if this role has op perms, return true
-				for(String commandperm : perms.get(id))
-				{
-					if(commandperm.equals("AMGN.operator"))
-						return true;
-				}
-			}
-		}
-		
-		return false;
+		return Permissions.userHasPermission(u, null, "AMGN.operator");
 	}
 
-	@SuppressWarnings("unchecked")
 	public static final boolean isOperator(Role r)
 	{
-		Map<String, List<String>> perms = new HashMap<String, List<String>>();
-		try
-		{
-			//check all groups and see if a group has the permission
-			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
-			for(String groupname : groups.keySet())
-			{
-				HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
-				if(Permissions.isInGroup(r.getId(), groupname))
-				{
-					for(String perm : groupdata.get("permissions"))
-					{
-						if(perm.equalsIgnoreCase("AMGN.operator"))
-							return true;
-					}
-				}
-			}
-
-			perms = new Yaml().load(
-				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
-		}
-		catch(FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
-		//check to see if an id is either a member, or a role the member has (in any guild)
-		//if this ID has been given the specified permission, return true
-		for(String id : perms.keySet())
-		{
-			if(id.equalsIgnoreCase("groups"))
-				continue;
-			
-			if(r.getId().equals(id)
-				|| r.getGuild().getId().equals(id))
-			{
-				for(String commandperm : perms.get(id))
-				{
-					if(commandperm.equals("AMGN.operator"))
-						return true;
-				}
-			}
-		}
-		
-		return false;
+		return Permissions.roleHasPermission(r, "AMGN.operator");
 	}
 	
 	//ease-of-access methods for retrieving guild data
@@ -207,6 +103,9 @@ public class GuildNetwork
 	 */
 	public static final void registerListener(Listener listener, Plugin plugin)
 	{
+		if(plugin == null)
+			return;
+		
 		AMGN.bot.addEventListener(listener);
 		AMGN.plugin_listeners.get(plugin).add(listener); //add the listener listed under this name
 	}
@@ -219,7 +118,9 @@ public class GuildNetwork
 	public static final void unregisterListener(Listener listener, Plugin plugin)
 	{
 		AMGN.bot.removeEventListener(listener);
-		AMGN.plugin_listeners.get(plugin).remove(listener); //remove listener from hashmap and from jda
+		
+		if(plugin != null)
+			AMGN.plugin_listeners.get(plugin).remove(listener); //remove listener from hashmap and from jda
 	}
 	
 	
@@ -247,6 +148,7 @@ public class GuildNetwork
 			AMGN.plugin_listeners.put(plugin, new ArrayList<Listener>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
 			plugin.onEnable(); //run plugin's enable method
+			//menus will sort themselves out when the plugin recreates them
 			return true;
 		}
 		else
@@ -260,19 +162,21 @@ public class GuildNetwork
 	 */
 	public static final boolean disablePlugin(Plugin plugin)
 	{
-		//if plugin is not already enabled
+		//if plugin is already disabled
 		if(AMGN.plugin_listeners.get(plugin) == null)
 			return false;
 		else
 		{
-			//disable each of the listeners this plugin registers
-			AMGN.plugin_listeners.get(plugin).forEach(listener ->
+			plugin.onDisable(); //disable plugin
+			AMGN.plugin_listeners.get(plugin).forEach(AMGN.bot::removeEventListener); //remove listeners
+			AMGN.menucache.forEach(menu ->
 			{
-				AMGN.bot.removeEventListener(listener); //NOTE: may not properly remove listener, may need to cast to ListenerAdapter?
+				if(menu.getPlugin().equals(plugin))
+					menu.softDestroy();
 			});
-			
-			AMGN.plugin_listeners.remove(plugin); //remove plugin from the list
-			plugin.onDisable(); //run plugin's onDisable method
+			AMGN.menucache.removeIf(menu -> {return menu.getPlugin().equals(plugin);});//remove menus
+
+			AMGN.plugin_listeners.remove(plugin);
 			return true;
 		}
 	}
@@ -298,5 +202,44 @@ public class GuildNetwork
 				.setDescription(msg)
 				.setTimestamp(Instant.now())
 				.build()).queue();
+	}
+
+	public static final ISnowflake resolveEntity(String id)
+	{
+		ISnowflake entity;
+
+		//I've tried to put these in an order of most likely to be used to
+		//least likely to be used, to improve performance a tad
+		if((entity = AMGN.bot.getUserById(id)) != null) //TODO update to a retrieve?
+			return entity;
+		if((entity = AMGN.bot.getGuildChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getRoleById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getTextChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getVoiceChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getEmojiById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getCategoryById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getGuildById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getForumChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getStageChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getNewsChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getThreadChannelById(id)) != null)
+			return entity;
+		if((entity = AMGN.bot.getPrivateChannelById(id)) != null)
+			return entity;
+
+		//after trying everything else, cast to scheduledevent (could also be null if nothing found)
+		//and return result.
+		entity = AMGN.bot.getScheduledEventById(id);
+		return entity;
 	}
 }

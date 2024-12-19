@@ -1,5 +1,10 @@
-whitelist:
-  pluginname: []
+whitelist: {}
 
-blacklist:
-  pluginname: []
+blacklist: {}
+
+#EXAMPLE SETUP
+# whitelist:
+#   pluginname: [634667687233978388, 12321321321123]
+
+# blacklist:
+#   pluginname: [8908932478324, 82391038219]

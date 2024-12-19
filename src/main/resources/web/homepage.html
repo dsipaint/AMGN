@@ -3,6 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <title th:text="${botname} + '- powered by AMGN'"></title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet">
+
         <script src="https://kit.fontawesome.com/a041bf1af6.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="home.css"/>
         <link rel="icon" type="image/x-icon" th:href="${botpfp}">
@@ -38,7 +43,6 @@
             <div class="topright token" id="guildselector"></div>
         </div>
         <div id="content" class="token"></div>
-
         <div id="nocontent" class="notoken">
             <h1>Hey there!</h1>
             <p>

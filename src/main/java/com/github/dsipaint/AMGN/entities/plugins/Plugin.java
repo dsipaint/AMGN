@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 public abstract class Plugin
 {
 	static final String RESOURCE_PATH = "/plugin.yml"; //absolute path inside jar
-	private String config_path, //relative path for config files
+	protected String config_path, //relative path for config files
 		name,
 		version,
 		author,
