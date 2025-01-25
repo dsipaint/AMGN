@@ -1,3 +1,6 @@
+# 1.0.1
+Fixed bug where all events (except commands) fired twice, and would also bypass blacklisting rules
+
 # 1.0!!!
 ~ AMGN will now continue to run when permissions.yml or whitelist.yml are missing
 ~ default whitelist.yml no longer includes a fake plugin, which could be annoying for setting up a whitelist

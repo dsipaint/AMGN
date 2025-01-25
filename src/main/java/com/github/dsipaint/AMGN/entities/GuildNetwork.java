@@ -106,7 +106,6 @@ public class GuildNetwork
 		if(plugin == null)
 			return;
 		
-		AMGN.bot.addEventListener(listener);
 		AMGN.plugin_listeners.get(plugin).add(listener); //add the listener listed under this name
 	}
 	
