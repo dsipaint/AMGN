@@ -88,16 +88,17 @@ public class Permissions
 					//and the user has this role
 					(
 						context.getRoleById(id) != null
-							&& context.getMember(u) != null
-							&& context.getMember(u).getRoles().contains(context.getRoleById(id))
+							&& GuildNetwork.fetchMember(u, context) != null
+							&& GuildNetwork.fetchMember(u, context).getRoles().contains(context.getRoleById(id))
 					)
 					|| //OR
 					(
 						//if it's a guild ID and it's the context-guild
 						//and the user is in this guild
 						context.getId().equals(id)
-							&& context.getMember(u) != null
-					))
+							&& GuildNetwork.fetchMember(u, context) != null
+					)
+				)
 				{
 					for(String checkperm : (List<String>) perms.get(id))
 					{
@@ -114,15 +115,15 @@ public class Permissions
 					//and the user has this role, wherever it is
 					(
 						AMGN.bot.getRoleById(id) != null
-							&& AMGN.bot.getRoleById(id).getGuild().getMember(u) != null
-							&& AMGN.bot.getRoleById(id).getGuild().getMember(u).getRoles().contains(AMGN.bot.getRoleById(id))
+							&& GuildNetwork.fetchMember(u, AMGN.bot.getRoleById(id).getGuild()) != null
+							&& GuildNetwork.fetchMember(u, AMGN.bot.getRoleById(id).getGuild()).getRoles().contains(AMGN.bot.getRoleById(id))
 					)
 					|| //OR
 					//if it's a guild ID
 					//and the user is in this guild at all
 					(
 						AMGN.bot.getGuildById(id) != null
-							&& AMGN.bot.getGuildById(id).getMember(u) != null
+							&& GuildNetwork.fetchMember(u, AMGN.bot.getGuildById(id)) != null
 					)
 				)
 				{
@@ -251,8 +252,8 @@ public class Permissions
 							//and the id is a member in the context
 							//and the member has the role
 							context.getRoleById(groupmember) != null
-								&& context.getRoleById(groupmember).getGuild().getMemberById(id) != null
-								&&  context.getRoleById(groupmember).getGuild().getMemberById(id).getRoles().contains(context.getRoleById(groupmember))
+								&& GuildNetwork.fetchMember(id, context) != null
+								&&  GuildNetwork.fetchMember(id, context).getRoles().contains(context.getRoleById(groupmember))
 						)
 						|| //OR
 						(
@@ -261,7 +262,7 @@ public class Permissions
 							//or the id is a role of this context guild
 							context.getId().equals(groupmember)
 								&& (
-									context.getMemberById(id) != null
+									GuildNetwork.fetchMember(id, context) != null
 									|| context.getRoleById(id) != null
 								)
 						)
@@ -276,8 +277,8 @@ public class Permissions
 							//and the id is a member in the role's guild
 							//and the member has the role
 							AMGN.bot.getRoleById(groupmember) != null
-								&& AMGN.bot.getRoleById(groupmember).getGuild().getMemberById(id) != null
-								&& AMGN.bot.getRoleById(groupmember).getGuild().getMemberById(id).getRoles().contains(AMGN.bot.getRoleById(groupmember))
+								&& GuildNetwork.fetchMember(id, AMGN.bot.getRoleById(groupmember).getGuild()) != null
+								&& GuildNetwork.fetchMember(id, AMGN.bot.getRoleById(groupmember).getGuild()).getRoles().contains(AMGN.bot.getRoleById(groupmember))
 						)
 						|| //OR
 						(
@@ -286,7 +287,7 @@ public class Permissions
 							//or the id is a role of this guild
 							AMGN.bot.getGuildById(groupmember) != null
 								&& (
-									AMGN.bot.getGuildById(groupmember).getMemberById(id) != null
+									GuildNetwork.fetchMember(id, AMGN.bot.getGuildById(groupmember)) != null
 									|| AMGN.bot.getGuildById(groupmember).getRoleById(id) != null
 								)
 						)

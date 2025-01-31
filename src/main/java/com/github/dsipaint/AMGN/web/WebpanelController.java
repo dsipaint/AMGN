@@ -128,7 +128,7 @@ public class WebpanelController
             ArrayNode guild_data = mapper.createArrayNode();
 
             AMGN.bot.getGuilds().forEach(guild -> {
-                if(GuildNetwork.isOperator(AMGN.bot.getUserById(userid)) || guild.getMemberById(Long.parseLong(userid)) != null)
+                if(GuildNetwork.isOperator(AMGN.bot.getUserById(userid)) || GuildNetwork.fetchMember(userid, guild) != null)
                 {
                     ObjectNode objectnode = mapper.createObjectNode();
                     objectnode.put("id", guild.getId());
@@ -309,7 +309,7 @@ public class WebpanelController
 
             AMGN.bot.getGuilds().forEach(guild -> {
                 //if they are an operator or if they are in the guild, then they can have this guild
-                if(isoperator || guild.getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                if(isoperator || GuildNetwork.fetchMember(resolveIdFromToken(getTokenFromRequest(request)), guild) != null)
                 {
                     ObjectNode obj = mapper.createObjectNode();
                     obj.put("guild_id", guild.getId());
@@ -358,8 +358,9 @@ public class WebpanelController
             Map<Long, Guild>  new_guild_data = new HashMap<Long, Guild>();
             guild_data.forEach(guildnode ->{
                 //if they are an operator or if they are in the guild, then they can have this guild
-                if(isoperator || AMGN.bot.getGuildById(guildnode.get("id").asLong())
-                    .getMemberById(Long.parseLong(resolveIdFromToken(getTokenFromRequest(request)))) != null)
+                if(isoperator || GuildNetwork.fetchMember(resolveIdFromToken(getTokenFromRequest(request)),
+                                    AMGN.bot.getGuildById(guildnode.get("id").asLong()))
+                    != null)
                 {
                     new_guild_data.put(guildnode.get("guild_id").asLong(),
                         new Guild(guildnode.get("guild_id").asLong(),

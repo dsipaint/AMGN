@@ -1,3 +1,6 @@
+# 1.0.2
+Fixed permissions member caching causing permissions not to be respected.
+
 # 1.0.1
 Fixed bug where all events (except commands) fired twice, and would also bypass blacklisting rules
 

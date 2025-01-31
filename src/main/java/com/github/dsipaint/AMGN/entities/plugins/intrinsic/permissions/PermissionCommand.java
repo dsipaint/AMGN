@@ -43,7 +43,7 @@ public class PermissionCommand implements Consumer<CommandEvent>
             }
 
             //^permission add {member}
-            if(e.getGuild().getMemberById(e.getArgs()[2]) != null)
+            if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null)
             {
                 //if permission does not exist for the user,
                 //add it
@@ -62,7 +62,7 @@ public class PermissionCommand implements Consumer<CommandEvent>
                     e1.printStackTrace();
                 }
 
-                e.getTextChannel().sendMessage("Added permission " + e.getArgs()[3] + " for " + e.getGuild().getMemberById(e.getArgs()[2]).getAsMention())
+                e.getTextChannel().sendMessage("Added permission " + e.getArgs()[3] + " for " + GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()).getAsMention())
                     .setAllowedMentions(Collections.emptySet()).queue();
                 return;
             }
@@ -112,7 +112,7 @@ public class PermissionCommand implements Consumer<CommandEvent>
             }
 
             //^permission remove {member}
-            if(e.getGuild().getMemberById(e.getArgs()[2]) != null)
+            if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null)
             {
                 HashMap<String, List<String>> perms;
                 try
@@ -129,7 +129,7 @@ public class PermissionCommand implements Consumer<CommandEvent>
                     e1.printStackTrace();
                 }
 
-                e.getTextChannel().sendMessage("Removed permission " + e.getArgs()[3] + " for " + e.getGuild().getMemberById(e.getArgs()[2]).getAsMention())
+                e.getTextChannel().sendMessage("Removed permission " + e.getArgs()[3] + " for " + GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()).getAsMention())
                     .setAllowedMentions(Collections.emptySet()).queue();
                 return;
             }

@@ -13,8 +13,10 @@ import com.github.dsipaint.AMGN.io.Permissions;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 public class GuildNetwork
 {
@@ -47,6 +49,54 @@ public class GuildNetwork
 	public static final boolean isOperator(Role r)
 	{
 		return Permissions.roleHasPermission(r, "AMGN.operator");
+	}
+
+	public static User fetchUser(String id)
+	{
+		User returnuser = null;
+
+		try
+		{
+			returnuser = AMGN.bot.retrieveUserById(id).complete();
+		}
+		catch(ErrorResponseException e)
+		{
+			returnuser = null;
+		}
+
+		return returnuser;
+	}
+
+	public static Member fetchMember(User u, net.dv8tion.jda.api.entities.Guild guild)
+	{
+		Member returnmember = null;
+
+		try
+		{
+			returnmember = guild.retrieveMember(u).complete();
+		}
+		catch(ErrorResponseException e)
+		{
+			returnmember = null;
+		}
+
+		return returnmember;
+	}
+
+	public static Member fetchMember(String user, net.dv8tion.jda.api.entities.Guild guild)
+	{
+		Member returnmember = null;
+
+		try
+		{
+			returnmember = guild.retrieveMemberById(user).complete();
+		}
+		catch(ErrorResponseException e)
+		{
+			returnmember = null;
+		}
+
+		return returnmember;
 	}
 	
 	//ease-of-access methods for retrieving guild data
