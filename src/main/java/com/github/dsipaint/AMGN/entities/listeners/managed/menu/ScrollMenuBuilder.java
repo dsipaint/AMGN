@@ -1,10 +1,10 @@
-package com.github.dsipaint.AMGN.entities.listeners.menu;
+package com.github.dsipaint.AMGN.entities.listeners.managed.menu;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.github.dsipaint.AMGN.entities.listeners.menu.MenuBuilder.InvalidMenuException;
+import com.github.dsipaint.AMGN.entities.listeners.managed.menu.MenuBuilder.InvalidMenuException;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 import net.dv8tion.jda.api.EmbedBuilder;

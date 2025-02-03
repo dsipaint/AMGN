@@ -6,8 +6,8 @@ import java.util.function.Consumer;
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
-import com.github.dsipaint.AMGN.entities.listeners.menu.MenuBuilder.InvalidMenuException;
-import com.github.dsipaint.AMGN.entities.listeners.menu.ScrollMenuBuilder;
+import com.github.dsipaint.AMGN.entities.listeners.managed.menu.ScrollMenuBuilder;
+import com.github.dsipaint.AMGN.entities.listeners.managed.menu.MenuBuilder.InvalidMenuException;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 

@@ -24,12 +24,13 @@ import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
-import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
+import com.github.dsipaint.AMGN.entities.listeners.IListener;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
-import com.github.dsipaint.AMGN.entities.listeners.ListenerWrapper;
-import com.github.dsipaint.AMGN.entities.listeners.menu.Menu;
+import com.github.dsipaint.AMGN.entities.listeners.managed.Command;
+import com.github.dsipaint.AMGN.entities.listeners.managed.DefaultCommand;
+import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerWrapper;
+import com.github.dsipaint.AMGN.entities.listeners.managed.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.ModlogsListener;
@@ -54,7 +55,7 @@ public class AMGN
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
-	public static HashMap<Plugin, ArrayList<Listener>> plugin_listeners;
+	public static HashMap<Plugin, ArrayList<IListener>> plugin_listeners;
 	public static void main(String[] args)
 	{
 		//SETUP
@@ -214,7 +215,7 @@ public class AMGN
 		
 		
 		logger.info("initialising listener cache...");
-		plugin_listeners = new HashMap<Plugin, ArrayList<Listener>>();
+		plugin_listeners = new HashMap<Plugin, ArrayList<IListener>>();
 
 		logger.info("applying whitelist...");
 		try
@@ -413,7 +414,7 @@ public class AMGN
 		HashMap<Plugin, ArrayList<Listener>> plugin_listener_clone = (HashMap<Plugin, ArrayList<Listener>>) AMGN.plugin_listeners.clone();
 		plugin_listener_clone.forEach((plugin, listeners) ->
 		{
-			if(tc != null && !ListenerWrapper.pluginShouldRun(plugin.getName(), tc.getGuild()))
+			if(tc != null && !ListenerWrapper.applyWhitelistBlacklistRules(plugin.getName(), tc.getGuild()))
 			{
 				AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + cmdtxt + "\""
 					+ " to be run in the guild " + tc.getGuild().toString());

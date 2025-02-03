@@ -1,3 +1,6 @@
+# 1.1
+Added plugin API-forwarding, plugins can now send and receive REST http requests
+
 # 1.0.2
 Fixed permissions member caching causing permissions not to be respected.
 

@@ -167,7 +167,8 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class Listener extends ListenerAdapter
+//generic discord-listener class that all discord-listener classes use in AMGN
+public class Listener extends ListenerAdapter implements IListener
 {
     public void onButtonInteraction(ButtonInteractionEvent event)
     {

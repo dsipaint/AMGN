@@ -45,6 +45,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.IListener;
+import com.github.dsipaint.AMGN.entities.listeners.RestListener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.io.Permissions;
@@ -68,6 +70,7 @@ public class WebpanelController
     }
 
     @RequestMapping("/webpanel/redirect")
+    @SuppressWarnings("null")
     public String handleloginredirect(Model model, HttpServletResponse response, @RequestParam(name="code") String code)
     {
         AMGN.logger.info("Authorization attempt on webpanel");
@@ -1062,6 +1065,32 @@ public class WebpanelController
         return new ObjectMapper().createObjectNode().put("error", "invalid token");
     }
 
+    @ResponseBody
+    @RequestMapping(value="/api/plugins/**", produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    public Object pluginAPIPaths(HttpServletRequest request, HttpServletResponse response)
+    {
+        AMGN.logger.info(request.getMethod() + " request made to " + request.getRequestURI());
+
+        for(Plugin plugin : AMGN.plugin_listeners.keySet())
+        {
+            if(request.getRequestURI().startsWith("/api/plugins/" + plugin.getName()))
+            {
+                //find the listener in the plugin_listeners for this plugin which is an instanceof RestListener
+                //and call its method here
+                for(IListener listener : AMGN.plugin_listeners.get(plugin))
+                {
+                    if(listener instanceof RestListener)
+                        return ((RestListener) listener).handleRequest(request, response);
+                }
+            }
+        }
+        
+        AMGN.logger.error(request.getMethod() + " request made to " + request.getRequestURI() + " failed- plugin in path not found");
+        response.setStatus(404);
+        return new ObjectMapper().createObjectNode().put("error", "plugin in path not found");
+    }
+
+    @SuppressWarnings("null")
     public static String resolveIdFromToken(String token)
     {
         RestTemplate template = new RestTemplate();

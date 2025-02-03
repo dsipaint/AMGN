@@ -1,8 +1,9 @@
-package com.github.dsipaint.AMGN.entities.listeners;
+package com.github.dsipaint.AMGN.entities.listeners.managed;
 
 import java.util.function.Consumer;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.closenetwork.CloseCommand;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.DisableCommand;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable.EnableCommand;

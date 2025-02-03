@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.dsipaint.AMGN.AMGN;
-import com.github.dsipaint.AMGN.entities.listeners.Command;
-import com.github.dsipaint.AMGN.entities.listeners.Listener;
+import com.github.dsipaint.AMGN.entities.listeners.IListener;
+import com.github.dsipaint.AMGN.entities.listeners.RestListener;
+import com.github.dsipaint.AMGN.entities.listeners.managed.Command;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.Permissions;
 
@@ -151,11 +152,31 @@ public class GuildNetwork
 	 * @param listener ListenerAdapter to formally be loaded by AMGN
 	 * @param plugin Plugin to associate the listener with
 	 */
-	public static final void registerListener(Listener listener, Plugin plugin)
+	public static final void registerListener(IListener listener, Plugin plugin)
 	{
 		if(plugin == null)
 			return;
 		
+		//for RestListeners, don't add to AMGN
+		//and also only allow 1 RestListener to be added- replace the old RestListener with the new one if there is already one
+		if(listener instanceof RestListener)
+		{
+			//look for an existing restlistener associated with the plugin
+			RestListener alreadyRestListener = null;
+			for(IListener checklistener : AMGN.plugin_listeners.get(plugin))
+			{
+				if(checklistener instanceof RestListener)
+				{
+					alreadyRestListener = (RestListener) checklistener;
+					break;
+				}
+			}
+
+			//if we find one that already exists, remove it
+			if(alreadyRestListener != null)
+				AMGN.plugin_listeners.get(plugin).remove(alreadyRestListener);
+		}
+
 		AMGN.plugin_listeners.get(plugin).add(listener); //add the listener listed under this name
 	}
 	
@@ -164,7 +185,7 @@ public class GuildNetwork
 	 * @param listener ListenerAdapter to formally be unloaded by AMGN
 	 * @param plugin Plugin to find the listener with
 	 */
-	public static final void unregisterListener(Listener listener, Plugin plugin)
+	public static final void unregisterListener(IListener listener, Plugin plugin)
 	{
 		AMGN.bot.removeEventListener(listener);
 		
@@ -194,7 +215,7 @@ public class GuildNetwork
 		//if plugin is not already enabled
 		if(AMGN.plugin_listeners.get(plugin) == null)
 		{
-			AMGN.plugin_listeners.put(plugin, new ArrayList<Listener>()); //add this plugin with an empty list of listeners
+			AMGN.plugin_listeners.put(plugin, new ArrayList<IListener>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
 			plugin.onEnable(); //run plugin's enable method
 			//menus will sort themselves out when the plugin recreates them

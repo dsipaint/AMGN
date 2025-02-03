@@ -1,4 +1,4 @@
-package com.github.dsipaint.AMGN.entities.listeners;
+package com.github.dsipaint.AMGN.entities.listeners.managed;
 
 import java.io.InputStreamReader;
 import java.util.List;
@@ -7,6 +7,8 @@ import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
+import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
+import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.Permissions;
 
