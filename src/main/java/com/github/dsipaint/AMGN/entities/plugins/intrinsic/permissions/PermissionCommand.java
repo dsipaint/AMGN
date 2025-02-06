@@ -13,7 +13,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
-import com.github.dsipaint.AMGN.entities.listeners.DefaultCommand;
+import com.github.dsipaint.AMGN.entities.listeners.managed.DefaultCommand;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
 public class PermissionCommand implements Consumer<CommandEvent>

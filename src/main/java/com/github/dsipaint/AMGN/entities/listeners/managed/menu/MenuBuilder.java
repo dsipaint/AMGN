@@ -1,4 +1,4 @@
-package com.github.dsipaint.AMGN.entities.listeners.menu;
+package com.github.dsipaint.AMGN.entities.listeners.managed.menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
-import com.github.dsipaint.AMGN.entities.listeners.menu.Button.MenuButtonClickEvent;
+import com.github.dsipaint.AMGN.entities.listeners.managed.menu.Button.MenuButtonClickEvent;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 
 import net.dv8tion.jda.api.entities.Message;

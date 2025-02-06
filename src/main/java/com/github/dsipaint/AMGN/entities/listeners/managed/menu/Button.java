@@ -1,4 +1,4 @@
-package com.github.dsipaint.AMGN.entities.listeners.menu;
+package com.github.dsipaint.AMGN.entities.listeners.managed.menu;
 
 import java.util.function.Consumer;
 
