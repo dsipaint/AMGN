@@ -201,7 +201,6 @@ public class GuildNetwork
 	 */
 	public static final void registerCommand(Command cmd, Plugin plugin)
 	{
-		AMGN.bot.addEventListener(cmd);
 		AMGN.plugin_listeners.get(plugin).add(cmd);
 	}
 	

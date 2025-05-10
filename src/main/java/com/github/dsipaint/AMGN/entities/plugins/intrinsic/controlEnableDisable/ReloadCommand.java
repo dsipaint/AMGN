@@ -1,5 +1,7 @@
 package com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.function.Consumer;
 
 import com.github.dsipaint.AMGN.AMGN;
@@ -20,12 +22,25 @@ public class ReloadCommand implements Consumer<CommandEvent>
 		{
 			if(plugin.getName().equalsIgnoreCase(e.getArgs()[1])) //find correct plugin
 			{
-				GuildNetwork.disablePlugin(plugin);
-				GuildNetwork.enablePlugin(plugin);
-				
-				e.getTextChannel().sendMessage("Plugin was successfully reloaded.").queue();
-				GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + plugin.getName() + " "
-						+ plugin.getVersion() + " reloaded by " + e.getSender().getUser().getName());
+				try
+				{
+					GuildNetwork.disablePlugin(plugin);
+					GuildNetwork.enablePlugin(plugin);
+					
+					e.getTextChannel().sendMessage("Plugin was successfully reloaded.").queue();
+					GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + plugin.getName() + " "
+							+ plugin.getVersion() + " reloaded by " + e.getSender().getUser().getName());
+				}
+				catch(Exception ex)
+				{
+					StringWriter sw = new StringWriter();
+					PrintWriter pw = new PrintWriter(sw);
+					ex.printStackTrace(pw);
+
+					AMGN.logger.error("Error occurred reloading plugin " + plugin.getName() + " " + plugin.getVersion() + ":\n"
+						+ sw.toString());
+					e.getTextChannel().sendMessage("Error occurred reloading plugin.").queue();
+				}
 				return;
 			}
 		}

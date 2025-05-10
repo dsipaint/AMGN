@@ -1,3 +1,13 @@
+# 1.2
+~ Tidied up some of the authentication methods in the WebpanelController for better input-sanitisation
+~ Renamed ListenerWrapper to ListenerProxy, to make its purpose clearer
+~ ListenerProxy now passes all events to a single event-handling method, where events are then distributed to plugin listeners. This makes it easier to maintain the event-handling algorithm, including changes to logging and allow-listing rules if they were to happen.
+~ Added more verbose logging for any discord event failures, including any failures that occur in the handling of the event by a plugin's listener. This can also be sent to a discord log-channel. This makes plugin- and engine- debugging much more verbose. Commands will now also post messages in the channel they were invoked in, if an exception occurs.
++ Exceptions generated during commands, or during menu interactions, will now also log to stderr
+~ Added logging for any plugin API endpoint failures incurred by a plugin's RestListener
++ Improved the verbosity around logging when enabling, disabling or reloading plugins
++ updated JDA to latest version
+
 # 1.1
 Added plugin API-forwarding, plugins can now send and receive REST http requests
 

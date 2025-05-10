@@ -3,6 +3,8 @@ package com.github.dsipaint.AMGN.web;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1080,7 +1082,27 @@ public class WebpanelController
                 for(IListener listener : AMGN.plugin_listeners.get(plugin))
                 {
                     if(listener instanceof RestListener)
-                        return ((RestListener) listener).handleRequest(request, response);
+                    {
+                        try
+                        {
+                            return ((RestListener) listener).handleRequest(request, response);
+                        }
+                        catch(Exception e)
+                        {
+                            StringWriter sw = new StringWriter();
+                            PrintWriter pw = new PrintWriter(sw);
+                            e.printStackTrace(pw);
+
+                            AMGN.logger.error("Error occurred in plugin API endpoint\n"
+                                + "Plugin: " + plugin.getName() + " " + plugin.getVersion() + "\n"
+                                + "Full API path: " + request.getRequestURI() + "\n"
+                                + "Stacktrace: \n" + sw.toString()
+                                + "\n");
+
+                            response.setStatus(500);
+                            return new ObjectMapper().createObjectNode().put("error", "internal plugin failure");
+                        }
+                    }
                 }
             }
         }
@@ -1179,6 +1201,9 @@ public class WebpanelController
 
     public static String getTokenFromRequest(HttpServletRequest request)
     {
+        if(request.getCookies() == null)
+            return null;
+
         for(Cookie c : request.getCookies())
         {
             if(c.getName().equals("discord_token"))

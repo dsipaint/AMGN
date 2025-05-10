@@ -112,7 +112,6 @@ import net.dv8tion.jda.api.events.interaction.component.GenericSelectMenuInterac
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
-import net.dv8tion.jda.api.events.message.MessageEmbedEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
@@ -170,828 +169,168 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 //generic discord-listener class that all discord-listener classes use in AMGN
 public class Listener extends ListenerAdapter implements IListener
 {
-    public void onButtonInteraction(ButtonInteractionEvent event)
-    {
-        
-    }
-     
-    public void onChannelCreate(ChannelCreateEvent event)
-    {
-
-    }
-     
-    public void onChannelDelete(ChannelDeleteEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateArchived(ChannelUpdateArchivedEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateArchiveTimestamp(ChannelUpdateArchiveTimestampEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateAutoArchiveDuration(ChannelUpdateAutoArchiveDurationEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateBitrate(ChannelUpdateBitrateEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateInvitable(ChannelUpdateInvitableEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateLocked(ChannelUpdateLockedEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateName(ChannelUpdateNameEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateNSFW(ChannelUpdateNSFWEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateParent(ChannelUpdateParentEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdatePosition(ChannelUpdatePositionEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateRegion(ChannelUpdateRegionEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateSlowmode(ChannelUpdateSlowmodeEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateTopic(ChannelUpdateTopicEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateType(ChannelUpdateTypeEvent event)
-    {
-
-    }
-     
-    public void onChannelUpdateUserLimit(ChannelUpdateUserLimitEvent event)
-    {
-
-    }
-     
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event)
-    {
-
-    }
-     
-    public void onSessionDisconnect(SessionDisconnectEvent event)
-    {
-
-    }
-     
-    public void onEmojiAdded(EmojiAddedEvent event)
-    {
-
-    }
-     
-    public void onEmojiRemoved(EmojiRemovedEvent event)
-    {
-
-    }
-     
-    public void onEmojiUpdateName(EmojiUpdateNameEvent event)
-    {
-
-    }
-     
-    public void onEmojiUpdateRoles(EmojiUpdateRolesEvent event)
-    {
-
-    }
-    
-    public void onException(ExceptionEvent event)
-    {
-
-    }
-     
-    public void onGatewayPing(GatewayPingEvent event)
-    {
-
-    }
-     
-    public void onGenericAutoCompleteInteraction(GenericAutoCompleteInteractionEvent event)
-    {
-
-    }
-     
-    public void onGenericChannel(GenericChannelEvent event)
-    {
-
-    }
-     
-    public void onGenericChannelUpdate(GenericChannelUpdateEvent<?> event)
-    {
-
-    }
-     
-    public void onGenericCommandInteraction(GenericCommandInteractionEvent event)
-    {
-
-    }
-     
-    public void onGenericComponentInteractionCreate(GenericComponentInteractionCreateEvent event)
-    {
-
-    }
-     
-    public void onGenericContextInteraction(GenericContextInteractionEvent<?> event)
-    {
-
-    }
-     
-    public void onGenericEmoji(GenericEmojiEvent event)
-    {
-
-    }
-     
-    public void onGenericEmojiUpdate(GenericEmojiUpdateEvent event)
-    {
-
-    }
-     
-    public void onGenericEvent(GenericEvent event)
-    {
-
-    }
-     
-    public void onGenericGuild(GenericGuildEvent event)
-    {
-
-    }
-     
-    public void onGenericGuildInvite(GenericGuildInviteEvent event)
-    {
-
-    }
-     
-    public void onGenericGuildMember(GenericGuildMemberEvent event)
-    {
-
-    }
-     
-    public void onGenericGuildMemberUpdate(GenericGuildMemberUpdateEvent event)
-    {
-
-    }
-     
-    public void onGenericGuildUpdate(GenericGuildUpdateEvent event)
-    {
-
-    }
-     
-    public void onGenericGuildVoice(GenericGuildVoiceEvent event)
-    {
-
-    }
-     
-    public void onGenericInteractionCreate(GenericInteractionCreateEvent event)
-    {
-
-    }
-     
-    public void onGenericMessage(GenericMessageEvent event)
-    {
-
-    }
-     
-    public void onGenericMessageReaction(GenericMessageReactionEvent event)
-    {
-
-    }
-     
-    public void onGenericPermissionOverride(GenericPermissionOverrideEvent event)
-    {
-
-    }
-     
-    public void onGenericRole(GenericRoleEvent event)
-    {
-
-    }
-     
-    public void onGenericRoleUpdate(GenericRoleUpdateEvent event)
-    {
-
-    }
-     
-    public void onGenericSelfUpdate(GenericSelfUpdateEvent event)
-    {
-
-    }
-     
-    public void onGenericStageInstance(GenericStageInstanceEvent event)
-    {
-
-    }
-     
-    public void onGenericStageInstanceUpdate(GenericStageInstanceUpdateEvent event)
-    {
-
-    }
-     
-    public void onGenericThread(GenericThreadEvent event)
-    {
-
-    }
-     
-    public void onGenericThreadMember(GenericThreadMemberEvent event)
-    {
-
-    }
-     
-    public void onGenericUpdate(UpdateEvent<?,?> event)
-    {
-
-    }
-     
-    public void onGenericUser(GenericUserEvent event)
-    {
-
-    }
-     
-    public void onGenericUserPresence(GenericUserPresenceEvent event)
-    {
-
-    }
-     
-    public void onGuildAvailable(GuildAvailableEvent event)
-    {
-
-    }
-     
-    public void onGuildBan(GuildBanEvent event)
-    {
-
-    }
-     
-    public void onGuildInviteCreate(GuildInviteCreateEvent event)
-    {
-
-    }
-     
-    public void onGuildInviteDelete(GuildInviteDeleteEvent event)
-    {
-
-    }
-     
-    public void onGuildJoin(GuildJoinEvent event)
-    {
-
-    }
-     
-    public void onGuildLeave(GuildLeaveEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberJoin(GuildMemberJoinEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberRemove(GuildMemberRemoveEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberUpdate(GuildMemberUpdateEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberUpdateAvatar(GuildMemberUpdateAvatarEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event)
-    {
-
-    }
-     
-    public void onGuildMemberUpdateTimeOut(GuildMemberUpdateTimeOutEvent event)
-    {
-
-    }
-     
-    public void onGuildReady(GuildReadyEvent event)
-    {
-
-    }
-     
-    public void onGuildTimeout(GuildTimeoutEvent event)
-    {
-
-    }
-     
-    public void onGuildUnavailable(GuildUnavailableEvent event)
-    {
-
-    }
-     
-    public void onGuildUnban(GuildUnbanEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateAfkChannel(GuildUpdateAfkChannelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateAfkTimeout(GuildUpdateAfkTimeoutEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateBanner(GuildUpdateBannerEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateBoostCount(GuildUpdateBoostCountEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateBoostTier(GuildUpdateBoostTierEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateCommunityUpdatesChannel(GuildUpdateCommunityUpdatesChannelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateDescription(GuildUpdateDescriptionEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateExplicitContentLevel(GuildUpdateExplicitContentLevelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateFeatures(GuildUpdateFeaturesEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateIcon(GuildUpdateIconEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateLocale(GuildUpdateLocaleEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateMaxMembers(GuildUpdateMaxMembersEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateMaxPresences(GuildUpdateMaxPresencesEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateMFALevel(GuildUpdateMFALevelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateName(GuildUpdateNameEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateNotificationLevel(GuildUpdateNotificationLevelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateNSFWLevel(GuildUpdateNSFWLevelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateOwner(GuildUpdateOwnerEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateRulesChannel(GuildUpdateRulesChannelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateSplash(GuildUpdateSplashEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateSystemChannel(GuildUpdateSystemChannelEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateVanityCode(GuildUpdateVanityCodeEvent event)
-    {
-
-    }
-     
-    public void onGuildUpdateVerificationLevel(GuildUpdateVerificationLevelEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceDeafen(GuildVoiceDeafenEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceGuildDeafen(GuildVoiceGuildDeafenEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceMute(GuildVoiceMuteEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceRequestToSpeak(GuildVoiceRequestToSpeakEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceSelfMute(GuildVoiceSelfMuteEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceStream(GuildVoiceStreamEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceSuppress(GuildVoiceSuppressEvent event)
-    {
-
-    }
-     
-    public void onGuildVoiceVideo(GuildVoiceVideoEvent event)
-    {
-
-    }
-     
-    public void onHttpRequest(HttpRequestEvent event)
-    {
-
-    }
-     
-    public void onMessageBulkDelete(MessageBulkDeleteEvent event)
-    {
-
-    }
-     
-    public void onMessageContextInteraction(MessageContextInteractionEvent event)
-    {
-
-    }
-     
-    public void onMessageDelete(MessageDeleteEvent event)
-    {
-
-    }
-     
-    public void onMessageEmbed(MessageEmbedEvent event)
-    {
-
-    }
-     
-    public void onMessageReactionAdd(MessageReactionAddEvent event)
-    {
-
-    }
-     
-    public void onMessageReactionRemove(MessageReactionRemoveEvent event)
-    {
-
-    }
-     
-    public void onMessageReactionRemoveAll(MessageReactionRemoveAllEvent event)
-    {
-
-    }
-     
-    public void onMessageReactionRemoveEmoji(MessageReactionRemoveEmojiEvent event)
-    {
-
-    }
-
-    public void onMessageReceived(MessageReceivedEvent event)
-    {
-
-    }
-    
-    public void onMessageUpdate(MessageUpdateEvent event)
-    {
-
-    }
-
-    public void onPermissionOverrideCreate(PermissionOverrideCreateEvent event)
-    {
-
-    }
-    
-    public void onPermissionOverrideDelete(PermissionOverrideDeleteEvent event)
-    {
-
-    }
-     
-    public void onPermissionOverrideUpdate(PermissionOverrideUpdateEvent event)
-    {
-
-    }
-     
-    public void onRawGateway(RawGatewayEvent event)
-    {
-
-    }
-     
-    public void onReady(ReadyEvent event)
-    {
-
-    }
-     
-    public void onSessionRecreate(SessionRecreateEvent event)
-    {
-
-    }
-     
-    public void onSessionResume(SessionResumeEvent event)
-    {
-
-    }
-     
-    public void onRoleCreate(RoleCreateEvent event)
-    {
-
-    }
-     
-    public void onRoleDelete(RoleDeleteEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdateColor(RoleUpdateColorEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdateHoisted(RoleUpdateHoistedEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdateIcon(RoleUpdateIconEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdateMentionable(RoleUpdateMentionableEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdateName(RoleUpdateNameEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdatePermissions(RoleUpdatePermissionsEvent event)
-    {
-
-    }
-     
-    public void onRoleUpdatePosition(RoleUpdatePositionEvent event)
-    {
-
-    }
-     
-    public void onGenericSelectMenuInteraction(GenericSelectMenuInteractionEvent event)
-    {
-
-    }
-     
-    public void onSelfUpdateAvatar(SelfUpdateAvatarEvent event)
-    {
-
-    }
-     
-    public void onSelfUpdateMFA(SelfUpdateMFAEvent event)
-    {
-
-    }
-     
-    public void onSelfUpdateName(SelfUpdateNameEvent event)
-    {
-
-    }
-     
-    public void onSelfUpdateVerified(SelfUpdateVerifiedEvent event)
-    {
-
-    }
-     
-    public void onShutdown(ShutdownEvent event)
-    {
-
-    }
-     
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
-    {
-
-    }
-     
-    public void onStageInstanceCreate(StageInstanceCreateEvent event)
-    {
-
-    }
-     
-    public void onStageInstanceDelete(StageInstanceDeleteEvent event)
-    {
-
-    }
-     
-    public void onStageInstanceUpdatePrivacyLevel(StageInstanceUpdatePrivacyLevelEvent event)
-    {
-
-    }
-     
-    public void onStageInstanceUpdateTopic(StageInstanceUpdateTopicEvent event)
-    {
-
-    }
-     
-    public void onStatusChange(StatusChangeEvent event)
-    {
-
-    }
-     
-    public void onThreadHidden(ThreadHiddenEvent event)
-    {
-
-    }
-     
-    public void onThreadMemberJoin(ThreadMemberJoinEvent event)
-    {
-
-    }
-     
-    public void onThreadMemberLeave(ThreadMemberLeaveEvent event)
-    {
-
-    }
-     
-    public void onThreadRevealed(ThreadRevealedEvent event)
-    {
-
-    }
-     
-    public void onUnavailableGuildJoined(UnavailableGuildJoinedEvent event)
-    {
-
-    }
-     
-    public void onUnavailableGuildLeave(UnavailableGuildLeaveEvent event)
-    {
-
-    }
-     
-    public void onUserActivityEnd(UserActivityEndEvent event)
-    {
-
-    }
-     
-    public void onUserActivityStart(UserActivityStartEvent event)
-    {
-
-    }
-     
-    public void onUserContextInteraction(UserContextInteractionEvent event)
-    {
-
-    }
-     
-    public void onUserTyping(UserTypingEvent event)
-    {
-
-    }
-     
-    public void onUserUpdateActivities(UserUpdateActivitiesEvent event)
-    {
-
-    }
-     
-    public void onUserUpdateActivityOrder(UserUpdateActivityOrderEvent event)
-    {
-
-    }
-     
-    public void onUserUpdateAvatar(UserUpdateAvatarEvent event)
-    {
-
-    }
-     
-    public void onUserUpdateFlags(UserUpdateFlagsEvent event)
-    {
-
-    }
-     
-    public void onUserUpdateName(UserUpdateNameEvent event)
-    {
-
-    }
-
-    public void onUserUpdateGlobalName(UserUpdateGlobalNameEvent event)
-    {
-        
-    }
-     
-    public void onUserUpdateOnlineStatus(UserUpdateOnlineStatusEvent event)
-    {
-
-    }
+    public void onButtonInteraction(ButtonInteractionEvent event){}     
+    public void onChannelCreate(ChannelCreateEvent event){}     
+    public void onChannelDelete(ChannelDeleteEvent event){}     
+    public void onChannelUpdateArchived(ChannelUpdateArchivedEvent event){}     
+    public void onChannelUpdateArchiveTimestamp(ChannelUpdateArchiveTimestampEvent event){}     
+    public void onChannelUpdateAutoArchiveDuration(ChannelUpdateAutoArchiveDurationEvent event){}     
+    public void onChannelUpdateBitrate(ChannelUpdateBitrateEvent event){}     
+    public void onChannelUpdateInvitable(ChannelUpdateInvitableEvent event){}     
+    public void onChannelUpdateLocked(ChannelUpdateLockedEvent event){}     
+    public void onChannelUpdateName(ChannelUpdateNameEvent event){}     
+    public void onChannelUpdateNSFW(ChannelUpdateNSFWEvent event){}     
+    public void onChannelUpdateParent(ChannelUpdateParentEvent event){}     
+    public void onChannelUpdatePosition(ChannelUpdatePositionEvent event){}     
+    public void onChannelUpdateRegion(ChannelUpdateRegionEvent event){}     
+    public void onChannelUpdateSlowmode(ChannelUpdateSlowmodeEvent event){}     
+    public void onChannelUpdateTopic(ChannelUpdateTopicEvent event){}     
+    public void onChannelUpdateType(ChannelUpdateTypeEvent event){}     
+    public void onChannelUpdateUserLimit(ChannelUpdateUserLimitEvent event){}     
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event){}     
+    public void onSessionDisconnect(SessionDisconnectEvent event){}     
+    public void onEmojiAdded(EmojiAddedEvent event){}     
+    public void onEmojiRemoved(EmojiRemovedEvent event){}     
+    public void onEmojiUpdateName(EmojiUpdateNameEvent event){}     
+    public void onEmojiUpdateRoles(EmojiUpdateRolesEvent event){}    
+    public void onException(ExceptionEvent event){}     
+    public void onGatewayPing(GatewayPingEvent event){}     
+    public void onGenericAutoCompleteInteraction(GenericAutoCompleteInteractionEvent event){}     
+    public void onGenericChannel(GenericChannelEvent event){}     
+    public void onGenericChannelUpdate(GenericChannelUpdateEvent<?> event){}     
+    public void onGenericCommandInteraction(GenericCommandInteractionEvent event){}     
+    public void onGenericComponentInteractionCreate(GenericComponentInteractionCreateEvent event){}     
+    public void onGenericContextInteraction(GenericContextInteractionEvent<?> event){}     
+    public void onGenericEmoji(GenericEmojiEvent event){}     
+    public void onGenericEmojiUpdate(GenericEmojiUpdateEvent event){}     
+    public void onGenericEvent(GenericEvent event){}     
+    public void onGenericGuild(GenericGuildEvent event){}     
+    public void onGenericGuildInvite(GenericGuildInviteEvent event){}     
+    public void onGenericGuildMember(GenericGuildMemberEvent event){}     
+    public void onGenericGuildMemberUpdate(GenericGuildMemberUpdateEvent event){}     
+    public void onGenericGuildUpdate(GenericGuildUpdateEvent event){}     
+    public void onGenericGuildVoice(GenericGuildVoiceEvent event){}     
+    public void onGenericInteractionCreate(GenericInteractionCreateEvent event){}     
+    public void onGenericMessage(GenericMessageEvent event){}     
+    public void onGenericMessageReaction(GenericMessageReactionEvent event){}     
+    public void onGenericPermissionOverride(GenericPermissionOverrideEvent event){}     
+    public void onGenericRole(GenericRoleEvent event){}     
+    public void onGenericRoleUpdate(GenericRoleUpdateEvent event){}     
+    public void onGenericSelfUpdate(GenericSelfUpdateEvent event){}     
+    public void onGenericStageInstance(GenericStageInstanceEvent event){}     
+    public void onGenericStageInstanceUpdate(GenericStageInstanceUpdateEvent event){}     
+    public void onGenericThread(GenericThreadEvent event){}     
+    public void onGenericThreadMember(GenericThreadMemberEvent event){}     
+    public void onGenericUpdate(UpdateEvent<?,?> event){}     
+    public void onGenericUser(GenericUserEvent event){}     
+    public void onGenericUserPresence(GenericUserPresenceEvent event){}     
+    public void onGuildAvailable(GuildAvailableEvent event){}     
+    public void onGuildBan(GuildBanEvent event){}     
+    public void onGuildInviteCreate(GuildInviteCreateEvent event){}     
+    public void onGuildInviteDelete(GuildInviteDeleteEvent event){}     
+    public void onGuildJoin(GuildJoinEvent event){}     
+    public void onGuildLeave(GuildLeaveEvent event){}     
+    public void onGuildMemberJoin(GuildMemberJoinEvent event){}     
+    public void onGuildMemberRemove(GuildMemberRemoveEvent event){}     
+    public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event){}     
+    public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event){}     
+    public void onGuildMemberUpdate(GuildMemberUpdateEvent event){}     
+    public void onGuildMemberUpdateAvatar(GuildMemberUpdateAvatarEvent event){}     
+    public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){}     
+    public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event){}     
+    public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event){}     
+    public void onGuildMemberUpdateTimeOut(GuildMemberUpdateTimeOutEvent event){}     
+    public void onGuildReady(GuildReadyEvent event){}     
+    public void onGuildTimeout(GuildTimeoutEvent event){}     
+    public void onGuildUnavailable(GuildUnavailableEvent event){}     
+    public void onGuildUnban(GuildUnbanEvent event){}     
+    public void onGuildUpdateAfkChannel(GuildUpdateAfkChannelEvent event){}     
+    public void onGuildUpdateAfkTimeout(GuildUpdateAfkTimeoutEvent event){}     
+    public void onGuildUpdateBanner(GuildUpdateBannerEvent event){}     
+    public void onGuildUpdateBoostCount(GuildUpdateBoostCountEvent event){}     
+    public void onGuildUpdateBoostTier(GuildUpdateBoostTierEvent event){}     
+    public void onGuildUpdateCommunityUpdatesChannel(GuildUpdateCommunityUpdatesChannelEvent event){}     
+    public void onGuildUpdateDescription(GuildUpdateDescriptionEvent event){}     
+    public void onGuildUpdateExplicitContentLevel(GuildUpdateExplicitContentLevelEvent event){}     
+    public void onGuildUpdateFeatures(GuildUpdateFeaturesEvent event){}     
+    public void onGuildUpdateIcon(GuildUpdateIconEvent event){}     
+    public void onGuildUpdateLocale(GuildUpdateLocaleEvent event){}     
+    public void onGuildUpdateMaxMembers(GuildUpdateMaxMembersEvent event){}     
+    public void onGuildUpdateMaxPresences(GuildUpdateMaxPresencesEvent event){}     
+    public void onGuildUpdateMFALevel(GuildUpdateMFALevelEvent event){}     
+    public void onGuildUpdateName(GuildUpdateNameEvent event){}     
+    public void onGuildUpdateNotificationLevel(GuildUpdateNotificationLevelEvent event){}     
+    public void onGuildUpdateNSFWLevel(GuildUpdateNSFWLevelEvent event){}     
+    public void onGuildUpdateOwner(GuildUpdateOwnerEvent event){}     
+    public void onGuildUpdateRulesChannel(GuildUpdateRulesChannelEvent event){}     
+    public void onGuildUpdateSplash(GuildUpdateSplashEvent event){}     
+    public void onGuildUpdateSystemChannel(GuildUpdateSystemChannelEvent event){}     
+    public void onGuildUpdateVanityCode(GuildUpdateVanityCodeEvent event){}     
+    public void onGuildUpdateVerificationLevel(GuildUpdateVerificationLevelEvent event){}     
+    public void onGuildVoiceDeafen(GuildVoiceDeafenEvent event){}     
+    public void onGuildVoiceGuildDeafen(GuildVoiceGuildDeafenEvent event){}     
+    public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event){}     
+    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event){}     
+    public void onGuildVoiceMute(GuildVoiceMuteEvent event){}     
+    public void onGuildVoiceRequestToSpeak(GuildVoiceRequestToSpeakEvent event){}     
+    public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event){}     
+    public void onGuildVoiceSelfMute(GuildVoiceSelfMuteEvent event){}     
+    public void onGuildVoiceStream(GuildVoiceStreamEvent event){}     
+    public void onGuildVoiceSuppress(GuildVoiceSuppressEvent event){}     
+    public void onGuildVoiceVideo(GuildVoiceVideoEvent event){}     
+    public void onHttpRequest(HttpRequestEvent event){}     
+    public void onMessageBulkDelete(MessageBulkDeleteEvent event){}     
+    public void onMessageContextInteraction(MessageContextInteractionEvent event){}     
+    public void onMessageDelete(MessageDeleteEvent event){}
+    public void onMessageReactionAdd(MessageReactionAddEvent event){}     
+    public void onMessageReactionRemove(MessageReactionRemoveEvent event){}     
+    public void onMessageReactionRemoveAll(MessageReactionRemoveAllEvent event){}     
+    public void onMessageReactionRemoveEmoji(MessageReactionRemoveEmojiEvent event){}
+    public void onMessageReceived(MessageReceivedEvent event){}    
+    public void onMessageUpdate(MessageUpdateEvent event){}
+    public void onPermissionOverrideCreate(PermissionOverrideCreateEvent event){}    
+    public void onPermissionOverrideDelete(PermissionOverrideDeleteEvent event){}     
+    public void onPermissionOverrideUpdate(PermissionOverrideUpdateEvent event){}     
+    public void onRawGateway(RawGatewayEvent event){}     
+    public void onReady(ReadyEvent event){}     
+    public void onSessionRecreate(SessionRecreateEvent event){}     
+    public void onSessionResume(SessionResumeEvent event){}     
+    public void onRoleCreate(RoleCreateEvent event){}     
+    public void onRoleDelete(RoleDeleteEvent event){}     
+    public void onRoleUpdateColor(RoleUpdateColorEvent event){}     
+    public void onRoleUpdateHoisted(RoleUpdateHoistedEvent event){}     
+    public void onRoleUpdateIcon(RoleUpdateIconEvent event){}     
+    public void onRoleUpdateMentionable(RoleUpdateMentionableEvent event){}     
+    public void onRoleUpdateName(RoleUpdateNameEvent event){}     
+    public void onRoleUpdatePermissions(RoleUpdatePermissionsEvent event){}     
+    public void onRoleUpdatePosition(RoleUpdatePositionEvent event){}     
+    public void onGenericSelectMenuInteraction(GenericSelectMenuInteractionEvent event){}     
+    public void onSelfUpdateAvatar(SelfUpdateAvatarEvent event){}     
+    public void onSelfUpdateMFA(SelfUpdateMFAEvent event){}     
+    public void onSelfUpdateName(SelfUpdateNameEvent event){}     
+    public void onSelfUpdateVerified(SelfUpdateVerifiedEvent event){}     
+    public void onShutdown(ShutdownEvent event){}     
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event){}     
+    public void onStageInstanceCreate(StageInstanceCreateEvent event){}     
+    public void onStageInstanceDelete(StageInstanceDeleteEvent event){}     
+    public void onStageInstanceUpdatePrivacyLevel(StageInstanceUpdatePrivacyLevelEvent event){}     
+    public void onStageInstanceUpdateTopic(StageInstanceUpdateTopicEvent event){}     
+    public void onStatusChange(StatusChangeEvent event){}     
+    public void onThreadHidden(ThreadHiddenEvent event){}     
+    public void onThreadMemberJoin(ThreadMemberJoinEvent event){}     
+    public void onThreadMemberLeave(ThreadMemberLeaveEvent event){}     
+    public void onThreadRevealed(ThreadRevealedEvent event){}     
+    public void onUnavailableGuildJoined(UnavailableGuildJoinedEvent event){}     
+    public void onUnavailableGuildLeave(UnavailableGuildLeaveEvent event){}     
+    public void onUserActivityEnd(UserActivityEndEvent event){}     
+    public void onUserActivityStart(UserActivityStartEvent event){}     
+    public void onUserContextInteraction(UserContextInteractionEvent event){}     
+    public void onUserTyping(UserTypingEvent event){}     
+    public void onUserUpdateActivities(UserUpdateActivitiesEvent event){}     
+    public void onUserUpdateActivityOrder(UserUpdateActivityOrderEvent event){}     
+    public void onUserUpdateAvatar(UserUpdateAvatarEvent event){}     
+    public void onUserUpdateFlags(UserUpdateFlagsEvent event){}     
+    public void onUserUpdateName(UserUpdateNameEvent event){}
+    public void onUserUpdateGlobalName(UserUpdateGlobalNameEvent event){}     
+    public void onUserUpdateOnlineStatus(UserUpdateOnlineStatusEvent event){}
 }

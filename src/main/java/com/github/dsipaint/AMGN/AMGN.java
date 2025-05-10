@@ -29,7 +29,7 @@ import com.github.dsipaint.AMGN.entities.listeners.IListener;
 import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.managed.Command;
 import com.github.dsipaint.AMGN.entities.listeners.managed.DefaultCommand;
-import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerWrapper;
+import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerProxy;
 import com.github.dsipaint.AMGN.entities.listeners.managed.menu.Menu;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.entities.plugins.intrinsic.consistency.MenuDeleteListener;
@@ -211,7 +211,7 @@ public class AMGN
 		bot.addEventListener(new MenuDeleteListener());
 
 		//generic listening for commands/listeners
-		bot.addEventListener(new ListenerWrapper());
+		bot.addEventListener(new ListenerProxy());
 		
 		
 		logger.info("initialising listener cache...");
@@ -323,7 +323,9 @@ public class AMGN
 						StringWriter sw = new StringWriter();
 						PrintWriter pw = new PrintWriter(sw);
 						e.printStackTrace(pw);
-						logger.error(sw.toString());
+
+						logger.error("Error occurred enabling plugin " + p.getName() + " " + p.getVersion() + ":\n"
+							+ sw.toString());
 						continue;
 					}
 				}
@@ -408,13 +410,13 @@ public class AMGN
 				else
 					AMGN.logger.warn("Member " + member.toString()
 						+ " does not have permission to run command \"" + cmdtxt + "\"");
-			}	
+			}
 		}
 
 		HashMap<Plugin, ArrayList<Listener>> plugin_listener_clone = (HashMap<Plugin, ArrayList<Listener>>) AMGN.plugin_listeners.clone();
 		plugin_listener_clone.forEach((plugin, listeners) ->
 		{
-			if(tc != null && !ListenerWrapper.applyWhitelistBlacklistRules(plugin.getName(), tc.getGuild()))
+			if(tc != null && !ListenerProxy.applyWhitelistBlacklistRules(plugin.getName(), tc.getGuild()))
 			{
 				AMGN.logger.info("Network whitelist/blacklist rules do not allow the command \"" + cmdtxt + "\""
 					+ " to be run in the guild " + tc.getGuild().toString());

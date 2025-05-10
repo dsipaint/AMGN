@@ -10,7 +10,6 @@ import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.entities.emoji.Emoji.Type;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 
@@ -48,7 +47,22 @@ public class Button extends Listener
         
         if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
             && e.getMessageId().equals(this.message.getId()))
-            press.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, true));
+        {
+            try
+            {
+                press.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, true));
+            }
+            catch(Exception ex)
+            {
+                AMGN.logger.error("Error encountered on menu button press\n"
+                    + "Message: " + e.getMessageId() + " - " + e.getJumpUrl() + "\n"
+                    + "Channel: " + e.getChannel() + "\n"
+                    + "Guild: " + e.getGuild() + "\n"
+                    + "User: " + e.getUser() + "\n"
+                    + "Emoji: " + e.getEmoji()
+                    + "\n");
+            }
+        }
     }
 
     @Override
@@ -57,13 +71,24 @@ public class Button extends Listener
         if(e.retrieveUser().complete().equals(e.getJDA().getSelfUser()))
             return;
         
-        if(e.getReaction().getEmoji().getType().equals(Type.CUSTOM)
-            && e.getEmoji().getAsReactionCode().equals(this.emoji.getAsReactionCode())
+        if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
             && e.getMessageId().equals(this.message.getId()))
-            unpress.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, false));
-        else if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
-            && e.getMessageId().equals(this.message.getId()))
-            unpress.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, false));
+        {
+            try
+            {
+                unpress.accept(new MenuButtonClickEvent(e.retrieveMember().complete(), message, this, false));
+            }
+            catch(Exception ex)
+            {
+                AMGN.logger.error("Error encountered on menu button unpress\n"
+                    + "Message: " + e.getMessageId() + " - " + e.getJumpUrl() + "\n"
+                    + "Channel: " + e.getChannel() + "\n"
+                    + "Guild: " + e.getGuild() + "\n"
+                    + "User: " + e.getUser() + "\n"
+                    + "Emoji: " + e.getEmoji()
+                    + "\n");
+            }
+        }
     }
 
     public class MenuButtonClickEvent

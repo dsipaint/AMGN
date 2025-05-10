@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
-import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerWrapper;
+import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerProxy;
 import com.github.dsipaint.AMGN.entities.listeners.managed.menu.ScrollMenuBuilder;
 import com.github.dsipaint.AMGN.entities.listeners.managed.menu.MenuBuilder.InvalidMenuException;
 
@@ -20,7 +20,7 @@ public final class ShowPluginsCommand implements Consumer<CommandEvent>
 			.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col());
 
 		StringBuilder descriptionsb = new StringBuilder();
-		ListenerWrapper.getRunningPlugins(e.getGuild()).forEach(plugin ->
+		ListenerProxy.getRunningPlugins(e.getGuild()).forEach(plugin ->
 		{
 			descriptionsb.append(plugin.getName() + " " + plugin.getVersion() + " (written by " + plugin.getAuthor() + ")\n");
 		});

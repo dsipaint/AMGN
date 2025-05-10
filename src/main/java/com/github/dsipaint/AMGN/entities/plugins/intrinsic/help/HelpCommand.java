@@ -8,7 +8,7 @@ import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.listeners.managed.Command;
 import com.github.dsipaint.AMGN.entities.listeners.managed.DefaultCommand;
-import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerWrapper;
+import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerProxy;
 import com.github.dsipaint.AMGN.entities.listeners.managed.menu.ScrollMenuBuilder;
 import com.github.dsipaint.AMGN.entities.listeners.managed.menu.MenuBuilder.InvalidMenuException;
 
@@ -35,7 +35,7 @@ public final class HelpCommand implements Consumer<CommandEvent>
 
 			AMGN.plugin_listeners.forEach((plugin, list) ->
 			{
-				if(ListenerWrapper.applyWhitelistBlacklistRules(plugin.getName(), e.getGuild()))
+				if(ListenerProxy.applyWhitelistBlacklistRules(plugin.getName(), e.getGuild()))
 				{
 					list.forEach(listener ->
 					{

@@ -2,8 +2,11 @@ package com.github.dsipaint.AMGN.entities.plugins.intrinsic.controlEnableDisable
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.function.Consumer;
 
+import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
@@ -43,10 +46,24 @@ public final class EnableCommand implements Consumer<CommandEvent>
 				{						
 					if(!IOHandler.isEnabled(plugin)) //check that it isn't already enabled
 					{
-						GuildNetwork.enablePlugin(plugin); //wrong reference, fix possibly
-						e.getTextChannel().sendMessage("Plugin was successfully enabled.").queue();
-						GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + plugin.getName() + " "
-								+ plugin.getVersion() + " enabled by " + e.getSender().getUser().getName());
+						try
+						{
+							GuildNetwork.enablePlugin(plugin); //wrong reference, fix possibly
+							e.getTextChannel().sendMessage("Plugin was successfully enabled.").queue();
+							GuildNetwork.sendToModlogs(e.getGuild().getIdLong(), "Plugin " + plugin.getName() + " "
+									+ plugin.getVersion() + " enabled by " + e.getSender().getUser().getName());
+						}
+						catch(Exception ex)
+						{
+							StringWriter sw = new StringWriter();
+							PrintWriter pw = new PrintWriter(sw);
+							ex.printStackTrace(pw);
+
+							AMGN.logger.error("Error occurred enabling plugin " + plugin.getName() + " " + plugin.getVersion() + ":\n"
+								+ sw.toString());
+							e.getTextChannel().sendMessage("Error occurred enabling plugin.").queue();
+						}
+
 						return;
 					}
 				}
