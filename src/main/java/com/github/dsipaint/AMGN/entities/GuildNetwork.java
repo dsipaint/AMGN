@@ -1,9 +1,9 @@
 package com.github.dsipaint.AMGN.entities;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.listeners.IListener;
@@ -214,7 +214,7 @@ public class GuildNetwork
 		//if plugin is not already enabled
 		if(AMGN.plugin_listeners.get(plugin) == null)
 		{
-			AMGN.plugin_listeners.put(plugin, new ArrayList<IListener>()); //add this plugin with an empty list of listeners
+			AMGN.plugin_listeners.put(plugin, new CopyOnWriteArrayList<IListener>()); //add this plugin with an empty list of listeners
 			//(listeners are then added by GuildNetwork.registerListener method, separately)
 			plugin.onEnable(); //run plugin's enable method
 			//menus will sort themselves out when the plugin recreates them

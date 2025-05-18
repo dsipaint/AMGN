@@ -12,6 +12,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -26,7 +28,6 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.listeners.IListener;
-import com.github.dsipaint.AMGN.entities.listeners.Listener;
 import com.github.dsipaint.AMGN.entities.listeners.managed.Command;
 import com.github.dsipaint.AMGN.entities.listeners.managed.DefaultCommand;
 import com.github.dsipaint.AMGN.entities.listeners.managed.ListenerProxy;
@@ -55,7 +56,7 @@ public class AMGN
 	public static ArrayList<Menu> menucache = new ArrayList<Menu>();
 	
 	//by definition, also acts as a list of all ENABLED plugins as well as a list of their listeners
-	public static HashMap<Plugin, ArrayList<IListener>> plugin_listeners;
+	public static ConcurrentHashMap<Plugin, CopyOnWriteArrayList<IListener>> plugin_listeners;
 	public static void main(String[] args)
 	{
 		//SETUP
@@ -215,7 +216,7 @@ public class AMGN
 		
 		
 		logger.info("initialising listener cache...");
-		plugin_listeners = new HashMap<Plugin, ArrayList<IListener>>();
+		plugin_listeners = new ConcurrentHashMap<Plugin, CopyOnWriteArrayList<IListener>>();
 
 		logger.info("applying whitelist...");
 		try
@@ -413,8 +414,7 @@ public class AMGN
 			}
 		}
 
-		HashMap<Plugin, ArrayList<Listener>> plugin_listener_clone = (HashMap<Plugin, ArrayList<Listener>>) AMGN.plugin_listeners.clone();
-		plugin_listener_clone.forEach((plugin, listeners) ->
+		AMGN.plugin_listeners.forEach((plugin, listeners) ->
 		{
 			if(tc != null && !ListenerProxy.applyWhitelistBlacklistRules(plugin.getName(), tc.getGuild()))
 			{
@@ -423,7 +423,7 @@ public class AMGN
 				return;
 			}
 
-			for(Listener listener : listeners)
+			for(IListener listener : listeners)
 			{
 				if(listener instanceof Command)
 				{

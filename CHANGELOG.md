@@ -1,3 +1,6 @@
+# 1.2.1
+Fixed annoying bug that caused menu-creation to randomly generate exceptions
+
 # 1.2
 ~ Tidied up some of the authentication methods in the WebpanelController for better input-sanitisation
 ~ Renamed ListenerWrapper to ListenerProxy, to make its purpose clearer
