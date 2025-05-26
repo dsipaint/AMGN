@@ -1,5 +1,7 @@
 package com.github.dsipaint.AMGN.entities.listeners.managed.menu;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.function.Consumer;
 
 import com.github.dsipaint.AMGN.AMGN;
@@ -54,12 +56,18 @@ public class Button extends Listener
             }
             catch(Exception ex)
             {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+
                 AMGN.logger.error("Error encountered on menu button press\n"
+                    + "Plugin: " + plugin.getName() + " " + plugin.getVersion() + "\n"
                     + "Message: " + e.getMessageId() + " - " + e.getJumpUrl() + "\n"
                     + "Channel: " + e.getChannel() + "\n"
                     + "Guild: " + e.getGuild() + "\n"
                     + "User: " + e.getUser() + "\n"
-                    + "Emoji: " + e.getEmoji()
+                    + "Emoji: " + e.getEmoji() + "\n"
+                    + "Stacktrace: " + sw.toString()
                     + "\n");
             }
         }
@@ -80,12 +88,18 @@ public class Button extends Listener
             }
             catch(Exception ex)
             {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+
                 AMGN.logger.error("Error encountered on menu button unpress\n"
+                    + "Plugin: " + plugin.getName() + " " + plugin.getVersion() + "\n"
                     + "Message: " + e.getMessageId() + " - " + e.getJumpUrl() + "\n"
                     + "Channel: " + e.getChannel() + "\n"
                     + "Guild: " + e.getGuild() + "\n"
                     + "User: " + e.getUser() + "\n"
-                    + "Emoji: " + e.getEmoji()
+                    + "Emoji: " + e.getEmoji() + "\n"
+                    + "Stacktrace: " + sw.toString()
                     + "\n");
             }
         }

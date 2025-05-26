@@ -1,3 +1,6 @@
+# 1.2.2
+Added more verbosity to generated custom event logs i.e. menu button presses and listener events
+
 # 1.2.1
 Fixed annoying bug that caused menu-creation to randomly generate exceptions
 

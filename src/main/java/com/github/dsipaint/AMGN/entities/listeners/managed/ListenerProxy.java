@@ -48,19 +48,19 @@ public class ListenerProxy extends ListenerAdapter
                     listeners.forEach(listener ->
                     {
                         if(listener instanceof Listener)
-                            executeListener((Listener) listener, e);
+                            executeListener(plugin, (Listener) listener, e);
                     });
                 }
             });
         }
         else //if it's not a guild event, we can just pass the event straight on with no allow-listing
         {
-            AMGN.plugin_listeners.values().forEach(pluginlisteners ->
+            AMGN.plugin_listeners.forEach((plugin, listeners) ->
             {
-                pluginlisteners.forEach(pluginlistener ->
+                listeners.forEach(listener ->
                 {
-                    if(pluginlistener instanceof Listener)
-                        executeListener((Listener) pluginlistener, e);
+                    if(listener instanceof Listener)
+                        executeListener(plugin, (Listener) listener, e);
                 });
             });
         }   
@@ -124,6 +124,8 @@ public class ListenerProxy extends ListenerAdapter
                                 ex.printStackTrace(pw);
         
                                 AMGN.logger.error("Error occurred with user-run command\n"
+                                    + "Plugin: " + plugin.getName() + " " + plugin.getVersion() + "\n"
+                                    + "Class: " + listener.getClass().getName() + "\n"
                                     + "User: " + e.getAuthor() + "\n"
                                     + "Channel: " + e.getChannel() + "\n"
                                     + "Guild: " + e.getGuild() + "\n"
@@ -156,7 +158,7 @@ public class ListenerProxy extends ListenerAdapter
         return null;
     }
 
-    private final static void executeListener(Listener listener, GenericEvent event)
+    private final static void executeListener(Plugin plugin, Listener listener, GenericEvent event)
     {
         listener.onGenericEvent(event);
         if(event instanceof UpdateEvent)
@@ -179,7 +181,8 @@ public class ListenerProxy extends ListenerAdapter
                     e.printStackTrace(pw);
 
 
-                    AMGN.logger.error("Error occurred when calling " + method.getName() + " in class " + listener.getClass().getName() + "\n"
+                    AMGN.logger.error("Error occurred when calling " + method.getName() + " in class " + listener.getClass().getName()
+                        + ", from plugin " + plugin.getName() + " " + plugin.getVersion() + "\n"
                         + "Event: " + event.toString() + "\n"
                         + "Stacktrace: \n"
                         + sw.toString()
