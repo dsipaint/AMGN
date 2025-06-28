@@ -60,7 +60,7 @@ public abstract class Command extends Listener
 	{
 		for(String perm : this.getPerms())
 		{
-			if(Permissions.userHasPermission(m.getUser(), m.getGuild(), perm))
+			if(Permissions.hasPermission(m.getUser(), m.getGuild(), perm))
 				return true; 
 		}
 

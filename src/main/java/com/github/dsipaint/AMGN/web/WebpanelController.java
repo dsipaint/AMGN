@@ -663,7 +663,7 @@ public class WebpanelController
             AMGN.logger.info("Authenticated PUT request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
 
             //also need permission AMGN.commands.whitelist
-            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
             {
                 List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
                 if(!newlist.contains(Long.parseLong(guild)))
@@ -715,7 +715,7 @@ public class WebpanelController
         {
             AMGN.logger.info("Authenticated DELETE request made to /webpanel/api/whitelist from user " + AMGN.bot.getUserById(userid));
             //also need permission AMGN.commands.whitelist
-            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.whitelist"))
             {
                 List<Long> newlist = GuildNetwork.whitelist.getOrDefault(plugin, new ArrayList<Long>());
                 if(newlist.contains(Long.parseLong(guild)))
@@ -768,7 +768,7 @@ public class WebpanelController
             AMGN.logger.info("Authenticated PUT request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
 
             //also need permission AMGN.commands.blacklist
-            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
             {
                 List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
                 if(!newlist.contains(Long.parseLong(guild)))
@@ -822,7 +822,7 @@ public class WebpanelController
             AMGN.logger.info("Authenticated DELETE request made to /webpanel/api/blacklist from user " + AMGN.bot.getUserById(userid));
 
             //also need permission AMGN.commands.blacklist
-            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.blacklist"))
             {
                 List<Long> newlist = GuildNetwork.blacklist.getOrDefault(plugin, new ArrayList<Long>());
                 if(newlist.contains(Long.parseLong(guild)))
@@ -946,7 +946,7 @@ public class WebpanelController
             AMGN.logger.info("Authenticated GET request made to /webpanel/api/permissions from user " + AMGN.bot.getUserById(userid));
 
             //must also have AMGN.commands.listpermissions to get this info
-            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.listpermissions"))
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.listpermissions"))
             {
                 try
                 {
@@ -992,8 +992,8 @@ public class WebpanelController
         {
             AMGN.logger.info("Authenticated PUT request made to /webpanel/api/permissions from user " + AMGN.bot.getUserById(userid));
             //must also have AMGN.commands.groups and AMGN.commands.permission to do this
-            if(Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.groups")
-                && Permissions.userHasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.permission"))
+            if(Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.groups")
+                && Permissions.hasPermission(AMGN.bot.getUserById(resolveIdFromToken(getTokenFromRequest(request))), null, "AMGN.commands.permission"))
             {
                 HashMap<String, Object> parsed_json = new HashMap<String, Object>();
                 //parse the json and turn it into a hashmap
@@ -1194,7 +1194,7 @@ public class WebpanelController
 
 
 
-        if(Permissions.userHasPermission(AMGN.bot.getUserById(id), null, "AMGN.webpanel.access"))
+        if(Permissions.hasPermission(AMGN.bot.getUserById(id), null, "AMGN.webpanel.access"))
                 return true;
         return false;
     }

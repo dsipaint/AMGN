@@ -31,17 +31,25 @@ public class Permissions
 	 * if no guild is passed, then we will not check guilds
 	 */
     @SuppressWarnings("unchecked")
-	public static final boolean userHasPermission(User u, Guild context, String permission)
+	public static final boolean hasPermission(User u, Guild context, String permission)
 	{
-		//if we're not already checking operator permissions, check them now
-		//operator perms is an instant return-true
-		if(!permission.equalsIgnoreCase("AMGN.operator") && userHasPermission(u, context, "AMGN.operator"))
+		//operators always have permission
+		if(GuildNetwork.isOperator(u))
 			return true;
 
 		//read permissions.yml
-		Map<String, Object> perms = new HashMap<String, Object>();
+		Map<String, List<String>> perms = new HashMap<String, List<String>>();
 		try
 		{
+			//check all groups and see if a group has the permission
+			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
+			for(String groupname : groups.keySet())
+			{
+				if(isInGroup(u.getId(), groupname)
+					&& hasPermission(groupname, permission))
+					return true;
+			}
+
 			perms = new Yaml().load(
 				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
 		}
@@ -52,86 +60,19 @@ public class Permissions
 
 		//check to see if an id is either a member, or a role the member has (in this guild!!)
 		//if this ID has been given the specified permission, return true
-
 		for(String id : perms.keySet())
 		{
 			if(id.equalsIgnoreCase("groups"))
-			{
-				HashMap<String, List<String>> groups = (HashMap<String, List<String>>) perms.get(id);
-
-				for(String groupname : groups.keySet())
-				{
-					//if we're checking operator perms, context is never relevant.
-					if(isInGroup(u.getId(), permission.equalsIgnoreCase("AMGN.operator") ? null : context, groupname)
-						&& groupHasPermission(groupname, permission))
-							return true;
-				}
-
 				continue;
-			}
 
-			//if the ID we're checking is the user ID, and it has the perm
-			if(u.getId().equals(id))
+			if(u.getId().equals(id) ||
+				(context != null && context.getRoleById(id) != null && context.getMember(u) != null && context.getMember(u).getRoles().contains(context.getRoleById(id)))
+				|| (context != null && context.getId().equals(id)))
 			{
-				for(String checkperm : (List<String>) perms.get(id))
+				for(String commandperm : perms.get(id))
 				{
-					if(checkperm.equals(permission) || checkperm.equalsIgnoreCase("AMGN.operator"))
+					if(commandperm.equals(permission))
 						return true;
-				}
-			}
-
-			if(context != null)
-			{
-				if(
-					//if it's a role ID and the role is in the context
-					//and the user is in the context
-					//and the user has this role
-					(
-						context.getRoleById(id) != null
-							&& GuildNetwork.fetchMember(u, context) != null
-							&& GuildNetwork.fetchMember(u, context).getRoles().contains(context.getRoleById(id))
-					)
-					|| //OR
-					(
-						//if it's a guild ID and it's the context-guild
-						//and the user is in this guild
-						context.getId().equals(id)
-							&& GuildNetwork.fetchMember(u, context) != null
-					)
-				)
-				{
-					for(String checkperm : (List<String>) perms.get(id))
-					{
-						if(checkperm.equals(permission) || checkperm.equalsIgnoreCase("AMGN.operator"))
-							return true;
-					}
-				}
-			}
-			else
-			{
-				if(
-					//if it's a role ID
-					//and the user is in the role's guild
-					//and the user has this role, wherever it is
-					(
-						AMGN.bot.getRoleById(id) != null
-							&& GuildNetwork.fetchMember(u, AMGN.bot.getRoleById(id).getGuild()) != null
-							&& GuildNetwork.fetchMember(u, AMGN.bot.getRoleById(id).getGuild()).getRoles().contains(AMGN.bot.getRoleById(id))
-					)
-					|| //OR
-					//if it's a guild ID
-					//and the user is in this guild at all
-					(
-						AMGN.bot.getGuildById(id) != null
-							&& GuildNetwork.fetchMember(u, AMGN.bot.getGuildById(id)) != null
-					)
-				)
-				{
-					for(String checkperm : (List<String>) perms.get(id))
-					{
-						if(checkperm.equals(permission) || checkperm.equalsIgnoreCase("AMGN.operator"))
-							return true;
-					}
 				}
 			}
 		}
@@ -140,17 +81,25 @@ public class Permissions
 	}
 
     @SuppressWarnings("unchecked")
-	public static final boolean roleHasPermission(Role r, String permission)
+	public static final boolean hasPermission(Role r, String permission)
 	{
-		//if we're not already checking operator permissions, check them now
-		//operator perms is an instant return-true
-		if(!permission.equalsIgnoreCase("AMGN.operator") && roleHasPermission(r, permission))
+		//operators always have permission
+		if(GuildNetwork.isOperator(r))
 			return true;
 
 		//read permissions.yml
-		Map<String, Object> perms = new HashMap<String, Object>();
+		Map<String, List<String>> perms = new HashMap<String, List<String>>();
 		try
 		{
+			//check all groups and see if a group has the permission
+			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
+			for(String groupname : groups.keySet())
+			{
+				if(isInGroup(r.getId(), groupname)
+					&& hasPermission(groupname, permission))
+					return true;
+			}
+
 			perms = new Yaml().load(
 				new FileInputStream(GuildNetwork.PERMISSIONS_PATH));
 		}
@@ -161,29 +110,17 @@ public class Permissions
 
 		//check to see if an id is either a member, or a role the member has (in this guild!!)
 		//if this ID has been given the specified permission, return true
-
 		for(String id : perms.keySet())
 		{
 			if(id.equalsIgnoreCase("groups"))
-			{
-				HashMap<String, List<String>> groups = (HashMap<String, List<String>>) perms.get(id);
-
-				for(String groupname : groups.keySet())
-				{
-					if(isInGroup(r.getId(), null, groupname)
-						&& groupHasPermission(groupname, permission))
-							return true;
-				}
-
 				continue;
-			}
 
 			if(r.getId().equals(id)
 				|| r.getGuild().getId().equals(id))
 			{
-				for(String checkperm : (List<String>) perms.get(id))
+				for(String commandperm : perms.get(id))
 				{
-					if(checkperm.equals(permission) || checkperm.equalsIgnoreCase("AMGN.operator"))
+					if(commandperm.equals(permission))
 						return true;
 				}
 			}
@@ -195,7 +132,7 @@ public class Permissions
 	//check if a group has permission
 	//really this is only designed for internal use
     @SuppressWarnings("unchecked")
-	public static final boolean groupHasPermission(String group, String permission)
+	public static final boolean hasPermission(String group, String permission)
 	{
 		try
 		{
@@ -205,9 +142,9 @@ public class Permissions
 				if(group.equalsIgnoreCase(groupname))
 				{
 					HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
-					for(String checkperm : groupdata.get("permissions"))
+					for(String perm : groupdata.get("permissions"))
 					{
-						if(checkperm.equalsIgnoreCase(permission) || checkperm.equalsIgnoreCase("AMGN.operator"))
+						if(perm.equalsIgnoreCase(permission))
 							return true;
 					}
 
@@ -223,8 +160,9 @@ public class Permissions
 		return false;
 	}
 
+	//really this is only designed for internal use
     @SuppressWarnings("unchecked")
-	public static final boolean isInGroup(String id, Guild context, String group)
+	public static final boolean isInGroup(String id, String group)
 	{
 		//everyone is in the default group
 		if(group.equalsIgnoreCase("default"))
@@ -233,66 +171,31 @@ public class Permissions
 		try
 		{
 			HashMap<String, Object> groups = (HashMap<String, Object>) IOHandler.readYamlData(GuildNetwork.PERMISSIONS_PATH, "groups");
-			HashMap<String, List<String>> checkgroup = (HashMap<String, List<String>>) groups.get(group);
-			
-			for(String groupmember : checkgroup.get("members"))
+			for(String groupname : groups.keySet())
 			{
-				//check if the id directly is a member of the group
-				if(groupmember.equalsIgnoreCase(id))
-					return true;
-
-				//check if this group member a role ID, and if the id is a member of this role
-
-
-				if(context != null)
+				if(group.equalsIgnoreCase(groupname))
 				{
-					if(
-						(
-							//if the group member is a role in the context
-							//and the id is a member in the context
-							//and the member has the role
-							context.getRoleById(groupmember) != null
-								&& GuildNetwork.fetchMember(id, context) != null
-								&&  GuildNetwork.fetchMember(id, context).getRoles().contains(context.getRoleById(groupmember))
-						)
-						|| //OR
-						(
-							//if the group member is the context
-							//and the id is a member of the context guild
-							//or the id is a role of this context guild
-							context.getId().equals(groupmember)
-								&& (
-									GuildNetwork.fetchMember(id, context) != null
-									|| context.getRoleById(id) != null
-								)
-						)
-					)
-					return true;
-				}
-				else
-				{
-					if(
-						(
-							//if the group member is a role id
-							//and the id is a member in the role's guild
-							//and the member has the role
-							AMGN.bot.getRoleById(groupmember) != null
-								&& GuildNetwork.fetchMember(id, AMGN.bot.getRoleById(groupmember).getGuild()) != null
-								&& GuildNetwork.fetchMember(id, AMGN.bot.getRoleById(groupmember).getGuild()).getRoles().contains(AMGN.bot.getRoleById(groupmember))
-						)
-						|| //OR
-						(
-							//if the group member is a guild id
-							//and the id is a member of this guild
-							//or the id is a role of this guild
-							AMGN.bot.getGuildById(groupmember) != null
-								&& (
-									GuildNetwork.fetchMember(id, AMGN.bot.getGuildById(groupmember)) != null
-									|| AMGN.bot.getGuildById(groupmember).getRoleById(id) != null
-								)
-						)
-					)
-					return true;
+					HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
+					for(String groupmember : groupdata.get("members"))
+					{
+						//check if it directly is a member
+						if(groupmember.equalsIgnoreCase(id))
+							return true;
+
+						//check if this is a role ID, and if the id is a member of this role
+						if(AMGN.bot.getRoleById(groupmember) != null
+							&& AMGN.bot.getRoleById(groupmember).getGuild().getMembersWithRoles(AMGN.bot.getRoleById(groupmember))
+								.contains(AMGN.bot.getRoleById(groupmember).getGuild().getMemberById(id)))
+								return true;
+
+						//check if this is a guild ID, and if the id is a role or a member of this guild
+						if(AMGN.bot.getGuildById(groupmember) != null
+							&& (AMGN.bot.getGuildById(groupmember).getRoleById(id) != null
+								|| AMGN.bot.getGuildById(groupmember).getMemberById(id) != null))
+							return true;
+					}
+
+					return false;
 				}
 			}
 		}

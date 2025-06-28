@@ -44,7 +44,7 @@ public class Button extends Listener
 
     public void onMessageReactionAdd(MessageReactionAddEvent e)
     {
-        if(e.retrieveUser().complete().equals(e.getJDA().getSelfUser()))
+        if(e.getJDA().getSelfUser().equals(e.getUser()))
             return;
         
         if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())
@@ -76,7 +76,7 @@ public class Button extends Listener
     @Override
     public void onMessageReactionRemove(MessageReactionRemoveEvent e)
     {
-        if(e.retrieveUser().complete().equals(e.getJDA().getSelfUser()))
+        if(e.getJDA().getSelfUser().equals(e.getUser()))
             return;
         
         if(e.getReaction().getEmoji().getName().equals(this.emoji.getName())

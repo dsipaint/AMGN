@@ -104,7 +104,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                 {
                     HashMap<String, List<String>> parsed_group = (HashMap<String, List<String>>) group;
                     //check if parsed group contains an id associated to our id
-                    if(Permissions.isInGroup(e.getArgs()[1], e.getGuild(), groupname))
+                    if(Permissions.isInGroup(e.getArgs()[1], groupname))
                     {
                         parsed_group.get("permissions").forEach(perm ->
                         {

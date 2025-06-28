@@ -1,3 +1,7 @@
+# 1.2.3
+Fixed performance issue that caused menu button presses/unpresses to be horribly slow and unresponsive
+Reverted Permissions methods to their old style, due to overengineering, which also caused performance issues.
+
 # 1.2.2
 Added more verbosity to generated custom event logs i.e. menu button presses and listener events
 

@@ -93,7 +93,7 @@ public enum DefaultCommand
 	{
 		for(String perm : this.getPermissions())
 		{
-			if(Permissions.userHasPermission(m.getUser(), m.getGuild(), perm))
+			if(Permissions.hasPermission(m.getUser(), m.getGuild(), perm))
 				return true;
 		}
 
