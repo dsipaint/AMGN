@@ -15,15 +15,14 @@ import org.yaml.snakeyaml.Yaml;
 import com.github.dsipaint.AMGN.AMGN;
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
-import com.github.dsipaint.AMGN.entities.listeners.managed.menu.ScrollMenuBuilder;
 import com.github.dsipaint.AMGN.entities.listeners.managed.menu.MenuBuilder.InvalidMenuException;
+import com.github.dsipaint.AMGN.entities.listeners.managed.menu.ScrollMenuBuilder;
 import com.github.dsipaint.AMGN.entities.plugins.Plugin;
 import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.io.Permissions;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.UserSnowflake;
 
 public class ListPermissionsCommand implements Consumer<CommandEvent>
 {
@@ -62,7 +61,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
         //^listpermissions {id} (show all permissions for a role or user)
         if(e.getArgs()[1].matches("\\d{17,19}"))
         {
-            boolean isUserId = GuildNetwork.resolveEntity(e.getArgs()[1]) instanceof UserSnowflake;
+            boolean isUserId = AMGN.bot.retrieveUserById(e.getArgs()[1]).complete() != null;
             
             HashMap<String, List<String>> perms;
             try
@@ -73,7 +72,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
 
                 //first display perms specifically assigned to this ID
                 for(String perm : perms.getOrDefault(e.getArgs()[1], new ArrayList<String>()))
-                    listperms.append(perm + "\n");
+                    listperms.append("`" + perm + "`\n");
 
                 //then if this is a user ID, find perms inherited by having a role with the perms
                 if(isUserId)
@@ -92,7 +91,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                             //append these permissions
                             ((List<String>) perms.get(id)).forEach(perm ->
                             {
-                                listperms.append(perm + " *(inherited from role: \"" + r.getName() + "\" in guild: \"" + r.getGuild().getName() + "\")*\n");
+                                listperms.append("`" + perm + "` *(inherited from role: \"" + r.getName() + "\" in guild: \"" + r.getGuild().getName() + "\")*\n");
                             });
                         }
                     });
@@ -108,7 +107,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                     {
                         parsed_group.get("permissions").forEach(perm ->
                         {
-                            listperms.append(perm + " *(inherited from group " + groupname + ")*");
+                            listperms.append("`" + perm + "` *(inherited from group " + groupname + ")*\n");
                         });
                     }
                     for(String member : parsed_group.get("members"))
@@ -119,7 +118,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                         {
                             parsed_group.get("permissions").forEach(perm ->
                             {
-                                listperms.append(perm + " *(inherited from group " + groupname + ")*");
+                                listperms.append(perm + " *(inherited from group " + groupname + ")*\n");
                             });
                             break; //break because we only need to record perms once per group
                         }
@@ -197,7 +196,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
                 {
                     HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(name);
                     for(String perm : groupdata.get("permissions"))
-                        listperms.append(perm + "\n");
+                        listperms.append("`" + perm + "`\n");
 
                     //build out the menu of results
                     EmbedBuilder template = returnPartiallyFormattedEmbedList(name, e.getGuild().getIdLong());

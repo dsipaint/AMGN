@@ -17,7 +17,8 @@ public class ShowAllPluginsCommand implements Consumer<CommandEvent>
 	{
 		EmbedBuilder eb = new EmbedBuilder()
 				.setTitle("Active plugins in network: ")
-				.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col());
+				.setColor(GuildNetwork.guild_data.get(e.getGuild().getIdLong()).getAccept_col())
+				.setAuthor("AMGN " + ShowPluginsCommand.getAMGNVersion());
 		
 		StringBuilder descriptionsb = new StringBuilder();
 		AMGN.plugin_listeners.forEach((plugin, listeners) ->

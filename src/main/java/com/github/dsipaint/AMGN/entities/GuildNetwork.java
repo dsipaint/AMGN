@@ -19,7 +19,6 @@ import com.github.dsipaint.AMGN.io.IOHandler;
 import com.github.dsipaint.AMGN.io.Permissions;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -380,44 +379,5 @@ public class GuildNetwork
 				.setDescription(msg)
 				.setTimestamp(Instant.now())
 				.build()).queue();
-	}
-
-	public static final ISnowflake resolveEntity(String id)
-	{
-		ISnowflake entity;
-
-		//I've tried to put these in an order of most likely to be used to
-		//least likely to be used, to improve performance a tad
-		if((entity = AMGN.bot.getUserById(id)) != null) //TODO update to a retrieve?
-			return entity;
-		if((entity = AMGN.bot.getGuildChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getRoleById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getTextChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getVoiceChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getEmojiById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getCategoryById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getGuildById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getForumChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getStageChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getNewsChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getThreadChannelById(id)) != null)
-			return entity;
-		if((entity = AMGN.bot.getPrivateChannelById(id)) != null)
-			return entity;
-
-		//after trying everything else, cast to scheduledevent (could also be null if nothing found)
-		//and return result.
-		entity = AMGN.bot.getScheduledEventById(id);
-		return entity;
 	}
 }

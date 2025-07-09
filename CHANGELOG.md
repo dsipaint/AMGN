@@ -1,3 +1,9 @@
+# 1.2.4
+Removed ResolveEntity method as it is slow, unreliable, and not actually that useful
+Made permission methods immune to caching issues
+Fixed message-formatting in the listpermissions command
+Showplugins command output now includes the AMGN version
+
 # 1.2.3
 Fixed performance issue that caused menu button presses/unpresses to be horribly slow and unresponsive
 Reverted Permissions methods to their old style, due to overengineering, which also caused performance issues.

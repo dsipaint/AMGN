@@ -66,7 +66,7 @@ public class Permissions
 				continue;
 
 			if(u.getId().equals(id) ||
-				(context != null && context.getRoleById(id) != null && context.getMember(u) != null && context.getMember(u).getRoles().contains(context.getRoleById(id)))
+				(context != null && context.getRoleById(id) != null && context.retrieveMember(u).complete() != null && context.retrieveMember(u).complete().getRoles().contains(context.getRoleById(id)))
 				|| (context != null && context.getId().equals(id)))
 			{
 				for(String commandperm : perms.get(id))
@@ -184,14 +184,14 @@ public class Permissions
 
 						//check if this is a role ID, and if the id is a member of this role
 						if(AMGN.bot.getRoleById(groupmember) != null
-							&& AMGN.bot.getRoleById(groupmember).getGuild().getMembersWithRoles(AMGN.bot.getRoleById(groupmember))
-								.contains(AMGN.bot.getRoleById(groupmember).getGuild().getMemberById(id)))
+							&& AMGN.bot.getRoleById(groupmember).getGuild().retrieveMemberById(id).complete()
+								.getRoles().contains(AMGN.bot.getRoleById(groupmember)))
 								return true;
 
 						//check if this is a guild ID, and if the id is a role or a member of this guild
 						if(AMGN.bot.getGuildById(groupmember) != null
 							&& (AMGN.bot.getGuildById(groupmember).getRoleById(id) != null
-								|| AMGN.bot.getGuildById(groupmember).getMemberById(id) != null))
+								|| AMGN.bot.getGuildById(groupmember).retrieveMemberById(id).complete() != null))
 							return true;
 					}
 
