@@ -448,7 +448,7 @@ public class AMGN
 
 	public static final MemberCachePolicy getMemberCachePolicy(String policy)
 	{
-		switch(policy)
+		switch(policy.toLowerCase())
 		{
 			case "all":
 				return MemberCachePolicy.ALL;

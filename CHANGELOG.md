@@ -1,3 +1,6 @@
+# 1.2.5
+Made membercachepolicy case-insensitive in the network.yml
+
 # 1.2.4
 Removed ResolveEntity method as it is slow, unreliable, and not actually that useful
 Made permission methods immune to caching issues
