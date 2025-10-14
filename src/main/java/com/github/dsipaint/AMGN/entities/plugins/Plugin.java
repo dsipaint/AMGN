@@ -10,6 +10,7 @@ import com.github.dsipaint.AMGN.entities.Guild;
 import com.github.dsipaint.AMGN.io.Config;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public abstract class Plugin
@@ -30,6 +31,8 @@ public abstract class Plugin
 	public abstract void onEnable();
 	
 	public abstract void onDisable();
+
+	public void modifyJDA(JDABuilder jdabuilder, String token) {};
 	
 	@SuppressWarnings("unchecked")
 	public Plugin()

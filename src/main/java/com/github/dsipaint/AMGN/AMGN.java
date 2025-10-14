@@ -127,14 +127,31 @@ public class AMGN
 			System.exit(1); //exit if not able to read network settings
 		}
 		
+		logger.info("Finding plugins...");
+		LinkedList<Plugin> pluginloadorder = new LinkedList<Plugin>();
+		try
+		{
+			pluginloadorder = parsePluginLoadOrder();	
+		}
+		catch(IOException e1)
+		{
+			logger.error("Error handling plugin files on bot startup");
+			e1.printStackTrace();
+		}
+
 		logger.info("Initialising bot account...");
 		try
 		{
-			bot = JDABuilder.createDefault(token)
+			JDABuilder builder = JDABuilder.createDefault(token)
 					.enableIntents(EnumSet.allOf(GatewayIntent.class)) //for now we just ask for all gateway intents- this could be a bad idea?
 					.setMemberCachePolicy(parsecachepolicy) //parse in the membercachepolicy from network.yml
-					.enableCache(parsecacheflags) //parse in the cacheflags
-					.build();
+					.enableCache(parsecacheflags); //parse in the cacheflags
+
+			logger.info("Applying plugin JDA client modifications...");
+			for(Plugin plugin : pluginloadorder)
+				plugin.modifyJDA(builder, token);
+
+			bot = builder.build();
 		}
 		catch(InvalidTokenException | IllegalArgumentException e1)
 		{
@@ -233,108 +250,26 @@ public class AMGN
 			e.printStackTrace();
 		}
 		
-		try
+		//enable all plugins
+		logger.info("Enabling plugins...");
+		for(Plugin p : pluginloadorder)
 		{
-			logger.info("Finding plugins...");
-		
-			File plugins = new File(GuildNetwork.PLUGIN_PATH);
-			plugins.mkdir(); //folder for plugins
-			
-			LinkedList<Plugin> loadorder = new LinkedList<Plugin>();
-			ArrayList<Plugin> foundplugins = new ArrayList<Plugin>();
-			if(!plugins.createNewFile()) //create the folder if one doesn't exist- if it did, do this:
+			logger.info("Enabling " + p.getName() + " " + p.getVersion());
+			//enable these classes/plugins with GuildNetwork.enablePlugin
+			try
 			{
-				//a list of only the jars found directly in the plugins directory
-				File[] plugins_directory = plugins.listFiles(path -> {return path.getName().endsWith(".jar");});
-				
-				//loop through these jars
-				for(File file : plugins_directory)
-				{
-					try
-					{
-						//look for the actual plugin class here (if it exists)
-						Plugin p = IOHandler.getPluginObjectFromJar(file);
-						
-						//plugins must have a name and name must have no whitespace
-						if(p.getName() == null || p.getName().matches(".*\\s.*"))
-						{
-							logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
-							continue;
-						}
-
-						foundplugins.add(p);
-					}
-					catch(Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
+				GuildNetwork.enablePlugin(p);
 			}
-			else
-				logger.info("No plugins folder found. Created a plugins folder.");
-
-			if(foundplugins.isEmpty())
-				logger.info("AMGN has been started with no plugins.");
-			else
+			catch(Exception e)
 			{
-				logger.info("Applying plugin load order...");
-				//check network.yml for a load order
-				//this should be a list of strings in the order we want to load
-				ArrayList<String> parseloadorder = (ArrayList<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "load_order");
-				LinkedList<String> userloadorder;
-				if(parseloadorder != null)
-					userloadorder = new LinkedList<String>(parseloadorder);
-				else
-					userloadorder = new LinkedList<String>();
-				
-				// if(userloadorder == null)
-				// 	userloadorder = new LinkedList<String>(); //default to no order if value is missing
-				
-				//iterate through user's requested loading order
-				for(String pluginname : userloadorder)
-				{
-					//if we have a plugin from the order that we found,
-					for(int i = 0; i < foundplugins.size(); i++)
-					{
-						if(foundplugins.get(i).getName().equalsIgnoreCase(pluginname))
-						{
-							//remove that plugin from our list of plugins
-							//and add that plugin to the load order
-							loadorder.add(foundplugins.remove(i));
-							break;
-						}
-					}
-				}
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				e.printStackTrace(pw);
 
-				//then just add whatever is left, onto the load order, we don't care what order that bit is in
-				loadorder.addAll(foundplugins);
-
-				//finally, enable all those plugins
-				logger.info("Enabling plugins...");
-				for(Plugin p : loadorder)
-				{
-					logger.info("Enabling " + p.getName() + " " + p.getVersion());
-					//enable these classes/plugins with GuildNetwork.enablePlugin
-					try
-					{
-						GuildNetwork.enablePlugin(p);
-					}
-					catch(Exception e)
-					{
-						StringWriter sw = new StringWriter();
-						PrintWriter pw = new PrintWriter(sw);
-						e.printStackTrace(pw);
-
-						logger.error("Error occurred enabling plugin " + p.getName() + " " + p.getVersion() + ":\n"
-							+ sw.toString());
-						continue;
-					}
-				}
+				logger.error("Error occurred enabling plugin " + p.getName() + " " + p.getVersion() + ":\n"
+					+ sw.toString());
+				continue;
 			}
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
 		}
 
 		logger.info("Setting up webpanel...");
@@ -389,6 +324,86 @@ public class AMGN
 
 		logger.info("Finished setup.");
 		//END SETUP
+	}
+
+	//determine the full (ordered) list of AMGN plugins to enable
+	private static final LinkedList<Plugin> parsePluginLoadOrder() throws IOException
+	{
+		LinkedList<Plugin> pluginloadorder = new LinkedList<Plugin>();
+		
+		File plugins = new File(GuildNetwork.PLUGIN_PATH);
+		plugins.mkdir(); //folder for plugins
+		
+		ArrayList<Plugin> foundplugins = new ArrayList<Plugin>();
+		if(!plugins.createNewFile()) //create the folder if one doesn't exist- if it did, do this:
+		{
+			//a list of only the jars found directly in the plugins directory
+			File[] plugins_directory = plugins.listFiles(path -> {return path.getName().endsWith(".jar");});
+			
+			//loop through these jars
+			for(File file : plugins_directory)
+			{
+				try
+				{
+					//look for the actual plugin class here (if it exists)
+					Plugin p = IOHandler.getPluginObjectFromJar(file);
+					
+					//plugins must have a name and name must have no whitespace
+					if(p.getName() == null || p.getName().matches(".*\\s.*"))
+					{
+						logger.info("Plugin " + file.getPath() + " has invalid name, skipping...");
+						continue;
+					}
+
+					foundplugins.add(p);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		else
+			logger.info("No plugins folder found. Created a plugins folder.");
+
+		if(foundplugins.isEmpty())
+			logger.info("AMGN has been started with no plugins.");
+		else
+		{
+			logger.info("Applying plugin load order...");
+			//check network.yml for a load order
+			//this should be a list of strings in the order we want to load
+			ArrayList<String> parseloadorder = (ArrayList<String>) IOHandler.readYamlData(GuildNetwork.NETWORKINFO_PATH, "load_order");
+			LinkedList<String> userloadorder;
+			if(parseloadorder != null)
+				userloadorder = new LinkedList<String>(parseloadorder);
+			else
+				userloadorder = new LinkedList<String>();
+			
+			// if(userloadorder == null)
+			// 	userloadorder = new LinkedList<String>(); //default to no order if value is missing
+			
+			//iterate through user's requested loading order
+			for(String pluginname : userloadorder)
+			{
+				//if we have a plugin from the order that we found,
+				for(int i = 0; i < foundplugins.size(); i++)
+				{
+					if(foundplugins.get(i).getName().equalsIgnoreCase(pluginname))
+					{
+						//remove that plugin from our list of plugins
+						//and add that plugin to the load order
+						pluginloadorder.add(foundplugins.remove(i));
+						break;
+					}
+				}
+			}
+
+			//then just add whatever is left, onto the load order, we don't care what order that bit is in
+			pluginloadorder.addAll(foundplugins);
+		}
+
+		return pluginloadorder;
 	}
 
 	public static final void runCommand(String cmdtxt, Member member, TextChannel tc)

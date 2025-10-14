@@ -33,12 +33,13 @@ public class ScrollMenuBuilder
         //generate the list of pages to be used in the desc.
         generatePages();
 
+        //construct Menu
+        // (we use an empty template embed for the constructor, and then in setCurrentPage the actual first page is set in the menu builder)
+        this.builder = new MenuBuilder(plugin, textchannel, template.build());
+
         //set up menu to be at page 1 (need to set this.currentpage to a different number to  use the method)
         this.currentpage = -1;
         setCurrentPage(0);
-
-        //construct Menu
-        this.builder = new MenuBuilder(plugin, textchannel, this.template.build());
 
         //add scroll buttons to menu
         //left arrow
@@ -123,15 +124,16 @@ public class ScrollMenuBuilder
         else if(this.currentpage >= pages.size())
             currentpage = pages.size() - 1;
 
-        template.setDescription(pages.get(currentpage))
+        EmbedBuilder newpage = new EmbedBuilder(template);
+        newpage.appendDescription(pages.get(currentpage))
             .setFooter("Page " + (currentpage + 1) + " of " + pages.size());
 
         //send the latest page
         //set it on the menu if the menu's already built
         if(menu != null)
-            menu.getMessage().editMessageEmbeds(template.build()).queue();
+            menu.getMessage().editMessageEmbeds(newpage.build()).queue();
         else if(builder != null)
-            builder.setMessage(template.build());
+            builder.setMessage(newpage.build());
     }
 
     public ScrollMenuBuilder alphabetiseDescription()
@@ -198,7 +200,7 @@ public class ScrollMenuBuilder
 
         for(String section : delimitedbody)
         {
-            if(page.length() + section.length() + delimiter.length() < MessageEmbed.DESCRIPTION_MAX_LENGTH)
+            if(template.getDescriptionBuilder().length() + page.length() + section.length() + delimiter.length() < MessageEmbed.DESCRIPTION_MAX_LENGTH)
                 page.append(section + delimiter);
             else
             {
