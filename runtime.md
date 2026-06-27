@@ -23,6 +23,7 @@ crucial information for your bot, and is written in YAML. This file will be auto
 | clientsecret | yes if use_webpanel=true | `string` | | The client secret for your application if you wish to use the webpanel |
 | redirecturi | yes if use_webpanel=true | `string` | | The redirect URI for your application if you wish to use the webpanel |
 | port | no | `int` | `8080` | The desired port to host your webpanel on |
+| database_address | no | `string` | localhost | Address for the inbuilt MongoDB client for plugins to share |
 | load_order | no | list of strings | empty list (no order) | A list of plugin names in the order you need them to be loaded in |
 | cacheflags | no | list of strings | GuildNetwork.DEFAULT_CACHEFLAGS `["online_status", "activity"]` | Which elements of users will be cached when users are cached (this can conflict with gateway intents) |
 | membercachepolicy | no | `string` | GuildNetwork.DEFAULT_MEMBERCACHEPOLICY "default" | The policy the bot will use to cache users |

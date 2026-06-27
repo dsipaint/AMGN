@@ -132,6 +132,11 @@ public class MyPlugin extends Plugin
 
 You can register as many or as few listeners to your plugin as you want, and each listener can inherit as many or as few methods as you want. More often than not, you will want your plugin to include a listener, however.
 
+## MongoDB
+Plugins can make use of the shared MongoDB connector to easily use and reuse the same database connection. You can set the database address using the `database_address` variable in `network.yml` to determine where AMGN will try to connect to for database queries, but also leaving it blank defaults to `localhost`.
+
+The MongoDB client can simply be used by calling `MongoConnector.client()`, and from there, a MongoClient object from the MongoDB java library is returned. See the Mongo docs for information on how to use that. This session is used across all plugins for efficiency.
+
 ## Commands
 **Programming commands is NOT done using listeners in AMGN. Although you can use listeners to program commands, your command will not be properly integrated with AMGN if you do this**. For example, your command will not be available on the help command and will have reduced permissions support. You have to program your own checks for these, and check manually for the guild's specific command prefix. It is highly recommended to use the below technique for programming commands into your plugin to save you time and effort.
 

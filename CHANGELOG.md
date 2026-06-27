@@ -1,3 +1,6 @@
+# 1.4
+Added a MongoConnector for all plugins to easily share the same database client
+
 # 1.3
 Gave plugins the option to modify the JDA instance itself, by overriding `modifyJDA` in their Plugin class.
 Scrollmenu templates now factor in a default starting description that appears on every page
