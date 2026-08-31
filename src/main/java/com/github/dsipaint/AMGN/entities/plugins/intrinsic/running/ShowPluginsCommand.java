@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.github.dsipaint.AMGN.entities.GuildNetwork;
 import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
@@ -50,7 +51,7 @@ public final class ShowPluginsCommand implements Consumer<CommandEvent>
 		InputStream inputstream = cl.getResourceAsStream("META-INF/MANIFEST.MF");
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
-		for(String line : reader.lines().toList())
+		for(String line : reader.lines().collect(Collectors.toList()))
 		{
 			if(line.startsWith("version: "))
 				return line.split(": ")[1];

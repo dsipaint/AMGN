@@ -61,7 +61,7 @@ public class ListPermissionsCommand implements Consumer<CommandEvent>
         //^listpermissions {id} (show all permissions for a role or user)
         if(e.getArgs()[1].matches("\\d{17,19}"))
         {
-            boolean isUserId = AMGN.bot.retrieveUserById(e.getArgs()[1]).complete() != null;
+            boolean isUserId = GuildNetwork.fetchUser(e.getArgs()[1]) != null;
             
             HashMap<String, List<String>> perms;
             try

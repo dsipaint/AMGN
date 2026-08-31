@@ -28,21 +28,21 @@ public enum DefaultCommand
 {
 	//originally from the intrinsic plugins, now are just hard-coded commands, this is where their metadata is stored
 	
-	HELP("help", "${PREFIX}help, or ${PREFIX}help {command/plugin}", "Returns information on one or all commands of the network", new String[]{"AMGN.commands.*", "AMGN.commands.help"}, new HelpCommand()),
-	METAUPDATE("updatemetainfo", "${PREFIX}updatemetainfo {prefix/modlogs/acceptcol/declinecol/uniquecol} {new value}", "Update the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.*", "AMGN.commands.updatemetainfo"}, new UpdateMetaInfoCommand()),
-	METAVIEW("viewmetainfo", "${PREFIX}viewmetainfo {prefix/modlogs/modrole}", "View the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.*", "AMGN.commands.viewmetainfo"}, new ViewMetaInfoCommand()),
-	RUNNING("showplugins", "${PREFIX}showplugins", "Displays all active plugins in this guild (only shows plugins that can act in this guild according to the whitelist/blacklist)", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.showplugins"}, new ShowPluginsCommand()),
-	ENABLE("enable", "${PREFIX}enable {plugin name}", "Enable plugins from your discord client!", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.enable"}, new EnableCommand()),
-	DISABLE("disable", "${PREFIX}disable {plugin name}", "Disable plugins from your discord client!", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.disable"}, new DisableCommand()),
-	RELOAD("reload", "${PREFIX}reload {plugin name}", "Reload plugins from your discord client!", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.reload"}, new ReloadCommand()),
-	RELOADALL("reloadall", "${PREFIX}reloadall", "Reload all plugins from your discord client!", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.reloadall"}, new ReloadAllCommand()),
-	CLOSE("closenetwork", "${PREFIX}closenetwork", "disables every plugin and shuts down the program", new String[]{"AMGN.commands.*", "AMGN.commands.closenetwork"}, new CloseCommand()),
-	WHITELIST("whitelist", "${PREFIX}whitelist {add/remove} {plugin name} in the guild you want to change the whitelist for", "Add or remove a guild to the whitelist for a given plugin", new String[]{"AMGN.commands.*", "AMGN.commands.whitelist"}, new WhitelistCommand()),
-	BLACKLIST("blacklist", "${PREFIX}blacklist {add/remove} {plugin name} in the guild you want to change the blacklist for", "Add or remove a guild to the blacklist for a given plugin", new String[]{"AMGN.commands.*", "AMGN.commands.blacklist"}, new BlacklistCommand()),
-	RUNNINGALL("showallplugins", "${PREFIX}showallplugins", "displays all plugins that are active on the network somewhere, regardless of the whitelist/blacklist settings", new String[]{"AMGN.commands.*", "AMGN.commands.controlplugins.*", "AMGN.commands.showallplugins"}, new ShowAllPluginsCommand()),
-	PERMS("permission", "${PREFIX}permission {add/remove} {user/role id} {permission}", "allows you to update the permissions of a user or a role", new String[] {"AMGN.commands.*", "AMGN.commands.permission"}, new PermissionCommand()),
-	LISTPERMS("listpermissions", "${PREFIX}listpermissions {user id/role id/plugin (optional)}", "show what permissions a user, role, or plugin has- leave blank to see inbuilt permissions", new String[]{"AMGN.commands.*", "AMGN.commands.listpermissions"}, new ListPermissionsCommand()),
-	GROUPS("groups", "${PREFIX}groups {create/destroy/add/remove/addperm/removeperm/list}", "Manage permission groups", new String[]{"AMGN.commands.*", "AMGN.commands.groups"}, new GroupsCommand());
+	HELP("help", "${PREFIX}help, or ${PREFIX}help {command/plugin}", "Returns information on one or all commands of the network", new String[]{"AMGN.commands.help"}, new HelpCommand()),
+	METAUPDATE("updatemetainfo", "${PREFIX}updatemetainfo {prefix/modlogs/acceptcol/declinecol/uniquecol} {new value}", "Update the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.updatemetainfo"}, new UpdateMetaInfoCommand()),
+	METAVIEW("viewmetainfo", "${PREFIX}viewmetainfo {prefix/modlogs/modrole}", "View the metainfo of the network, for example a guild's prefix", new String[]{"AMGN.commands.viewmetainfo"}, new ViewMetaInfoCommand()),
+	RUNNING("showplugins", "${PREFIX}showplugins", "Displays all active plugins in this guild (only shows plugins that can act in this guild according to the whitelist/blacklist)", new String[]{"AMGN.controlplugins", "AMGN.commands.showplugins"}, new ShowPluginsCommand()),
+	ENABLE("enable", "${PREFIX}enable {plugin name}", "Enable plugins from your discord client!", new String[]{"AMGN.controlplugins", "AMGN.commands.enable"}, new EnableCommand()),
+	DISABLE("disable", "${PREFIX}disable {plugin name}", "Disable plugins from your discord client!", new String[]{"AMGN.controlplugins", "AMGN.commands.disable"}, new DisableCommand()),
+	RELOAD("reload", "${PREFIX}reload {plugin name}", "Reload plugins from your discord client!", new String[]{"AMGN.controlplugins", "AMGN.commands.reload"}, new ReloadCommand()),
+	RELOADALL("reloadall", "${PREFIX}reloadall", "Reload all plugins from your discord client!", new String[]{"AMGN.controlplugins", "AMGN.commands.reloadall"}, new ReloadAllCommand()),
+	CLOSE("closenetwork", "${PREFIX}closenetwork", "disables every plugin and shuts down the program", new String[]{"AMGN.commands.closenetwork"}, new CloseCommand()),
+	WHITELIST("whitelist", "${PREFIX}whitelist {add/remove} {plugin name} in the guild you want to change the whitelist for", "Add or remove a guild to the whitelist for a given plugin", new String[]{"AMGN.commands.whitelist"}, new WhitelistCommand()),
+	BLACKLIST("blacklist", "${PREFIX}blacklist {add/remove} {plugin name} in the guild you want to change the blacklist for", "Add or remove a guild to the blacklist for a given plugin", new String[]{"AMGN.commands.blacklist"}, new BlacklistCommand()),
+	RUNNINGALL("showallplugins", "${PREFIX}showallplugins", "displays all plugins that are active on the network somewhere, regardless of the whitelist/blacklist settings", new String[]{"AMGN.controlplugins", "AMGN.commands.showallplugins"}, new ShowAllPluginsCommand()),
+	PERMS("permission", "${PREFIX}permission {add/remove} {user/role id} {permission}", "allows you to update the permissions of a user or a role", new String[] {"AMGN.commands.permission"}, new PermissionCommand()),
+	LISTPERMS("listpermissions", "${PREFIX}listpermissions {user id/role id/plugin (optional)}", "show what permissions a user, role, or plugin has- leave blank to see inbuilt permissions", new String[]{"AMGN.commands.listpermissions"}, new ListPermissionsCommand()),
+	GROUPS("groups", "${PREFIX}groups {create/destroy/add/remove/addperm/removeperm/list}", "Manage permission groups", new String[]{"AMGN.commands.groups"}, new GroupsCommand());
 
 	//TODO: new intrinsic feature to change bot status
 	private String label, usage, desc;

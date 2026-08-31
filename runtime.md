@@ -157,7 +157,7 @@ Permissions are essentially pieces of text that AMGN knows to associate with cer
 | ---------- | ----------- |
 | AMGN.operator | all permissions allowed everywhere |
 | AMGN.commands.* | access to all AMGN default commands |
-| AMGN.commands.controlplugins.* | access to the showplugins, showallplugins, enable, disable, reload and reloadall commands |
+| AMGN.controlplugins | access to the showplugins, showallplugins, enable, disable, reload and reloadall commands |
 | AMGN.commands.help | access to the help command |
 | AMGN.commands.updatemetainfo | access to the updatemetainfo command |
 | AMGN.commands.viewmetainfo | access to the viewmetainfo command |

@@ -1,3 +1,9 @@
+# 1.5
+Add formal support for wildcard entries to permissions
+Permissions are now case-insensitive
+Fix bug causing listpermissions command crashing for anything that wasn't a valid user id
+Change permission grouping in default commands from AMGN.commands.controlplugins.* -> AMGN.controlplugins
+
 # 1.4
 Added a MongoConnector for all plugins to easily share the same database client
 

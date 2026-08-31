@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -69,9 +70,9 @@ public class Permissions
 				(context != null && context.getRoleById(id) != null && context.retrieveMember(u).complete() != null && context.retrieveMember(u).complete().getRoles().contains(context.getRoleById(id)))
 				|| (context != null && context.getId().equals(id)))
 			{
-				for(String commandperm : perms.get(id))
+				for(String userperm : perms.get(id))
 				{
-					if(commandperm.equals(permission))
+					if(wildcardPermissionRegex(userperm).matcher(permission).matches())
 						return true;
 				}
 			}
@@ -118,9 +119,9 @@ public class Permissions
 			if(r.getId().equals(id)
 				|| r.getGuild().getId().equals(id))
 			{
-				for(String commandperm : perms.get(id))
+				for(String roleperm : perms.get(id))
 				{
-					if(commandperm.equals(permission))
+					if(wildcardPermissionRegex(roleperm).matcher(permission).matches())
 						return true;
 				}
 			}
@@ -142,9 +143,9 @@ public class Permissions
 				if(group.equalsIgnoreCase(groupname))
 				{
 					HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(groupname);
-					for(String perm : groupdata.get("permissions"))
+					for(String groupperm : groupdata.get("permissions"))
 					{
-						if(perm.equalsIgnoreCase(permission))
+						if(wildcardPermissionRegex(groupperm).matcher(permission).matches())
 							return true;
 					}
 
@@ -205,5 +206,18 @@ public class Permissions
 		}
 
 		return false;
+	}
+
+	// take a permission entry from permissions.yml, that may use asterisk wildcards,
+	// and convert it into a valid regex pattern for permission comparisons.
+	// e.g. "modessentials.*" should represent anything that starts with "modessentials."
+	// the regex transformation is "modessentials\..*", which will actually do what the permission wildcard says.
+	private static Pattern wildcardPermissionRegex(String permissionpattern)
+	{
+		return Pattern.compile(
+			permissionpattern.replace(".", "\\.") //escape permission's full stops for regex compatibility
+				.replace("*", ".*"), //replace asterisk with regex-equivalent wildcard
+			Pattern.CASE_INSENSITIVE //permissions are case-insensitive
+		);
 	}
 }

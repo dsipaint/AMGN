@@ -16,6 +16,8 @@ import com.github.dsipaint.AMGN.entities.listeners.CommandEvent;
 import com.github.dsipaint.AMGN.entities.listeners.managed.DefaultCommand;
 import com.github.dsipaint.AMGN.io.IOHandler;
 
+import net.dv8tion.jda.api.entities.IMentionable;
+
 public class PermissionCommand implements Consumer<CommandEvent>
 {
     public void accept(CommandEvent e)
@@ -25,35 +27,35 @@ public class PermissionCommand implements Consumer<CommandEvent>
             e.getTextChannel().sendMessage("Error- missing arguments\n" + DefaultCommand.PERMS.getUsage(e.getGuild())).queue();
             return;
         }
+        
+        String permission = e.getArgs()[3].toLowerCase();
+
+        if(!GuildNetwork.isOperator(e.getSender().getUser()) && permission.equalsIgnoreCase("AMGN.operator"))
+        {
+            e.getTextChannel().sendMessage("Only operators can delegate operator permissions.").queue();
+            return;
+        }
+
+        if(!e.getArgs()[2].matches("\\d{17,19}"))
+        {
+            e.getTextChannel().sendMessage("Invalid ID format\n" + DefaultCommand.PERMS.getUsage(e.getGuild())).queue();
+            return;
+        }
 
         //^permission add
         if(e.getArgs()[1].equalsIgnoreCase("add"))
         {
-            //if user is not an operator but is trying to give operator perms
-            if(!GuildNetwork.isOperator(e.getSender().getUser()) && e.getArgs()[3].equalsIgnoreCase("AMGN.operator"))
+            if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null || e.getGuild().getRoleById(e.getArgs()[2]) != null)
             {
-                e.getTextChannel().sendMessage("Only operators can delegate operator permissions.").queue();
-                return;
-            }
-
-            if(!e.getArgs()[2].matches("\\d{17,19}"))
-            {
-                e.getTextChannel().sendMessage("Invalid ID format\n" + DefaultCommand.PERMS.getUsage(e.getGuild())).queue();
-                return;
-            }
-
-            //^permission add {member}
-            if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null)
-            {
-                //if permission does not exist for the user,
+                //if permission does not exist for the member,
                 //add it
                 HashMap<String, List<String>> perms;
                 try
                 {
                     perms = new Yaml().load(new FileReader(new File(GuildNetwork.PERMISSIONS_PATH)));
                     perms.putIfAbsent(e.getArgs()[2], new ArrayList<String>());
-                    if(!perms.get(e.getArgs()[2]).contains(e.getArgs()[3]))
-                        perms.get(e.getArgs()[2]).add(e.getArgs()[3]); //add permission
+                    if(!perms.get(e.getArgs()[2]).contains(permission))
+                        perms.get(e.getArgs()[2]).add(permission); //add permission
 
                     IOHandler.writeYamlData(perms, GuildNetwork.PERMISSIONS_PATH); //write data back
                 }
@@ -62,65 +64,31 @@ public class PermissionCommand implements Consumer<CommandEvent>
                     e1.printStackTrace();
                 }
 
-                e.getTextChannel().sendMessage("Added permission " + e.getArgs()[3] + " for " + GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()).getAsMention())
+                IMentionable permissionmember = null;
+                if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null)
+                    permissionmember = GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild());
+                else
+                    permissionmember =  e.getGuild().getRoleById(e.getArgs()[2]);
+                e.getTextChannel().sendMessage("Added permission " + permission + " for " + permissionmember.getAsMention())
                     .setAllowedMentions(Collections.emptySet()).queue();
                 return;
             }
 
-            //^permission add {role}
-            if(e.getGuild().getRoleById(e.getArgs()[2]) != null)
-            {
-                //if permission does not exist for the user,
-                //add it
-                HashMap<String, List<String>> perms;
-                try
-                {
-                    perms = new Yaml().load(new FileReader(new File(GuildNetwork.PERMISSIONS_PATH)));
-                    perms.putIfAbsent(e.getArgs()[2], new ArrayList<String>());
-                    if(!perms.get(e.getArgs()[2]).contains(e.getArgs()[3]))
-                        perms.get(e.getArgs()[2]).add(e.getArgs()[3]); //add permission
-
-                    IOHandler.writeYamlData(perms, GuildNetwork.PERMISSIONS_PATH); //write data back
-                }
-                catch(IOException e1)
-                {
-                    e1.printStackTrace();
-                }
-
-                e.getTextChannel().sendMessage("Added permission " + e.getArgs()[3] + " for " + e.getGuild().getRoleById(e.getArgs()[2]).getAsMention())
-                    .setAllowedMentions(Collections.emptySet()).queue();
-                return;
-            }
-
-            e.getTextChannel().sendMessage("Could not find a user or a role with this ID. Check you have the right ID and try again.").queue();
             return;
         }
-
+        
         //^permission remove
         if(e.getArgs()[1].equalsIgnoreCase("remove"))
         {
-            if(!GuildNetwork.isOperator(e.getSender().getUser()) && e.getArgs()[3].equalsIgnoreCase("AMGN.operator"))
-            {
-                e.getTextChannel().sendMessage("Only operators can delegate operator permissions.").queue();
-                return;
-            }
-
-            if(!e.getArgs()[2].matches("\\d{17,19}"))
-            {
-                e.getTextChannel().sendMessage("Invalid ID format\n" + DefaultCommand.PERMS.getUsage(e.getGuild())).queue();
-                return;
-            }
-
-            //^permission remove {member}
-            if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null)
+            if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null || e.getGuild().getRoleById(e.getArgs()[2]) != null)
             {
                 HashMap<String, List<String>> perms;
                 try
                 {
                     perms = new Yaml().load(new FileReader(new File(GuildNetwork.PERMISSIONS_PATH)));
                     perms.putIfAbsent(e.getArgs()[2], new ArrayList<String>());
-                    if(perms.get(e.getArgs()[2]).contains(e.getArgs()[3]))
-                        perms.get(e.getArgs()[2]).remove(e.getArgs()[3]); //remove permission
+                    if(perms.get(e.getArgs()[2]).contains(permission.toLowerCase()))
+                        perms.get(e.getArgs()[2]).remove(permission.toLowerCase()); //remove permission
 
                     IOHandler.writeYamlData(perms, GuildNetwork.PERMISSIONS_PATH); //write data back
                 }
@@ -129,36 +97,19 @@ public class PermissionCommand implements Consumer<CommandEvent>
                     e1.printStackTrace();
                 }
 
-                e.getTextChannel().sendMessage("Removed permission " + e.getArgs()[3] + " for " + GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()).getAsMention())
+                IMentionable permissionmember = null;
+                if(GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild()) != null)
+                    permissionmember = GuildNetwork.fetchMember(e.getArgs()[2], e.getGuild());
+                else
+                    permissionmember =  e.getGuild().getRoleById(e.getArgs()[2]);
+
+                e.getTextChannel().sendMessage("Removed permission " + permission.toLowerCase() + " for " + permissionmember.getAsMention())
                     .setAllowedMentions(Collections.emptySet()).queue();
                 return;
             }
-
-            //^permission remove {role}
-            if(e.getGuild().getRoleById(e.getArgs()[2]) != null)
-            {
-                HashMap<String, List<String>> perms;
-                try
-                {
-                    perms = new Yaml().load(new FileReader(new File(GuildNetwork.PERMISSIONS_PATH)));
-                    perms.putIfAbsent(e.getArgs()[2], new ArrayList<String>());
-                    if(perms.get(e.getArgs()[2]).contains(e.getArgs()[3]))
-                        perms.get(e.getArgs()[2]).remove(e.getArgs()[3]); //add permission
-
-                    IOHandler.writeYamlData(perms, GuildNetwork.PERMISSIONS_PATH); //write data back
-                }
-                catch(IOException e1)
-                {
-                    e1.printStackTrace();
-                }
-
-                e.getTextChannel().sendMessage("Removed permission " + e.getArgs()[3] + " for " + e.getGuild().getRoleById(e.getArgs()[2]).getAsMention())
-                    .setAllowedMentions(Collections.emptySet()).queue();
-                return;
-            }
-
-            e.getTextChannel().sendMessage("Could not find a user or a role with this ID. Check you have the right ID and try again.").queue();
-            return;
         }
+
+        e.getTextChannel().sendMessage("Could not find a user or a role with this ID. Check you have the right ID and try again.").queue();
+        return;
     }    
 }

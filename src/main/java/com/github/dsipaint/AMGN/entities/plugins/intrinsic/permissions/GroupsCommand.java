@@ -89,9 +89,6 @@ public class GroupsCommand implements Consumer<CommandEvent>
                 return;
             }
 
-            if(e.getArgs().length < 4)
-                return;
-
             HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(e.getArgs()[2]);
             if(!groupdata.get("members").contains(e.getArgs()[3]))
                 groupdata.get("members").add(e.getArgs()[3]);
@@ -114,9 +111,6 @@ public class GroupsCommand implements Consumer<CommandEvent>
                 e.getTextChannel().sendMessage("This group does not exist").queue();
                 return;
             }
-
-            if(e.getArgs().length < 4)
-                return;
 
             HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(e.getArgs()[2]);
             if(groupdata.get("members").contains(e.getArgs()[3]))
@@ -142,17 +136,16 @@ public class GroupsCommand implements Consumer<CommandEvent>
                 return;
             }
 
-            if(e.getArgs().length < 4)
-                return;
+            String permission = e.getArgs()[3].toLowerCase();
 
             HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(e.getArgs()[2]);
-            if(!groupdata.get("permissions").contains(e.getArgs()[3]))
-                groupdata.get("permissions").add(e.getArgs()[3]);
+            if(!groupdata.get("permissions").contains(permission))
+                groupdata.get("permissions").add(permission);
 
             //write back to YAML
             writeNewGroupData(groups);
 
-            e.getTextChannel().sendMessage("Added permission " + e.getArgs()[3] + " to " + e.getArgs()[2].toLowerCase()).queue();
+            e.getTextChannel().sendMessage("Added permission " + permission + " to " + e.getArgs()[2].toLowerCase()).queue();
             return;
         }
 
@@ -168,17 +161,16 @@ public class GroupsCommand implements Consumer<CommandEvent>
                 return;
             }
 
-            if(e.getArgs().length < 4)
-                return;
+            String permission = e.getArgs()[3].toLowerCase();
 
             HashMap<String, List<String>> groupdata = (HashMap<String, List<String>>) groups.get(e.getArgs()[2]);
-            if(groupdata.get("permissions").contains(e.getArgs()[3]))
-                groupdata.get("permissions").remove(e.getArgs()[3]);
+            if(groupdata.get("permissions").contains(permission))
+                groupdata.get("permissions").remove(permission);
 
             //write back to YAML
             writeNewGroupData(groups);
 
-            e.getTextChannel().sendMessage("Removed permission " + e.getArgs()[3] + " from " + e.getArgs()[2].toLowerCase()).queue();
+            e.getTextChannel().sendMessage("Removed permission " + permission + " from " + e.getArgs()[2].toLowerCase()).queue();
             return;
         }
 
